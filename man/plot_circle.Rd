@@ -9,7 +9,8 @@ plot_circle(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
   n.brk.axis = NULL, font.size = c(1, 1, 0.85, 0.85, 1), title = NULL,
   lab.xy = NULL, strip = "Treatment effect size", effect = "HR",
   equal.width = TRUE, show.KM = FALSE, show.effect = TRUE,
-  conf.int = TRUE, show.overall = TRUE)
+  conf.int = TRUE, show.overall = TRUE, palette = "divergent",
+  col.power = 0.5)
 }
 \arguments{
 \item{dat:}{a data set}
@@ -38,3 +39,4 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \description{
 This function produces a circular plot for subgroup analysis
 }
+

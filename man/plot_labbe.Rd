@@ -46,3 +46,4 @@ with repective to the full population effect estimate. Note that the overall siz
 adjusted by setting different values on the associated input argument. In addition, the function uses log odd ratio for displaying
 subgroup effect sizes in binary and survival data, respectively.
 }
+

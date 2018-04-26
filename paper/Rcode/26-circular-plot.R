@@ -120,8 +120,7 @@ SubgrPlots:::plot_circle_std_by(dat,
                                 show.effect = TRUE,
                                 conf.int = FALSE, palette = "hcl")
 dev.off()
-#
-#
+
 # pdf("paper/figures/26-circle-plot-KM.pdf", height = 5, width = 6)
 # plot_circle(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 #             range.v = NULL, adj.ann.subgrp = 4,

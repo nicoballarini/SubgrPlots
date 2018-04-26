@@ -7,7 +7,8 @@
 plot_venn_fill(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
   outside.area = FALSE, range.strip = c(-6, 6), n.brk = 13,
   n.brk.axis = 7, font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL,
-  strip = NULL, effect = "HR", show.overall = TRUE)
+  strip = NULL, effect = "HR", show.overall = TRUE,
+  palette = "divergent", col.power = 0.5)
 }
 \arguments{
 \item{dat:}{a data set}
@@ -42,3 +43,4 @@ of the union of all the considered subgroups or not. In addition, this function 
 algorithms for displaying two or three set. In addition, the function uses log odd ratio and log hazard ratio for displaying
 subgroup effect sizes in binary and survival data, respectively.
 }
+

@@ -33,3 +33,4 @@ that lines connected to all the points.  The colour of lines or points indicates
 covariate or not. The number of types shows how many categories (from the same covariate) are considered as subgroups. The
 range of dissimilarity distances can be adjusted.
 }
+

@@ -44,14 +44,3 @@ plot_network(dat = dat,
 
 
 dev.off()
-
-
-
-# data.frame(x = 0, y = 0, label="Code not provided") %>%
-#   ggplot() +
-#   geom_text(aes(x=x,y=y,label=label), size= 13) +
-#   theme_bw() +
-#   theme(panel.grid = element_blank(),
-#         axis.title = element_blank(),
-#         axis.text = element_blank(),
-#         axis.ticks = element_blank())

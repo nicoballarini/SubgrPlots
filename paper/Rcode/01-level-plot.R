@@ -1,5 +1,4 @@
 ###############################################################################-
-##
 ## This program creates the figures for the manuscript using the
 ## prca data that is included in this package
 ##
@@ -29,7 +28,6 @@ covari.sel = c(14,15)
 trt.sel = 3
 resp.sel = c(1, 2)
 outcome.type = "survival"
-
 names(dat)[covari.sel] = c("age", "weight")
 
 ###############################################################################-
@@ -50,22 +48,6 @@ plot_level(dat,
       title = "Total sample size = 475",
       strip = strip.title, effect = "HR")
 dev.off()
-# pdf("paper/figures/01-level-plot-hr-overall.pdf", width = 5, height = 5)
-# main.title = paste("Treatment effect sizes across subgroups (N = 475)", sep = "");
-# strip.title = paste("Treatment effect size (log hazard ratio)");
-# plot_level(dat,
-#            covari.sel = c(14,15),
-#            trt.sel = 3,
-#            resp.sel = c(1, 2),
-#            outcome.type = "survival",
-#            ss.rect = FALSE,
-#            range.strip=c(-3, 3),
-#            n.brk = 31,
-#            n.brk.axis =  7,
-#            font.size = c(14, 12, .8, 14, 0.7),
-#            title = "Total sample size = 475",
-#            strip = strip.title, effect = "HR", show.overall = TRUE)
-# dev.off()
 
 pdf("paper/figures/01-level-plot-hr-overall.pdf", width = 5, height = 5)
 main.title = paste("Treatment effect sizes across subgroups (N = 475)", sep = "");
@@ -101,8 +83,3 @@ plot_level(dat,
            strip = strip.title,
            effect = "RMST", time = 50)
 dev.off()
-## General Comment: The functions open a new device via dev.new() with the option noRStudioGD = TRUE.
-## The plot is then not shown, at least in my environment, until I call dev.off() and a new file Rplots##.pdf is generated in the working directory.
-## It may be more convenient to show the plot in the Rstudio's Plots tab.
-## General Comment 2: the name of the functions are not consistent. Some have .plt, others no separation.
-## lvplt: The font.size is not consistent in the values it take. In the default values c(15, 12, 0.8, 15, 0.6), why for positions 3 and 5 we have such a small numbers? are they the relative size compared to the others?

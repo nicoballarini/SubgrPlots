@@ -1,3 +1,10 @@
+###
+### Files for producing this plot are in a separate R package.
+### TODO: merge both packages so that the function is available from SubgrPlots
+###
+###
+###
+
 ###############################################################################-
 ##
 ## This program creates the figures for the manuscript using the

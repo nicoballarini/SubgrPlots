@@ -42,3 +42,4 @@ scale, where the red spots are the projection of points from the origin on the l
 be changed by setting different values on the associated input argument. In addition, the function uses log odd ratio and log hazard
 ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 }
+

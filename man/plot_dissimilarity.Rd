@@ -32,3 +32,4 @@ display - one is that subgroup letters are located at the exact dissimilarity di
 at the middle of the category of dissimilarity distances. Note that some dissimilarity distances are known (such as 0 and 1) and
 therefore they are not shown in the graphical display. Also, the range of dissimilarity distances can be adjusted.
 }
+

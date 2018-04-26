@@ -58,11 +58,6 @@ ggplot(dt) +
   labs(x = "", y = "", fill = "2-year survival") +
   theme_bw(base_size = 12) +
   theme(
-    ## finishing touches to the theme
-    # axis.text.y = element_blank(),
-    # axis.ticks.y = element_blank(),
-    # panel.border = element_blank(),
-    # panel.grid = element_blank(),
     axis.text.x = element_blank(),
     legend.position = "bottom",
     legend.direction = "horizontal") +
@@ -103,11 +98,6 @@ ggplot(dt) +
   labs(x = "", y = "", fill = "2-year survival") +
   theme_bw(base_size = 12) +
   theme(
-    ## finishing touches to the theme
-    # axis.text.y = element_blank(),
-    # axis.ticks.y = element_blank(),
-    # panel.border = element_blank(),
-    # panel.grid = element_blank(),
     axis.text.x = element_blank(),
     legend.position = "bottom",
     legend.direction = "horizontal") +

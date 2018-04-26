@@ -9,7 +9,7 @@ contourplt_new(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss,
   para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2, 1, 0.85, 0.8),
   title = NULL, subtitle = NULL, effect = "HR", point.size = 1.2,
   filled = FALSE, spiral = FALSE, strip = NULL, show.overall = FALSE,
-  verbose = TRUE)
+  verbose = TRUE, palette = "divergent", col.power = 0.5)
 }
 \arguments{
 \item{dat:}{a data set}
@@ -54,3 +54,4 @@ that there are three parameters for controlling the setting of contours. In addi
 hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively. Also, the actual subgroup sample
 sizes over the covariates are shown on the console window.
 }
+

@@ -42,3 +42,4 @@ of the union of all the considered subgroups or not. In addition, this function 
 algorithms for displaying two or three set. In addition, the function uses log odd ratio and log hazard ratio for displaying
 subgroup effect sizes in binary and survival data, respectively.
 }
+

@@ -44,3 +44,4 @@ by controlling Type I error rate in one of the function arguments. Note that the
 for displaying subgroup effect sizes in binary and survival data, respectively. The actual subgroup sample sizes over the covariate
 are shown on the console window as well.
 }
+

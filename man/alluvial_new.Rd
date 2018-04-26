@@ -12,3 +12,4 @@ alluvial_new(..., freq, col = "gray", border = 0, layer, hide = FALSE,
 \description{
 this function produces an alluvial diagram. This function is a copy of alluvial::alluvial
 }
+

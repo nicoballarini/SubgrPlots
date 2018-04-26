@@ -50,8 +50,8 @@ dat %>%
          `2-year survival` = Survival,
          Weight = weight.,
          Age = age.) -> dat
-# vcd::mosaic(bm ~ rx | age., data = dat, zero_size = 0, split_vertical = TRUE,
-#        highlighting_direction = "top")
+
+
 # Survival -------------------
 pdf("paper/figures/24-mosaic-plot-surv.pdf", width = 5, height = 4)
 SubgrPlots:::plot_mosaic_3_noeffect(dat,
@@ -81,18 +81,8 @@ covari.sel = c(15, 7, 4)
 # covari.sel = c(5, 7, 4)
 unlist(table(dat[, covari.sel]))
 table(dat[, covari.sel])
-# Hazard Ratio --------------
-# pdf("paper/figures/25-mosaic-plot-hr.pdf", width = 5, height = 4)
-# SubgrPlots:::plot_mosaic_3(dat,
-#             covari.sel, trt.sel, resp.sel, outcome.type,
-#             range.v = NULL, adj.ann.subgrp = 4,
-#             range.strip=c(-3, 3),
-#             n.brk = 31, n.brk.axis = 7,
-#             font.size = c(10, 10, 10, 10, 0.7),
-#             title = NULL, lab.xy = NULL,
-#             strip = "Treatment effect size (log-hazard ratio)",
-#             effect = "HR")
-# dev.off()
+
+
 pdf("paper/figures/25-mosaic-plot-hr.pdf", width = 5, height = 4)
 SubgrPlots:::plot_mosaic_3(dat,
                            covari.sel, trt.sel, resp.sel, outcome.type,
@@ -160,46 +150,7 @@ SubgrPlots:::plot_mosaic_2(dat,
                            title = NULL, lab.xy = NULL,
                            strip = "Treatment effect size",
                            effect = "HR", print.ss = TRUE)
-# SubgrPlots:::plot_mosaic_2(dat,
-#                            covari.sel = c(14, 15),
-#                            trt.sel, resp.sel, outcome.type,
-#                            range.v = NULL, adj.ann.subgrp = 4,
-#                            range.strip=c(-21, 21),
-#                            n.brk = 31,
-#                            n.brk.axis = 7,
-#                            font.size = c(10, 10, 10, 10, 0.7),
-#                            title = NULL, lab.xy = NULL,
-#                            strip = "Treatment effect size",
-#                            effect = "RMST", print.ss = TRUE)
 
-#
-# SubgrPlots:::plot_mosaic_2_marginal(dat,
-#                            covari.sel = c(14, 15),
-#                            trt.sel, resp.sel, outcome.type,
-#                            range.v = NULL, adj.ann.subgrp = 4,
-#                            range.strip=c(-21, 21),
-#                            n.brk = 31,
-#                            n.brk.axis = 7,
-#                            font.size = c(10, 10, 10, 10, 0.7),
-#                            title = NULL, lab.xy = NULL,
-#                            strip = "Treatment effect size", time= 50,
-#                            effect = "RMST", print.ss = TRUE)
-
-# Hazard Ratio 2er -------------------
-# pdf("paper/figures/25-mosaic-plot-hr-2er.pdf", width = 5, height = 4)
-# SubgrPlots:::plot_mosaic_2_marginal(dat,
-#                            covari.sel = c(14, 15),
-#                            trt.sel, resp.sel, outcome.type,
-#                            range.v = NULL, adj.ann.subgrp = 4,
-#                            range.strip=c(-3, 3),
-#                            n.brk = 31,
-#                            n.brk.axis = 7, sep. = 0.034,
-#                            font.size = c(10, 10, 10, 10, 0.7),
-#                            title = NULL, lab.xy = NULL,
-#                            strip = "Treatment effect size (log-hazard ratio)",
-#                           col.line = "black", lwd. = 1,
-#                            effect = "HR", print.ss = TRUE)
-# dev.off()
 pdf("paper/figures/25-mosaic-plot-hr-2er.pdf", width = 5, height = 4)
 SubgrPlots:::plot_mosaic_2_marginal(dat,
                                     covari.sel = c(14, 15),

@@ -38,3 +38,4 @@ control group for each population. The dashed vertical line indicates no effect 
 represent subgroups can be adjusted by setting different values on the associated input argument. In addition, the function uses
 log odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 }
+

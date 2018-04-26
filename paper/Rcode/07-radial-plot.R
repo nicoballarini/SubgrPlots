@@ -58,7 +58,7 @@ plot_radial(dat,
        trt.sel = 3,
        resp.sel = c(1, 2),
        outcome.type = "survival",
-       range.v = c(-14, 4),
+       range.v = c(-8, 8),
        adj.ann.subgrp = 4,
        font.size = c(1, 1, .6, .6, .6),
        title = main.title, lab.xy = label.xy)

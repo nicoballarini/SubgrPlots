@@ -109,6 +109,7 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
 
   # layout(matrix(c(1, 1, 1, 1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
 
+  pal.2 = colorRampPalette(c("white", "yellow", "red"), space="rgb")
 
   sub.plot <- function(subgroup){
     angle.circles = seq(pi/2, pi/2 + (n.subgrp.tol-1)* (2*pi/n.subgrp.tol), 2*pi/n.subgrp.tol)
@@ -120,7 +121,6 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
     pos2 = cbind(x1,y1)/10
 
     r.prop.tol = c(0,1)
-    pal.2 = colorRampPalette(c("white", "yellow", "red"), space="rgb")
     breaks <- seq(min(r.prop.tol, na.rm = T), max(r.prop.tol, na.rm = T), length.out = 100)
     levs=breaks
 

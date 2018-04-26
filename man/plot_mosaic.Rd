@@ -7,7 +7,8 @@
 plot_mosaic(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
   adj.ann.subgrp = 4, range.strip = c(-3, 3), n.brk = 7,
   font.size = c(1, 1, 0.85, 0.85, 1), title = NULL, lab.xy = NULL,
-  strip = "Treatment effect size", effect = "HR", lwd. = 2, sep. = 0.05)
+  strip = "Treatment effect size", effect = "HR", lwd. = 2, sep. = 0.05,
+  palette = "divergent", col.power = 0.5)
 }
 \arguments{
 \item{dat:}{a data set}
@@ -36,3 +37,4 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \description{
 This function produces a circular plot for subgroup analysis
 }
+

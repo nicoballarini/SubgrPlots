@@ -59,34 +59,3 @@ plot_venn(dat,
        title = main.title,
        strip = NULL)
 dev.off()
-## vd: The package rgeos cannot be installed in my environment so the function does not work. It requires GEOS library.
-## May be better to use another library to do the venn diagram like the VennDiagram package
-
-# # 4 variables
-# main.title = paste("Venm diagram for subgroup overlap");
-# plot_venn(dat,
-#        covari.sel = c(4,5,6,7),#vars,
-#        cat.sel = c(2,2,2,2),
-#        trt.sel = 3,
-#        resp.sel = c(1,2),
-#        outcome.type = "survival",
-#        outside.area = FALSE,
-#        range.strip = c(-6, 6),
-#        n.brk = 13,
-#        font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6),
-#        title = main.title,
-#        strip = NULL)
-# # 5 variables
-# dat$age1 = factor(dat$age1)
-# plot_venn(dat,
-#           covari.sel = c(4,5,6,7,10),#vars,
-#           cat.sel = c(2,2,2,2,1),
-#           trt.sel = 3,
-#           resp.sel = c(1,2),
-#           outcome.type = "survival",
-#           outside.area = FALSE,
-#           range.strip = c(-6, 6),
-#           n.brk = 13,
-#           font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6),
-#           title = main.title,
-#           strip = NULL)

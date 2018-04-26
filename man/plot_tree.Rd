@@ -37,3 +37,4 @@ subgroups by categories of the covariate on the lower level. The horizontal line
 each level so as to check homogeneity across subgroup effects with repective to the overall effect. In addition, the function uses log
 odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 }
+

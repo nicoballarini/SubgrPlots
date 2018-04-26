@@ -8,7 +8,7 @@ plot_level(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect = FALSE,
   range.strip = c(-6, 6), n.brk = 30, n.brk.axis = NULL,
   font.size = c(15, 12, 0.8, 15, 0.6), title = NULL, strip = NULL,
   effect = c("HR", "RMST"), time = NULL, blow.up = 1,
-  show.overall = FALSE)
+  show.overall = FALSE, palette = "divergent", col.power = 0.5)
 }
 \arguments{
 \item{dat:}{a data set}
@@ -42,3 +42,4 @@ an approapriate range for effect size on the colour strip . Note that there are 
 sample size by rectangles with different sizes (proportional to the ratio of sample size to the full size) or not. In addition, the
 function uses log odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 }
+

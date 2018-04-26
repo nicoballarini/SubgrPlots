@@ -98,7 +98,7 @@ layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(
 # par(mar=c(1,2,2,2))
 
 par(mar=c(0,2,4,2))
-plot(0, 0, xlim = c(-1.5,1.5), ylim = c(0,5.1), type="n", col="blue",
+plot(0, 0, xlim = c(-1.5,1.5), ylim = c(0,5.1), type="n",
      main = title,
      xaxt="n", yaxt="n", xlab="",ylab=" ",bty = "o")
 box()
@@ -136,10 +136,10 @@ segments(x1.pos %x% rep(1, n.covari), rep(y2.pos, n.covari), rep(x1.pos, n.covar
 segments(x1.pos %x% rep(1, n.covari), rep(y3.pos, n.covari), rep(x1.pos, n.covari), rep(y4.pos, n.covari),  lwd = 2, col = c(t(col.idx[(n.covari+1):(2*n.covari),(n.covari+1):(2*n.covari) ])) )
 
 
-text(x1.pos-0.05, y1.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9, col = "blue")
-text(x1.pos-0.05, y2.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9, col = "blue")
-text(x1.pos-0.05, y3.pos, labels = lab.subgrp2[(n.covari+1):(n.covari*2)],   cex = 0.9, col = "blue")
-text(x1.pos-0.05, y4.pos, labels = lab.subgrp2[(n.covari+1):(n.covari*2)],   cex = 0.9, col = "blue")
+text(x1.pos-0.05, y1.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9)
+text(x1.pos-0.05, y2.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9)
+text(x1.pos-0.05, y3.pos, labels = lab.subgrp2[(n.covari+1):(n.covari*2)],   cex = 0.9)
+text(x1.pos-0.05, y4.pos, labels = lab.subgrp2[(n.covari+1):(n.covari*2)],   cex = 0.9)
 
 ### creeat plot 3
 

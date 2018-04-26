@@ -51,3 +51,4 @@ that there are three parameters for controlling the setting of contours. In addi
 hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively. Also, the actual subgroup sample
 sizes over the covariates are shown on the console window.
 }
+

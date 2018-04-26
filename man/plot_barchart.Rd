@@ -32,3 +32,4 @@ covariates. Also, it prints out the minimum and maximum of the treatment effect 
 which is proportional to the ratio of the corresponding sample size to the full size. In addition, the function uses log odd ratio
 and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 }
+
