@@ -1,0 +1,72 @@
+---
+title: "Contour plot for Subgroup Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The problem
+
+While working on a paper for graphical approaches for subgroup analysis, we devised
+using a contour plot to show the treatment effect across the covariate space of 
+two continous covariates.
+
+The first step is to visualize the data we have 
+
+```{r}
+library(SubgrPlots)
+data(prca)
+colors = c("blue", "darkgreen")
+point.colors = colors[(prca$rx == 1)+1]
+plot(prca[,c("age", "weight")], col = colors, pch = 19)
+legend("topright", c("control", "treatment"), col = colors, pch = 19, horiz = TRUE)
+```
+
+## Approach 1: Forming subgroups
+
+A first attemp is to form subgroups. then estimate the treatment effect
+for each subgroup, and fit a polynomial surface to these estimates.
+Let's see how that works in practice.
+
+The first step is to choose four numbers $N_{11}, N_{12},N_{21}, N_{22}$ that will define the size the subgroups
+Here we choose $N_{11}=60, N_{12}=10,N_{21}=30, N_{22}=15$.
+What this means is that we first form subgroup of sample size $N_{11}=60$ by only looking 
+at the variable Age, each of them having an overlap of 10 subjects.
+
+
+
+```{r , echo=FALSE, message=FALSE, warning=FALSE}
+dat <- prca
+covari.sel = c(9,8)
+trt.sel = 3
+resp.sel = c(1, 2)
+outcome.type = "survival"
+n.grid = c(10, 10)
+brk.es = c(-1,-0.5, 0, 0.5, 1)
+para.plot = c(0.35, 2, 20)
+font.size = c(0.6, 0.4, 0.3, 0.5, 0.3)
+covari.sel = c(9,8)
+main.title = paste0("Effect sizes (ES) on the plane of ", names(dat)[covari.sel[1]], " and ", names(dat)[covari.sel[2]]) ;
+setup.ss =  c(10,60,15,30)
+sub.title = bquote(N[11] %~~% .(setup.ss[2]) ~", "~
+                     N[12] %~~% .(setup.ss[1]) ~", "~
+                        N[21] %~~% .(setup.ss[4]) ~", "~
+                          N[22] %~~% .(setup.ss[3]))
+main.title = NULL
+###############################################################################-
+# 2. Contour plot -----------------------------------------------------------
+contourplt_new(dat,
+               covari.sel = c(8,9),
+               trt.sel = 3,
+               resp.sel = c(1,2),
+               outcome.type = "survival",
+               setup.ss =  setup.ss,
+               n.grid = c(100,100),
+               brk.es = seq(-3,3, length.out = 31), n.brk.axis = 7,
+               para.plot = c(0.5, 2, 5),
+               font.size = c(1, 1, 0.7, 0.7, 0.75),
+               title = main.title,
+               subtitle = sub.title, filled = TRUE, verbose = FALSE)
+```

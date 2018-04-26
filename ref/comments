@@ -1,0 +1,19 @@
+General Comment: The functions open a new device via dev.new() with the option noRStudioGD = TRUE.
+The plot is then not shown, at least in my environment, until I call dev.off() and a new file Rplots.pdf is generated in the working directory.
+It may be more convenient to show the plot in the Rstudio's Plots tab.
+
+General Comment 2: the name of the functions are not consistent. Some have .plt, others no separation.
+General Comment 3: using ggplot?
+General Comment 3: Check for best practices when using dependencies. Should we call packages inside the functions? or load the dependencies when the package is loaded.
+
+lvplt: The font.size is not consistent in the values it take. In the default values c(15, 12, 0.8, 15, 0.6), why for positions 3 and 5 we have such a small numbers? are they the relative size compared to the others?
+
+contour.plt: It may be very difficult to come up with sensitive values for the subgroups: n1 n2 n3 and n4.
+
+vd: The package rgeos cannot be installed in my environment so the function does not work.
+
+barcht: When using survival data, the y scale is in terms of the log hazard ratio. It may be useful to provide an option to show hazard ratio?
+
+forestplt: It does not display the subgroup effects panel
+
+labbeplt: The Labbe plot currently does not support survival outcome

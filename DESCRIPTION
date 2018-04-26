@@ -1,0 +1,21 @@
+Package: SubgrPlots
+Type: Package
+Title: Graphical Displays for Subgroup Analysis in Clinical Trials
+Version: 0.1.0
+Author: Nicolas Ballarini, Yi-Da Chiu
+Maintainer: Nicolas Ballarini <nicolas.ballarini@meduniwien.ac.at>
+Description: This package provides functions for obtaining the graphical
+    displays from the manuscript. An example with a prostate cancer dataset is
+    provided
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Imports:
+    diagram,
+    polyclip,
+    shape,
+    spatstat,
+    sp,
+    UpSetR,
+    VennDiagram
+RoxygenNote: 6.0.1

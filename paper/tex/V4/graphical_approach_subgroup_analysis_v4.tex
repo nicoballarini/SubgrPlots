@@ -1,0 +1,487 @@
+% sage_latex_guidelines.tex V1.10, 24 June 2016
+
+\documentclass[Afour,sagev,times, doublespace]{sagej}
+
+\usepackage{moreverb,url}
+\usepackage[lofdepth,lotdepth]{subfig}
+\usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
+
+\newcommand\BibTeX{{\rmfamily B\kern-.05em \textsc{i\kern-.025em b}\kern-.08em
+T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\def\volumeyear{2016}
+
+\begin{document}
+
+\runninghead{Chiu, Koenig, Posch and Jaki}
+
+\title{Graphical displays for subgroup analysis in clinical trials}
+
+\author{Yi-Da Chiu\affilnum{1} and Franz Koenig\affilnum{2} and Martin Posch\affilnum{2} and Thomas Jaki\affilnum{1}}
+
+\affiliation{\affilnum{1}Medical and Pharmaceutical Statistics Research Unit, Department of Mathematics and Statistics, Lancaster University, LA1 4YF, U.K.\\
+\affilnum{2}Center for Medical Statistics, Informatics, and Intelligent Systems, Medical University of Vienna, Spitalgasse 23, 1090 Vienna, Austria.}
+
+\corrauth{Thomas Jaki, Medical and Pharmaceutical Statistics Research Unit, Department of Mathematics and Statistics, Lancaster University, LA1~4YF, UK.}
+
+\email{t.jaki@lancaster.ac.uk}
+
+\begin{abstract}
+Subgroup analysis are a routine part of clinical trials, for example to ensure that there are no groups of patients for whom the treatment is harmful despite being effective in the majority of patients or to identify groups of patients that may benefit from a treatment when the overall effect is small or zero. Graphical approaches are routinely employed in subgroup analyses to depicting effect sizes of subgroups and aid identification of groups that respond differentially. Such visualisations aim to encapsulate all relevant information about a subgroup and seeks to aid the clinical decision making process. However, many existing approaches do not capture all the core information and / or are prone to lead to misinterpretation of subgroup effects. In this paper we critically appraise existing visualization techniques and propose useful extensions to increase their utility. 
+\end{abstract}
+
+\keywords{Data visualisation, subgroup analysis, forrest plot}
+
+\maketitle
+
+\section{Introduction}
+
+Investigating target populations potentially beneficial to an innovative intervention is essential in clinical trials. Such investigations are challengeable because various issues are needed to address. For example, one is a wide search range. Enrolling patients have rather diverse baseline characteristics for considerations, such as age, gender, race, disease severity or biomarker profiles. Another is decision making about populations for treatment use. Even if efficacy is established in the overall population, a complete benefit/risk assessments of subgroups should be undertaken before deciding the treatment to the whole or the population excluding certain subgroups. Also, the credibility level of findings is concerned. The presence of promising results can be attributed to a small sample size.
+
+ Subgroup analyses as investigative measures are prospective or post-hoc in different settings of clinical trials. Their primary proposes can be to establish efficacy claim, subgroup discovery and consistency assessments across subgroups. They are therefore a broad field addressing various subgroup problems as mentioned before. Many researchers have proposed novel approaches and designs for different categories of subgroup analysis \cite{Alosh:16, Ondra:16, Dmitrienko:16}. It has further received extensive attention in recent clinical research for the development of stratified medicine.
+
+Graphical approaches are routinely employed in subgroup analysis, typically for describing effect sizes of subgroups. Such visualisation encapsulates subgroup information and boosts clinical decision making process. However, not much attention has been paid to how to make effective graphics. Existing approaches still have inherent drawbacks and their use may lead to misinterpretations to subgroup effect sizes \cite{Alosh:16}. For instance, forest plots provide no insight on the overlap of different subgroups; additionally, whether or not a subgroup’s confidence interval crosses the no-effect point does not necessarily imply a lack of effect or contribute an effect to the subgroup. It is therefore crucial to correctly depict effect sizes and essential information of subgroups.
+
+In addition to displaying treatment effects, several characteristics are desirable for graphical approaches as initial subgroup analysis tools. Showing sample sizes is necessary because it underpins the credibility level of promising and adverse findings within subgroups. Revealing overlap information also enables to focus on the subgroups which have a less overlap with each other in the final presentation. The ability of detecting heterogeneity for all subgroup treatment effect sizes should be considered as well. Moreover, it is expected to be available for large subgroups to serve potential hypothesis generating. These characteristics can certainly constitute sensible criteria for assessments.
+
+In this paper we attempt to develop an effective visualization approach with desired features and particularly a two-dimension display. Our considerations of developing approaches is not constrained regardless of exploratory or confirmatory settings. Also, to facilitate development we focus on a simple case of synthetic data with a continuous endpoint. The graphical techniques considered include level plots, contour plots, bar charts, Venn diagrams, tree plots, forest plots, Galbraith plots, {$\text{L'Abb}\acute{\text{e}}$ plots and the subpopulation treatment effect pattern plot.
+
+The remainder of the paper is structured as follows: in Section 2 we present and exploit nine graphical approaches for displaying subgroup information. Each technique is further assessed based on a set of criteria. Section 3 focuses on improved graphical displays and alternatives. Some are further improved by mitigating their original demerits. In Section 4 we summarise the assessment and features of all the improved approaches. Remarks on their practical usefulness and implications in clinical trials are made. We outline the potential visualisation techniques in the end.
+
+
+\section{Graphical Approaches to Subgroup Problems}
+
+Several graphical approaches are used for visualization on certain information of subgroups from synthetic dataset\footnote{The synthetic dataset contains ten continuous covariates V1-V10, one categorical covariate V11 (representing treatment code; 1 for the treatment group and 0 for the control group) and one continuous endpoint response.}. Each of graphical displays is depicted at first and then assessed based on a set of sensible criteria. We additionally point out other noticeable features of each display approach.
+
+The criteria is prioritised as follows:
+\begin{itemize}
+\item[$\bf C1$] whether to display effect sizes for subgroups;
+\item[$\bf C2$] whether to exhibit subgroup sample sizes;
+\item[$\bf C3$] whether to show all overlap information for subgroups;
+\item[$\bf C4$] whether to serve for detecting heterogeneity in treatment effect sizes (or treatment-covariate interactions);
+\item[$\bf C5$] whether is available for the large number of total subgroups (more than 10)
+\end{itemize}
+
+\subsection{Level plot}
+Figure \ref{fig:old_LP} shows the application of level plots (LP) where treatment effect differences in subgroups defined by two covariates V1 and V2. Each covariate has three levels and all the cells represent mutually disjoint subgroups. Such a subgroup is also the pairwise overlap of marginal subgroups defined by V1 and V2 with specific levels. The figures inside the cells stand for the corresponding subgroup sample sizes. The three cells on the bottom and the left margins represent the marginal subgroups corresponding to the three levels of V1 and V2, respectively. The color represents the treatment effect difference between the treatment/control arms. The color varies from black to yellow (red in the middle) where the variation ranges from -6 to 6. Note that the white right-bottom cell reveals no treatment effect difference for the corresponding subgroup. It is because of no data in this subgroup.
+
+\begin{figure}%[htp]
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{level_plot_old3.pdf} %scale = 0.6
+		\caption{The levelplot of treatment effect differences across 9 mutually disjoint subgroups defined by covariates V1 and V2.
+         The cells on the bottom and the left margins are the marginal subgroups corresponding to the levels of V1 and V2. The inner figures of the cells stand for the subgroup sample sizes.}\label{fig:old_LP}
+\end{center}
+\end{figure}
+
+This graphical approach satisfies $\bf C1$, $\bf C2$, $\bf C5$ and partially $\bf C3$ but fail to hold $\bf C4$. Such LP only displays pairwise overlay of marginal subgroups rather than all overlap across subgroups. In addition, although unusual effect sizes across subgroups can be shown (if a large color difference exists), it is unable to detect heterogeneity. The reason is that neither the overall effect size nor the estimation variation of effect size for subgroups are displayed. It is noted that only two covariates can be considered in a LP. Though the number of the marginal subgroups of each covariate can be easily ten (therefore, the subgroup number can reach to a hundred), this may lead to a subgroup sample size being zero. Moreover, because the cut-off points for continuous covariate are arbitrary, LP is more suitable for categorical covariates.
+
+\subsection{Contour Plot}
+
+Figure \ref{fig:CP} shows treatment effect differences in a particular region of V1 and V2 by contour plots (CP). The contour lines are drawn through a bivariate interpolation and smooth surface fitting for irregularly distributed data points at pre-specified grid points. Most of contour lines have an attached number showing treatment effect difference. The points inform that the corresponding subgroups have genuine effect sizes, where the subgroups are from the part of dataset and meet a certain condition on the values of covariate \footnote{The subgroups are the sub-dataset where a data point's values on V1 and V2 are between certain thresholds. More specifically, the $k$-th marginal subgroup over V1 forms if the V1 value is between $l_k$ and $u_k$, where $l_k$ and $u_k$ are the lower and upper thresholds, respectively. This $k$-th marginal subgroup overlaps with its immediate $k-1$th or $k+1$th  marginal subgroups. Each $k$-th marginal subgroup is further divided into subgroups if the V2 value is between $l_{k_s}$ and $u_{k_s}$, where $l_{k_s}$ and $u_{k_s}$ are the lower and upper thresholds over V2, respectively. The divided $k_s$th subgroup is overlapped with its immediate $k_{s-1}$th or $k_{s+1}$th subgroups. In addition, the marginal subgroups over V1 are designed to have a sample size of 80 and 70 of which are overlapped with the neighboring marginal subgroups.The divided subgroups along V2 are designed to have 30 data points and 83\% of which is overlapped with the adjacent subgroups. This configuration of subgroups ensures all the subgroup sample sizes are controlled around a certain number so as to estimate the subgroup treatment effect sizes. Note that we use the middle value for a pair of lower and upper thresholds on V1 and V2 to signify the position of the corresponding subgroup. For example, a position can be drawn at (($l_k$ + $u_k$)/2, ($l_{k_s}$ + $u_{k_{s+1}}$)/2 )) to represent the subgroup defined in the region $[l_k, u_k]\times[l_{k_s}, u_{k_{s+1}} ]$. }. The points colored in red, blue and orange indicate the effect sizes of subgroups are between different threshold values. Subgroup sample sizes and the overlap are only annotated in the bottom of the figure.
+
+
+CP matches $\bf C1$ and $\bf C5$ but not $\bf C2$, $\bf C3$ and $\bf C4$. The total number of subgroups (corresponding to the number of points) can be more than ten by controlling the overlap proportions with neighboring subgroups. However,  There is no graphical display about subgroup sample sizes and overlap proportions. Such information can be only annotated in the subtitle and the caption the figure. Also, it has no function of detecting heterogeneity because the overall effect size is not given.
+
+There are few more noticeable characteristics for this graphical technique. CP is particularly useful when a dataset size is rather large and its V1 and V2 values distributed over the pre-specified rectangular region. Similar to LP this graphical approach only considers two continuous covariates. Moreover, the interpolated effect sizes may be unreliable in the region where only sparse points are irregularly distributed or no data point lies. It is unclear how smooth the interpolated surface should be when the dataset size is not large but the values of two covariates are roughly distributed over the region.
+
+
+\begin{figure}%[htp]
+\begin{center}
+				\includegraphics[width=0.4\textwidth]{contour_plot_new2.pdf} %\\ scale = 0.6
+		\caption{The contour plot of treatment effect differences over the plane of V1 and V2. $N_{11}$ stands for the sample size of a marginal subgroup defined by a range of V1; $N_{12}$ means the overlap size of the immediate marginal subgroups on V1; $N_{21}$ is the sample size of the subset of a marginal subgroup on V1 but further defined by a range of V2; $N_{22}$ represents the overlap size of the immediate subgroups (which are the subset of a marginal subgroup on V1) on V2. }\label{fig:CP}
+\end{center}
+\end{figure}
+
+\subsection{Venn Diagram}
+
+The Venn diagram (VD) for three subgroups defined by specified ranges of covariates V1, V2 and V6 is shown in Figure \ref{fig:old_VD}. This diagram indicates the sample sizes for all the subsets forming by set operations (intersection and complement) on the three subgroups. The number outside of the three circle indicates the union of the three subgroups has a complement with size of 100.
+
+\begin{figure}
+\begin{center}
+	\includegraphics[width=0.4\textwidth]{venn_diagram_old2.pdf}
+		\caption{The Venn diagram of 3 subgroups defined by specified ranges of V1, V2 and V6.}\label{fig:old_VD}
+\end{center}
+\end{figure}
+
+VD apparently satisfies $\bf C2$, $\bf C3$ but not $\bf C1$ and $\bf C4$. Information about treatment effect differences in subgroups is unavailable. This is thus unable to detect any inconsistence across subgroups effect sizes.
+
+VD also holds $\bf C5$ because one can make a VD for any number of sets based on the Edwards construction (\cite{swinton:09,heberle:15}). The total number of subgroups including mutual disjoint ones can be $2^n$, where $n$ is the number of the sets considered. Despite this merit there is be a limit on the number of the sets considered in practice. Readers may have a visual problem for a VD with more than 5 sets,  due to recognition difficulty in figures or colours on small regions.
+
+
+\subsection{Bar Chart}
+
+A bar chart (BC) is shown in Figure \ref{fig:BC} for treatment effect differences in subgroups defined by two covariates V1 and V2. Each covariate has three levels and all the bars represent mutual disjoint subgroups. The levels of V1 and V2 are respectively listed in the top and the bottom part of the picture. The height of a bar stands for the treatment effect difference between the treatment/control arms. The width is proportional to the weight of the square root of a subgroup sample size over the total square root sum. The color merely shows which subgroup has the same level on V2. The length of the error bar above each color bar exhibits the magnitude of the standard error of the point estimator. Note that since there is no data point for the subgroup with V1 and V2 value in the region [1.36, 2.9]$\times$ [-9.18, -4.03], no bar displays.
+
+This graphical representation approach holds $\bf C1$, $\bf C2$ and $\bf C5$, partially $\bf C3$ but not $\bf C4$. Like LP, each bar is also the pairwise overlap of two subgroups defined by V1 and V2 with their respective levels. Therefore, BC only provides partial overlay information. Such a graphical approach is unable to examine heterogeneity in treatment effect differences across subgroups due to no display of the overall effect size. In terms of $\bf C5$, BC can handle more than ten (mutually disjoint) subgroups through increasing the level number of each covariate.
+
+Few noteworthy characteristics also need to be mentioned. First, BC exhibits the standard errors of the point estimator for subgroup effect sizes. Second, it only considers two covariates. If considering few more covarites, one could label all the covariate's level combinations in the bottom part of the picture or simply to make a legend elsewhere. Third, it satisfies $\bf C5$ though increasing more covariates or levels may cause a visualization problem (difficult to see how wide of the bar is). Fourth, it has the same issue of LP about the cut-off points for continuous covariates and is therefore favoured for categorical covariates.
+
+\begin{figure}
+\begin{center}
+	\includegraphics[width=0.4\textwidth]{bar_chart_new.pdf} \\
+		\caption{The bar chart of 9 mutually disjoint subgroups defined by the levels of V1 and V2.}\label{fig:BC}
+\end{center}
+\end{figure}
+
+
+\subsection{Forest Plots}
+
+A forest plot (FP) is a common graphical display approaches for meta analysis and subgroup analysis. Figure \ref{fig:oldFP} shows one of its applications to the estimation of treatment effect differences in various subgroups. Here subgroups and their complements are defined by five covariates depending on whether the value of a covariate is more than 0 or not. The text on the left side shows the mean estimate of treatment effect difference, lower/upper bounds of 95$\%$ C.I and subgroup sample sizes (further divided into treatment group and control arms). The lines represents 95$\%$ confidence intervals of effects sizes (for subgroups) or treatment effects (for treatment/control arms). The square size reflects how a subgroup sample size is proportional to the full population. The solid vertical line for examining heterogeneity is located at the overall effect size as suggested in \cite{Cuzick:05}. If there is a C.I. of subgroup effect not crossed by that solid line, we regard heterogeneity may occur in such a circumstance.
+
+\begin{figure}
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{forest_plot_old4.pdf} \\
+		\caption{The forest plots across all the subgroups (defined by certain ranges of  V1, V2, V6, V7 and V10), the respective complements and their associated treatment and control group. }\label{fig:oldFP}
+\end{center}
+\end{figure}
+
+From the above description FP apparently holds all the criteria but $\bf C3$ because of inability to show subgroup overlaps. Note that the merit of showing treatment effect estimate for the treatment/control arms benefits practitioners in certain circumstance. Particularly, it is critical to prevent the subgroup that both interventions have harmful effects despite the promising effect size.
+
+Note that the visual judgement on heterogeneity is slightly different from those in \cite{Alosh:16, Cuzick:05, Ried:06}. We later adopt the same recognition rule for the graphical approaches with similar design features.
+
+\subsection{Tree Plot}
+
+Figure \ref{fig:TP} shows a tree plot (TP) of treatment effect differences for subgroups defined by four covariates V1, V2, V6 and V7. Each covariate has two categories, either the value is more or less than 0 (denoted by blue and red lines respectively). The tree is expanded from the full population to the subgroups defined by V1's categories. The subgroups are further divided into the subgroups defined by all the category combinations of V1 and V2. This division procedure is consecutively conducted to form subgroups until all the category combinations of the four covariates are considered. Each layer shows the 95\% confidence intervals (C.I.) of treatment effect differences for the associated subgroups where the scales are different layer by layer. The purple horizontal lines placed in the middle of C.I. have a length proportional to the weight of subgroup sample size over the full population.
+
+\begin{figure}%[htp]
+\begin{center}
+	\includegraphics[width=0.4\textwidth]{tree_plot3.pdf} \\
+		\caption{The tree plot of treatment effect difference for subgroups defined by all category combinations of the covariates V1, V2, V6 and V7. Each layer shows the 95\% C.I. of treatment effect differences for the associated subgroups. The purple horizontal lines placed in the middle of C.I. have a length proportional to the weight of subgroup sample size over the full population.}\label{fig:TP}
+\end{center}
+\end{figure}
+
+TP matches all the criteria. It is obviously fit to $\bf C1$, $\bf C2$ due to the graphical designs. In addition, the subgroups at the same layer are formed by all possible set operations (intersection and complement) on the categories of the associate covariates. This feature is similar to VD and TP thus holds $\bf C3$ for displaying the information of all subgroup overlaps. Moreover, examining heterogeneity in treatment effect differences of subgroup can be fulfilled for $\bf C4$. Similar to FP, the assessment demands drawing an auxiliary horizonal line with the y-coordinate at the overall effect size for each layer and then seeing whether there is any C.I. not crossing the line. As to $\bf C5$, TP can certainly address more than 10 subgroups. Note that the number of subgroups also dependeds on how many covariates are involved and ategories each covariate has.
+
+A few features of TP are worthily pointed out. First, it provides information of the interval estimation for subgroup effect sizes. Second, it is possible to consider few more categories for each covariate by adjusting TP for visualizing all the effect sizes for associated subgroups. But, ideally and relatively this may need to reduce the number of covariates. Third, the maximum number of the covariates considered could be up to 5, otherwise a visualization problem may emerge. Fourth, TP has the same issue about cut-off points for a continuous covariate as LP and BC.
+
+\subsection{Galbraith plot}
+A Galbraith plot (GP) \cite{Galbraith:88a, Galbraith:88b} is an alternative or supplementary to a forest plot for examining heterogeneity of studies or subgroups in meta analysis.  Its variant shown in Figure \ref{fig:GP} exhibits the estimation of treatment effect sizes for subgroups defined by certain ranges of five covariates. The horizontal axis represents inverse standard error (1/SE), and the vertical axis stands for standardized estimates (namely a subgroup's effect size divided by the corresponding standard error).   The gray band serves to examine heterogeneity if one standardized estimate is located outside the band. The central line points to the standardised estimate of the average effect size for the full population. Moreover, the arc is for effect sizes. A subgroup's effect size is registered at the red icon projected on the arc by the line from the origin through the corresponding point.
+
+\begin{figure}
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{Gabraith_plot_old4.pdf} \\
+		\caption{A Galbraith plot across subgroups and their complements defined by certain ranges of  V1, V2, V6, V7 and V10.}\label{fig:GP}
+\end{center}
+\end{figure}
+
+
+ The result of GP's graphical assessment is satisfactory. Obviously, it holds $\bf C1$, $\bf C4$ and $\bf C5$ because of its design features. It can handle much more subgroups and is also helpful to detect an outlier. GP only partially fit to the criterion $\bf C2$. It only indirectly reveals information of subgroup sample sizes through individual standard errors. Moreover, it does not hold $\bf C3$. Like FP, it is not possible to know subgroup overlap information.
+
+ The GP approach here has one difference in the central line location from the initial design. The line location is originally set at the average estimate of subgroup effects, where the pooled average with the proportion $\frac{1/SE_i}{\sum_i 1/SE_i}$ as a weight for Subgroup $i$. The average estimate is obtained by fixed-effect models, where the truth effect sizes of all subgroups are assumed. % -- this may not be correct in practice.
+
+\subsection{$\text{L'Abb}\acute{\text{e}}$ plot}
+
+
+A $\text{L'Abb}\acute{\text{e}}$ plot (LAP) \cite{LAbbe:88} is a variant of scatter plots which is feasible and useful for examining heterogeneity in meta analysis. The graphical design is originally for binary outcome data to represent a risk ratio, or a risk difference or an odd ratio between treatment and control arms. Here, we extend this graphical technique to the case of continuous outcomes and also modify points to rectangles in Figure \ref{fig:LAP}.
+
+As seen, each subgroup has one estimate locating at a position where its x-coordinate and y-coordinate correspond to the estimates of the control/treatment arms, respectively. The width and the height of a rectangle (corresponding to a subgroup) respectively indicate the sample sizes of control group and treatment group. Each rectangle has a vertical segment from its center to the diagonal dashed line which represents no effect size within a subgroup. The colour of a segment signals whether the corresponding treatment effect difference is positive (blue)or negative (red) or not. All the mean estimates of subgroup effect sizes are written in the left-top and right-bottom corners of the picture. Furthermore, the solid line parallel to the diagonal line has a y-intercept at the overall effect sizes. % in the full population.
+
+The other vertical purple dashed lines which start on the diagonal line have the lengths same as the upper or lower bound of 95\% C.I. of the effect sizes for subgroups.  If one vertical purple dashed line does not cross the solid line, heterogeneity in subgroup effect sizes may occur. This design feature is similar to that in FP.
+
+\begin{figure}
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{LAbbe_plot_old3.pdf} \\
+		\caption{A $\text{L'Abb}\acute{\text{e}}$ plot for the subgroups and their complements defined by certain ranges of  V1, V2, V6, V7 and V10. }\label{fig:LAP}
+\end{center}
+\end{figure}
+
+AP shares the same graphical assessment results with FP. It satisfies four criteria except $\bf C3$ for not showing subgroup overlap information.
+Two characteristics should be noted. First, it may handle as many subgroups as FP does. But, it may be difficult to recognize subgroups and its corresponding rectangles if more subgroups have close effect estimates for treatment and control groups. Second, it does not fully reveal information about interval estimation of subgroup effect sizes and of treatment effects in treatment/control subgroups.
+
+\subsection{STEPP approaches}	
+
+The subpopulation treatment effect pattern plot (STEPP) method \cite{bonetti:04, bonetti:00} is of some publicity in breast cancer recently. It is a non-parametric method mainly for examining whether treatment-covariate interactions exist. %mention survival data?
+
+ In Figure \ref{fig:STEPP}, we adopted the slide-window fashion of STEPP to represent the estimation of treatment effect differences in overlapping subgroups defined by the covariate V1. Each subgroup has a sample size of around 100 and also has about 80$\%$ being overlapped with the neighboring subgroups. The band bounded by the blue dashed lines is constructed for 95$\%$ simultaneous confidence interval (C.I.). The other band bounded by the orange dashed lines is builded based on individual 95$\%$ C.I.. The red line is formed by connecting the mean point estimates of treatment effect difference for all individual subgroups. The green represent the mean point estimate of treatment effect difference for the full patient population. It is noted that the point estimates (including mean, the boundaries by 95$\%$ simultaneous C.I. and individual C.I. ) are marked in the middle of the interval defined as a subgroup. If the green line does not lie in the region formed by simultaneous confidence intervals, it may reveal interaction exists.
+
+\begin{figure}%[htp]
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{STEPP_new3.pdf} \\
+		\caption{The STEPP plot of overlapping subgroups defined by V1. Each subgroup has a sample size of around 100 ($N_{11} \approx 100$) and is controlled to have about 80$\%$ ($N_{12}$/$N_{11}$) being overlapped with the neighboring subgroups.}\label{fig:STEPP}
+\end{center}
+\end{figure}
+
+STEPP has a reasonable graphical assessment result -- it matches $\bf{C1}, \bf{C4}$ and $\bf{C5}$. Here the information about subgroup overlap and sample sizes is only annotated in the figure and the caption. It is noted that the number of subgroups depends on the sample size of subgroups and the overlap proportions.
+
+This approach has two flaws. One is a strong restriction on considering one continuous covariate. It is difficult to extend the application for more continuous covariates. Another is no clear idea about how large a subgroup should be and how much it should overlap with the immediate subgroups. Perhaps, practitioners need to conduct sensitivity analysis for a range of the sample sizes for subgroup and overlap. The analysis results are further compared with the graphical results by using MFPI algorithm \cite{Royston:04, Sauerbrei:07} or non-parametric methods (such as Gaussion processes\cite{Rasmussen:06}), where a functional curve of the covariate on treatment effect is interpolated.
+
+%Another issue is about the interaction between the treatment and a continuous covariate where subgroups are formed based on the selection of cut-off points. Since most of the techniques discussed here are suitable for categorical covariates, the selection could lead to the sensitivity on the results of graphical displays or testing.
+
+\section{Improvement and alternatives}
+
+The merits and demerits of the nine methods were assessed previously based on the criteria. In this section we focuses on improving several potential improvement on level plots, Venn diagrams, forest plots, Galbraith plots and $\text{L'Abb}\acute{\text{e}}$ plots.
+
+\subsection{Improved Level plot}
+
+Figure \ref{fig:levelplot2} shows the improved LP which inherits all merits and improves the second demerit of the previous LP (Figure \ref{fig:old_LP}). The size of the colored square inside each cell represents the proportion of the subgroup sample size to the full population. This new design feature allows one to recognise the subgroup sample sizes more easily. But, it may be difficult to see what color in the square, particularly in the case of marginal subgroup sample sizes.
+
+\begin{figure}%[htp]
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{level_plot_new3.pdf} \\
+		\caption{The improved levelplot of treatment effect difference across all 9 mutually disjoint subgroups defined by covariates V1 and V2.}%
+        \label{fig:levelplot2}
+\end{center}
+\end{figure}
+
+\subsection{Improved Venn Diagrams}
+Figure \ref{fig:venn_subfig1} and \ref{fig:venn_subfig2} are the improved VD considering five and three subgroups, respectively. Both represent the treatment effect differences of subgroups by coloring the corresponding regions, where the magnitude is shown in the right color bar. This feature thus enables improved VD to satisfy the criterion $\bf C1$. But it does not serve for detecting heterogeneity in subgroup effect sizes because the overall effect size is not given.
+
+As seen in Figure \ref{fig:venn_subfig1}, using five ellipses for representing all possible subgroups (formed through intersection and complement) is visually appropriate. Other patterns (such as polygons \cite{Chow:05b, Rodgers:10}) can be also applied but the visualisations may not be easily understood, comparable with that shown in Figure \ref{fig:venn_subfig1}.
+
+Figure \ref{fig:venn_subfig2} further considers area-proportional methods, where each subgroup's representative region area is proportional to the respective sample size proportion. Here we employed the simple algorithm mentioned in \cite{Micallef:14}. The region areas in this instance only approximately correspond the sample size proportions. This is possibly because of the limited degrees of freedom for circles.
+
+In fact, accurate displays of the region areas for the sample size proportions is achievable. Recently Micallef and Rodgers develops an algorithm which can produce an accurate area-proportional Venn diagrams using ellipses \cite{Micallef:14}. However, their algorithm is somewhat sophisticated and only can work on three sets.
+
+
+\begin{figure}%[htp]
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{new_venndiag5_1.pdf} \\
+		\caption{The improved Venn diagram of 5 sets defined by specified ranges of V1, V2, V6, V7 and V10.}%
+        \label{fig:venn_subfig1}
+\end{center}
+\end{figure}
+
+\begin{figure}%[htp]
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{venndiag3_AP_new3.pdf} \\
+		\caption{The approximate area-proportional Venn diagram of 3 sets defined by specified ranges of V1, V2 and V6.}%
+        \label{fig:venn_subfig2}
+\end{center}
+\end{figure}
+
+
+\subsection{Alternatives}
+
+Forest plots, Galbraith plots and $\text{L'Abb}\acute{\text{e}}$ plots share the same failing on incapacity of showing subgroup overlaps. One potential improvement measure is to consider combing relevant figures about overlap information.
+
+\begin{figure*}
+\centering
+\subfloat[Subfigure 1 list of figures text][Line plots with bidirectional arrowed curves for relative overlap proportions for pairwise subgroups.]{
+\includegraphics[width=0.4\textwidth]{bidirectional_overlap_prop.pdf}
+\label{fig:subfig1}}
+\qquad
+\subfloat[Subfigure 2 list of figures text][Line plots with unidirectional arrowed lines for relative overlap proportions for pairwise subgroups.]{
+\includegraphics[width=0.4\textwidth]{two_unidirectional_overlap_plot.pdf}
+\label{fig:subfig2}}\\
+\subfloat[Subfigure 3 list of figures text][Line plots for relative overlap proportions for pairwise subgroups.]{
+\includegraphics[width=0.4\textwidth]{network_overlap_plot.pdf}
+\label{fig:subfig3}}
+\qquad
+\subfloat[Subfigure 4 list of figures text][Matrix plots for relative overlap proportions for pairwise subgroups.]{
+\includegraphics[width=0.4\textwidth]{matrix_overlap_plot1.pdf}
+\label{fig:subfig4}}\\
+\subfloat[Subfigure 5 list of figures text][Line plots 1 for dissimilarity measures]{
+\includegraphics[width=0.4\textwidth]{dissimilarity_distance_style1_1.pdf}
+\label{fig:subfig5}}
+\qquad
+\subfloat[Subfigure 6 list of figures text][Line plots 2 for dissimilarity measures]{
+\includegraphics[width=0.4\textwidth]{dissimilarity_distance_style1_3.pdf}
+\label{fig:subfig6}}
+\caption{Plots for subgroup information about pairwise overlap proportions or dissimilarity measure.}
+\label{fig:overlap}
+\end{figure*}
+
+The plots shown in Figure \ref{fig:overlap} exhibits certain subgroup information about pairwise overlap proportion or similarity measure. Figures \ref{fig:subfig1}-\ref{fig:subfig4} show pairwise relative overlap proportions\footnote{For any two subgroup $A$ and $B$, their pairwise relative overlap proportions are defined as $|A\cap B|/ |A|$ and $|A\cap B|/ |B|$. Their baseline subgroups are $A$ and $B$, respectively.}, where different colors show the range of overlap magnitude.
+
+More specifically, Figure \ref{fig:subfig1} is a plot with bidirectional arrowed curves. The position of arrows additionally indicates the information about how to calculate the relative overlap proportions. The subgroup labelled at the starting point is used as a baseline for calculating the relative proportion of the overlapping subgroup. Figure \ref{fig:subfig2} is a variant of Figure \ref{fig:subfig1}. Two identical sets of subgroup labels around two circles and each shows relative overlapping proportions with unidirectional arrowed colored lines. Unlike Figure \ref{fig:subfig1}, the arrow position is now near the end. The subgroup labelled at the starting point of the arrowed line is a baseline subgroup for the relative overlapping proportion. Figure \ref{fig:subfig3} is a plot merely using colored lines connecting subgroup labels on different levels. A subgroup label on the higher level is the baseline subgroup for the relative overlapping proportions with its counterpart on the lower level. Figure \ref{fig:subfig4} is a matrix plot for relative overlapping proportions of pairwise subgroups. The row subgroup label indexes what subgroup should be as a baseline and the sizes of the circles signal overlap magnitude. There are two variants of Figure \ref{fig:subfig2} and \ref{fig:subfig4} shown in appendix.
+
+Both Figures \ref{fig:subfig5}-\ref{fig:subfig6} show dissimilarity distance, which is defined by one minus a relative overlap proportion. Each line of Figure \ref{fig:subfig5} shows the dissimilarity distance of a subgroup with the others, where the baseline subgroup is denoted by a green triangle. The red crosses below a line are located according to actual dissimilarity distances; the red subgroup labels above each line segment correspond to the red crosses, where the labels are placed by order based on their actual dissimilarity distances. Figure \ref{fig:subfig6} shows the same information as Figure \ref{fig:subfig5}, where the colored lines represent subgroups. There are one variant of Figure \ref{fig:subfig5} shown in appendix.  Note that for each subgroup we do not show its dissimilarity distance to itself and its complement.
+
+
+%comment about the merits and demerits of the plot.
+%Instead of relative overlap proportions the above plot can display subgroup overlap information by Jaccard index, namely $|A\cap B|/ |A\cup B|$ for any sets $A, %B$. The graphical display is thus simplified due to no need to show repetitive Jaccard index. However, this measure can lead to miss some information whether a %subgroup contains the others or not.
+
+\begin{figure}
+\begin{center}
+		\includegraphics[width=0.4\textwidth]{forestplot_plus_matrixplot_new2.pdf} \\
+		\caption{An improved forest plot across subgroups, the complements and the associated treatment/control groups. The subgroups are defined by certain ranges of  V1-V10. }\label{fig:combination}
+\end{center}
+\end{figure}
+
+
+ For our improvement task, we present an example of the combined forest plot and matrix plot for ten subgroups and their respective complements in Figure \ref{fig:combination}. As seen, the visualisation is appropriate and the outcome displays subgroup overlap information. Similarly, an improved version of GP and AP can be created by attaching any plots in Figure \ref{fig:overlap}. While the hybrid graphical representation improves the original demerits, it may lead to a recognition issue upon the large number of subgroups. %We leave more discussions in the conclusion section.
+
+ Another alternative to improve FP, GP and LAP is simply to combine a VD. This measure can provide full overlap information of all subgroups. But, regarding effective visualisation one may only consider a small number of subgroups (up to five) for the hybrid graphical representation.
+
+ Incidentally, Jaccard index, namely $|A\cap B|/ |A\cup B|$ for any sets $A, B$, can replace pairwise overlap proportions for subgroup overlap information. The graphical display is thus simplified due to not showing repetitive Jaccard indexes. However, this measure may lead to missing some information about whether a subgroup contains the others or not.
+
+\section{Discussions and conclusion}
+
+\begin{table*}
+\small\sf\centering
+\caption{The assessment summary of graphical techniques for subgroup problems. The assessment criteria are: 1. whether to display effect sizes for subgroups ($\bf C1$); 2. whether to show subgroup sample sizes ($\bf C2$); 3. whether to exhibit all subgroup overlap information ($\bf C3$); 4. whether to serve for detecting heterogeneity in subgroup effect sizes (or the treatment-covariate interaction) ($\bf C4$); 5. whether is available for the large number of subgroups (more than 10) ($\bf C5$). The subscript * of some graphical approaches denote they have been improved. The exclamation mark denotes notable points. }\label{T1}
+\begin{tabular}{cccccccccc}
+\toprule
+Criterion& LP*         & CP          & VD*         & BC          &TP           & FP*            & GP*            & LAP*          & STEPP \\
+\midrule
+$\bf C1$ &$\surd$      & $\surd$     & $\surd$*    & $\surd$     & $\surd$     & $\surd$        & $\surd$        & $\surd$       & $\surd$     \\
+$\bf C2$ &$\surd$*     &             & $\surd$     & $\surd$     & $\surd$     & $\surd$        & $\triangle$    & $\surd$       &             \\
+$\bf C3$ &$\triangle$  &             & $\surd$     & $\triangle$ & $\surd$     & $\triangle$*(!)&$\triangle$*(!) &$\triangle$*(!)&             \\
+$\bf C4$ &             &             &             &             & $\surd$     & $\surd$        & $\surd$        & $\surd$       & $\surd$     \\
+$\bf C5$ &  $\surd$    & $\surd$     & $\surd$(!)  & $\surd$     & $\surd$(!)  & $\surd$        & $\surd$        & $\surd$       & $\surd$ \\
+\bottomrule
+\end{tabular}\\[10pt]
+\end{table*}
+
+
+\begin{table*}
+\small\sf\centering
+\caption{The feature summary of graphical techniques for subgroup problems. The abbeviation (Info. for C.I.) means whether there is available information to build a confidence interval; T/C effect means the approach presents the treatment effects of treatment/control arms; $N_c$ means the number of covariates for considerations; P.O./A.O. stands for pairwise overlay or all overlap for subgroups. The subscript * of some graphical approaches denote they have been improved. The exclamation mark denotes notable points.} \label{T2}
+\begin{tabular}{cccccccccc}
+\toprule
+Feature               & LP*       & CP          & VD*      & BC       &TP           & FP*          & GP*             & LAP*           & STEPP \\
+\midrule
+Info. for C.I.        &           &             &          & $\surd$  & $\surd$     & $\surd$      & $\surd$         & $\surd$        & $\surd$     \\
+T/C effect            &           &             &          &          &             & $\surd$      &                 & $\surd$        &       \\
+P.O./A.O.             &  P.O.     & P.O.        &  A.O.    & P.O.     & A.O.        & P.O.(!)      & P.O.(!)         & P.O.(!)        & P.O. \\
+$N_c$                 &  2        & 2           & 2--5     & 2--5     & 1--5        & 1--40        & 1--1000         & 1--40          & 1 \\
+\bottomrule
+\end{tabular}\\[10pt]
+\end{table*}
+
+We have exploited several graphical approaches and assessed their characteristics for subgroup problems. We also attempted to improve some methods by mitigating their demerits. The assessment and characteristics of the improved approaches are summarised in Table \ref{T1} and \ref{T2}.
+
+The general summary is as follows: all the nine graphical techniques satisfy the primary criterion about displaying subgroup effect sizes. Except LP, CP and VD, the rest displays or has information to construct confidence intervals, specifically BC and GP exhibit standard errors for estimators. Furthermore, only two (FP and LAP) further provide subgroup effect sizes for the treatment and control arms. In terms of the second criterion, the majority of the approaches provide a visual display on subgroup sample sizes. Only GP indirectly show the information through the standard error of estimators.
+
+The third criterion is fully and partially hold for all apart from CP and STEPP. VD and TP show the overlay of all subgroups. But, the remaining approaches only display the overlay for pairwise subgroups. Six graphical displays featuring different types of lines and design characteristics were invented for improving FP, GP and LAP by showing pairwise subgroup overlay. It is noted that when the number of subgroup is small (say, up to five), the improved FP, GP and LAP can combine a VD for displaying subgroup overlap completely.
+
+The capacity of detecting heterogeneity or interaction is equipped in the last five approaches. These five commonly feature a reference line corresponding to the overall effect size. Their judgement of heterogeneity generally depends on the distances between the line and subgroups or the location of the line within the confidence band. As for the last criterion, all the techniques can be available to handle more than ten subgroups. In particular, VD and TP practically can deal with only up to five sets (considered for overlap) for effective visualisation. Even an area-proportional VD can afford merely three sets. Moreover, six approaches are able to regard a small number of covariates for subgroups. Only FP, GP and LAP can deal with a middle or large number.
+
+%In terms of assessment results, the approaches can be ranked in order of the number of the criteria being satisfied. The improved FP, GP and AP are ranked as the best; BC, TP, the improved LP and VD are the second; STEPP is the third; and CP is the least. However, considering the characteristics
+
+%In brief, the level plots and the bar charts we have tried only work for mutually disjoint subgroups defined by two or few more covariates on specific ranges. The contour plot on the plane of two covariates are particularly useful if the data point's covariate values are regularly distributed on the pre-specified grid. However, in practice the dataset does not have such a characteristics. The Venn diagrams enable to encompass all overlapping and disjoint subgroups defined by set operations on a few sets. In addition to the accurate area-proportional method using ellipses only works up to three sets. The binary tree plot works for considering 4 or 5 covariates with two categories but few more covariates or categories may cause a visual recognition problem. The STEPP plot which is able to investigate interaction between covariates and treatments has a strong constraint on the subgroups overlapped with the neighboring two defined by one covariate. Forest plots provide more information about subgroups (the subgroup number can be larger), but this graphical technique does not provide any information of correlation between estimates or overlapping proportions. Galbraith plots and $\text{L'Abb}\acute{\text{e}}$ plots both are the variants of scatter plots and able to handle hundred or thousand subgroups and also inform of standard error of estimators for effect sizes or subgroup sample sizes. Nevertheless, both have the same problem as forest plots do.
+
+%The improved forest plots, Galbraith plots and $\text{L'Abb}\acute{\text{e}}$ are mainly set to inform of overlapped proportions. Those plots not only serve to examine heterogeneity in subgroups, but also provide information about overlapping proportions of pairwise subgroups. Most of the improved plots show point estimates of effect sizes by colors or points'coordinates. Only forest and Galbraith plots use interval estimates for individual subgroup effect sizes and overall effect sizes, respectively. However, the attached plots featuring bidirectional arrowed curves, unidirectional arrowed lines, segments and matrix plots have a visual difficulty problem when subgroup numbers is larger.
+
+Although the assessment suggests the superiority of certain approaches, in practice, the decision of a technique for use still demands considerations of different characteristics and circumstances. For example, CP can be particularly useful when a data set is large and the distributions of two covariates considered are roughly uniform; LP and BC may be easier for some audience to understand subgroup information due to their simple design; FP and LAP which show the treatment effects of two comparative intervention arms can be used in the exploratory setting, especially to prevent the subgroup with adverse effects in both interventions despite the positive effect size; STEPP could be suitable for investigating the treatment-covariate interaction or exploring potential subgroups with positive findings if the covariate of interest is confirmed to impact treatment effect by other studies.
+
+%unadjust p-value, descriptive tool, no test results
+%large subgroup number, credibility levels of effect sizes, in the exploratory setting, separate representation or interactive graph
+%small subgroup number,  in confirmatory setting, adjust%STEPP is better used as a tool for confirmatory subgroup analysis because some studies may report the covariate to be %investigated probably affect treatment effect.
+
+%Undoubtedly, there are limits to the graphical approaches discussed in this paper.
+% Several design issues are worthily mentioned for further discussions.
+The approaches are worthy of further discussions in design and use issues. One is that the results of statistical inference based on hypothesis testing are not informed. Our primary goal is to visualise essential subgroup information including effect sizes and sample sizes. We consider all the approaches mainly serve as graphical descriptive tools, and therefore there is no need for adding the testing results for initial subgroup analyses. As a result, the presence of the positive and adverse findings in subgroups with small sample sizes only brings concerns to practitioners for further investigations. %This consideration certainly has its own ground and we do not doubt the usefulness. However,
+
+Another issue is correlation between categorical variables considered. The graphical approaches are not designed to address the problem that the correlation causes, where estimates from mutually disjoint subgroups can be correlated and thereby this may lead to confounding interpretations of subgroup effect sizes. This can be solved by using the standardization technique \cite{Varadhan:14} in epidemiology before utilising the graphical approaches. %An alternative method is simply to produce a separate matrix plot about how much proportion subgroups overlap. It is noted that this consideration also allows one to regards more subgroups.  should be addressed before interpreting the display result
+
+In addition, the focus on developing a two-dimensional graphical display can be contentious. We virtually undoubt the usefulness of other graphical alternatives including a three-dimension graphical display and interactive graphics. As a matter of fact, such graphics can only exert their maximal utility on a computer interface through manipulating displays. After all, medical reports still heavily rely on two-dimension graphical representation for information communication. It is therefore necessary to develop an effective visualisation technique despite limited display space.     %In this case it may be better to consider separate plots. three-dimension plot and interactive plot, argue why to use two-dimension plot The fourth is the restriction on two-dimension graphical display.  %some practitioners may argue why we concentrate on two-dimension graphical displays.
+
+\begin{acks}
+\end{acks}
+
+\begin{thebibliography}{99}
+
+\bibitem[Alosh(2016)]{Alosh:16}
+		Alosh~M, Huque~M, Bretz~F, et al. (2016)
+		\textit{Tutorial on statistical considerations on subgroup analysis in confirmatory clinical trials},
+		\newblock \emph{Statistics in Medicine}, \textbf{7}(8), 889--894.	
+
+\bibitem[Ondra(2016)]{Ondra:16}
+		Ondra~T, Dmitrienko~A, Friede~T, et al. (2016)
+		\textit{Methods for identification and confirmation of targeted subgroups in clinical trials: a systematic review.},
+		\newblock \emph{Journal of Biopharmaceutical Statistics}, \textbf{26}(1), 99--119.	
+
+\bibitem[Dmitrienko(2016)]{Dmitrienko:16}
+		Dmitrienko~A, Muysers~C, Fritsch~A, et al. (2016)
+		\textit{General guidance on exploratory and confirmatory subgroup in late-stage clinical trials.},
+		\newblock \emph{Journal of Biopharmaceutical Statistics}, \textbf{26}(1), 71--98.	
+
+\bibitem[Swinton(2009)]{swinton:09}
+        Swinton~J (2009)
+        \textit{Venn diagrams in R with the Vennerable package},
+        \newblock\url{https://r-forge.r-project.org/scm/viewvc.php/*checkout*/pkg/Vennerable/inst/doc/Venn.pdf?revision=58&root=vennerable}.
+
+\bibitem[Heberle(2015)]{heberle:15}
+         Heberle~H, Meirelles~GV, Silva~FRD, et al. (2015)
+         \textit{InteractiVenn: a web-based tool for the analysis of sets through Venn diagrams},
+
+\bibitem[Cuzick(2005)]{Cuzick:05}
+		Cuzick~J (2005)
+		\textit{Forest plots and the interpretation of subgroups},
+		\newblock \emph{The Lancet}, \textbf{365}(9467), 1308.
+         \newblock \emph{BMC Bioinformatics}, \textbf{16}(169).
+
+\bibitem[Ried(2006)]{Ried:06}
+		Ried~K (2006)
+		\textit{Interpreting and understanding meta-analysis graphs - A practical guide},
+		\newblock \emph{Australian Family Physician }, \textbf{35}(8), 635-638
+
+\bibitem[Galbraith(1988a)]{Galbraith:88a}
+		Galbraith~RF (1988)
+		\textit{Graphical display of estimates having differing standard errors},
+		\newblock \emph{Technometrics}, \textbf{30}(3), 271--281.	
+
+\bibitem[Galbraith(1988b)]{Galbraith:88b}
+		Galbraith~RF (1988)
+		\textit{ A note on graphical presentation of estimated odds ratios from several clinical trials},
+		\newblock \emph{Statistics in Medicine}, \textbf{7}(8), 889--894.	
+
+\bibitem[LAbbe(1988)]{LAbbe:88}
+         L'Abbe~KA, Detsky~AS and O'Rourke~K (1988)
+         \textit{Meta-analysis in clinical research},
+         \newblock \emph{Annals of Internal Medicine}, textbf{102}(2), 224-233.
+
+\bibitem[Bonetti(2004)]{bonetti:04}
+		Bonetti~M and Gelber~R (2004)
+		\textit{Patterns of treatment effects in subsets of patients in clinical trials},
+		\newblock \emph{Biostatistics}, \textbf{5}(3), 465--481.	
+
+\bibitem[Bonetti(2000)]{bonetti:00}
+		Bonetti~M and Gelber~R (2000)
+		\textit{A graphical method to assess treatment–covariate interactions using the Cox model on subsets of the data},
+		\newblock \emph{Statistics in Medicine}, \textbf{19}, 2595--2609.
+
+\bibitem[Royston(2004)]{Royston:04}
+         Royston~P and Sauerbrei~W. (2004),
+         \textit{A new approach to modelling interactions between treatment and continuous covariates in clinical trials by using fractional polynomials.},
+         \newblock \emph{Statistics in Medicine}, \textbf{23}(16), 2509-2525.
+
+\bibitem[Sauerbrei(2007)]{Sauerbrei:07}
+          Sauerbrei~W, Royston~P and Zapien~K (2007),
+         \textit{Detecting an interaction between treatment and a continuous covariate: A comparison of two approaches.},
+         \newblock \emph{Computational Statistics \& Data Analysis}, \textbf{51}, 4054-4063.
+
+\bibitem[Rasmussen(2006)]{Rasmussen:06}
+         Rasmussen~CE, Williams~CKI. (2006),
+         \textit{ Gaussian Processes for Machine Learning.}, MIT Press.
+
+\bibitem[Chow(2005)]{Chow:05b}
+         Chow~S and Rodgers~P (2005)
+         \textit{Towards a general solution to drawing area-proptional Euler diagrams},
+         \newblock \emph{Electronic Notes in Theoretical Computer Science}, \textbf{134},3--18.
+
+\bibitem[Rodgers(2010)]{Rodgers:10}
+         Rodgers~P, Flower~J, Stapleton~G, et al. (2010)
+         \textit{Drawing area-proportionalVenn-3 diagramswith convex polygons},
+         \newblock In \emph{Diagrammatic Representation and Inference (Diagrams), LNCS}, \textbf{6170} Springer, Berlin, Germany, (Portland, OR, USA),54--68.
+
+\bibitem[Micallef(2014)]{Micallef:14}
+         Micallef~L and Rodgers~P (2014)
+         \textit{eulerAPE: Drawing area-proportional 3 Venn diagrms using ellipses},
+         \newblock \emph{PLoS ONE 9}, 7 (2014), e101717. doi:10.1371/journal.pone.0101717
+
+\bibitem[Varadhan(2014)]{Varadhan:14}
+          Varadhan~R and Wang~SJ (2014),
+         \textit{Strandardization for subgroup analysis in randomized controlled trials.},
+         \newblock \emph{Journal of Biopharmaceutical Statistics}, \textbf{24}(1), 154-167.
+
+
+\end{thebibliography}
+
+\appendix
+\begin{figure*}
+\centering
+\subfloat[Subfigure 1 list of figures text][The unidirectional lines plot with different types for relative overlap proportions for pairwise subgroups.]{
+\includegraphics[width=0.4\textwidth]{two_unidirectional_overlap_plot2.pdf}
+\label{fig:app1}}
+\qquad
+\subfloat[Subfigure 2 list of figures text][The matrix plot for relative overlap proportions for pairwise subgroups.]{
+\includegraphics[width=0.4\textwidth]{matrix_overlap_plot2.pdf}
+\label{fig:app2}}
+\\
+\subfloat[Subfigure 3 list of figures text][An alternative of Line plots 1 for dissimilarity measures.]{
+\includegraphics[width=0.4\textwidth]{dissimilarity_distance_style1_4.pdf}
+\label{fig:app3}}
+\end{figure*}
+\end{document}
