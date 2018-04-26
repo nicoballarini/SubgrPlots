@@ -305,12 +305,15 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
   treatment.df.model = loess(treatment.mean ~ x*y, data = treatment.df,
                              span = para.plot[1], degree = para.plot[2])
 
-  xy.fit.pt = expand.grid(list(x = seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1]),
-                               y = seq(min(y) + 0.01, max(y) - 0.01, len = n.grid[2])))
-  # min.x = min(dat[,covari.sel[1]]);max.x = max(dat[,covari.sel[1]])
-  # min.y = min(dat[,covari.sel[2]]);max.y = max(dat[,covari.sel[2]])
-  # xy.fit.pt = expand.grid(list(x = seq(min.x, max.x, len = n.grid[1]),
-  #                              y = seq(min.y, max.y, len = n.grid[2])))
+
+  min.x = min(dat[,covari.sel[1]]);max.x = max(dat[,covari.sel[1]])
+  min.y = min(dat[,covari.sel[2]]);max.y = max(dat[,covari.sel[2]])
+  min.x = min(x);max.x = max(x)
+  min.y = min(y);max.y = max(y)
+
+
+  xy.fit.pt = expand.grid(list(x = seq(min.x, max.x, len = n.grid[1]),
+                               y = seq(min.y, max.y, len = n.grid[2])))
   treatment.df.model.fit = predict(treatment.df.model, newdata = xy.fit.pt)
 
   # image(seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1]),
@@ -324,10 +327,10 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
 
 
 
-  x.range = seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1])
-  y.range = seq(min(y) + 0.01, max(y) - 0.01, len = n.grid[2])
-  # x.range = seq(min.x, max.x, len = n.grid[1])
-  # y.range = seq(min.y, max.y, len = n.grid[2])
+  # x.range = seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1])
+  # y.range = seq(min(y) + 0.01, max(y) - 0.01, len = n.grid[2])
+  x.range = seq(min.x, max.x, len = n.grid[1])
+  y.range = seq(min.y, max.y, len = n.grid[2])
 
   if (spiral){
     fxy = function(xx, yy, zz, id = 1, factor = 1, length = 0.5){
@@ -476,7 +479,8 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
     par(mar=c(5,4,4,2))
     plot(x.range, y.range, type = "n",
          yaxs="i",xaxs="i",
-         xlim = range(x.range), ylim = range(y.range),
+         xlim = c(min.x, max.x),
+         ylim = c(min.y, max.y),
          xlab = lab.vars[1], ylab = lab.vars[2],
          main = title, #sub = subtitle,
          col  = "gray80",

@@ -53,7 +53,7 @@ ggplot(dt) +
   geom_bar(aes(x=AgeWeight, y = (Total), fill = "No"), color = "black", width = 1, stat = "identity") +
   geom_bar(aes(x=AgeWeight, y = (Yes), fill = "Yes"), color = "black", width = 1, stat = "identity") +
   scale_y_continuous(trans = "sqrt", limits = c(0,200)) +
-  scale_fill_manual(values = c("Yes"="#faa8d2","No"="#80b1d3")) +
+  scale_fill_manual(values = c("Yes"="#80b1d3","No"="#faa8d2")) +
   coord_polar(start = pi/4) +
   labs(x = "", y = "", fill = "2-year survival") +
   theme_bw(base_size = 12) +
@@ -93,7 +93,7 @@ ggplot(dt) +
   geom_bar(aes(x=AgeWeight, y = (Total), fill = "No"), color = "black", width = 1, stat = "identity") +
   geom_bar(aes(x=AgeWeight, y = (Yes), fill = "Yes"), color = "black", width = 1, stat = "identity") +
   scale_y_continuous(trans = "sqrt", limits = c(0,150)) +
-  scale_fill_manual(values = c("Yes"="#faa8d2","No"="#80b1d3")) +
+  scale_fill_manual(values = c("Yes"="#80b1d3","No"="#faa8d2")) +
   coord_polar(start = pi/4) +
   labs(x = "", y = "", fill = "2-year survival") +
   theme_bw(base_size = 12) +

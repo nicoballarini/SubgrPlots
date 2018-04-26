@@ -282,12 +282,13 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
        main = title,
        sub = subtitle,
        cex.main = font.size[1],
-       cex.lab = font.size[2],
+       cex.lab =  font.size[2],
        cex.sub =  font.size[3])
 
   by. = ceiling(diff((range(cutpoint.covar1[[1]])))/10)
   # axis(side = 1, at = c(1 : n.subgrp.covar1), labels = round(cutpoint.covar1[[1]],1), tck = -0.01)
-  axis(side = 1, at = seq(1, n.subgrp.covar1, by=by.), cex.axis = font.size[4], #tck = -0.01,
+  axis(side = 1, at = seq(1, n.subgrp.covar1, by=by.),
+       cex.axis = font.size[2], #tck = -0.01,
        labels = round(cutpoint.covar1[[1]],1)[seq(1, n.subgrp.covar1, by=by.)])
   lines(c(1 : n.subgrp.covar1), treatment.upper, lty = 2, lwd = 1.5, col = "blue" )
   lines(c(1 : n.subgrp.covar1), treatment.lower, lty = 2, lwd = 1.5, col = "blue" )
@@ -300,5 +301,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   lab.bd.ic = paste("Boundaries for", (1-alpha) * 100, "% C.I.")
   lab.bd.sic = paste("Boundaries for", (1-alpha) * 100, "% S.C.I.")
   legend(xy.current.pos[1], xy.current.pos[4], c("Overlapping Subgroup Mean", "Overall Mean ", lab.bd.sic, lab.bd.ic), lty = c(1, 1, 2, 2),
-         col = c("red", "green", "blue", "orange" ), bty = "n", cex = font.size[4])
+         col = c("red", "green", "blue", "orange" ), bty = "n",
+         cex = font.size[4])
 }
