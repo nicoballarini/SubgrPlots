@@ -33,7 +33,6 @@ covari.sel = 8
 trt.sel = 3
 resp.sel = c(1, 2)
 outcome.type = "survival"
-setup.ss = c(35,40)
 alpha = 0.05
 font.size = c(0.9, 1, 0.8, 0.75)
 title = main.title
@@ -44,10 +43,10 @@ subtitle = sub.title
 ## 9. stepp Plot -----------------------------------------------------------
 pdf("paper/figures/09-stepp-plot.pdf", width = 7, height = 7)
 var.sel = 8
+setup.ss = c(30, 40);
 main.title = paste("STEPP for treatment effect size of overlapping subgroups \n defined by", names(dat)[var.sel]);
 lab.y.title = paste("Treatment effect diffence");
 sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2], "; overlap sizes are set to ", setup.ss[1], ")" )
-setup.ss = c(35, 40);
 plot_stepp(dat,
           covari.sel = 8,
           trt.sel = 3,

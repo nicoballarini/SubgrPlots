@@ -15,7 +15,7 @@ This project contains the article and code for:
 
 
 Dependencies:
-  diagram  polyclip  shape   spatstat  sp  UpSetR VennDiagram
+  diagram  polyclip  shape   spatstat  sp  UpSetR VennDiagram grid
   colorspace  survRM2   dplyr   geoR  gridBase  pacman  alluvial  circlize
 Optional:
 rgeos for the proportional area venn diagram (This package requires additional dev libraries which may not be trivial to install)

@@ -25,7 +25,8 @@ library(survival)
 library(ggplot2)
 library(dplyr)
 library(UpSetR)
-library(SubgroUpSetR)
+library(grid)
+# library(SubgroUpSetR)
 # Load the data to be used
 data(prca)
 dat <- prca

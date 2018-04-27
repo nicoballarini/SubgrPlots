@@ -17,6 +17,7 @@ Imports:
     diagram,
     dplyr,
     geoR,
+    grid,
     gridBase,
     pacman,
     polyclip,
