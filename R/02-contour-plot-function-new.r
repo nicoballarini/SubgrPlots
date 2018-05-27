@@ -16,17 +16,26 @@
 #' @param covari.sel:     a vector of indices of the two covariates
 #' @param trt.sel:        a variable index specifying the treatment code
 #' @param resp.sel:       a variable index specifying the response variable
-#' @param outcome.type:   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#' @param setup.ss:       a vector specifying approximate subgroup sample size and neibourghing subgroup overlap sample size. The first and the second elements
-#'                  are for overlap sizes and subgroup sample sizes over the first covariate; the third and thefourth are for further divided overlap sizes
-#'                  and subgroup sample sizes over the second covariate.
-#' @param n.grid:         a vector specifying the numbers of the grid points on the x-axis and the y-axis respectively.
-#' @param brk.es:         a vector specifying the break points on effect size, where each range partition is given with a different colour on points.
-#' @param para.plot:      a vector specifying the parameters of the contour plot; the first value is for controlling the degree of smoothing; the second
-#'                  is for controlling the degree of the polynomials fitting to be used (normally 1 or 2); the third is for controlling the number of
-#'                  contour lines.
-#' @param font.size:      a vector specifying the size of labels and text; the first element is for the main title, the second is for for x-axis and y-axis
-#'                  labels; the third is for the subtitle; the fourth is for the text in the legend; the fifth is for the labels on contour lines.
+#' @param outcome.type:   a string specifying the type of the response variable,
+#'  it can be "continuous", or "binary" or  "survival".
+#' @param setup.ss:       a vector specifying approximate subgroup sample size
+#' and neibourghing subgroup overlap sample size. The first and the second elements
+#' are for overlap sizes and subgroup sample sizes over the first covariate;
+#' the third and thefourth are for further divided overlap sizes
+#' and subgroup sample sizes over the second covariate.
+#' @param n.grid:         a vector specifying the numbers of the grid points on
+#'  the x-axis and the y-axis respectively.
+#' @param brk.es:         a vector specifying the break points on effect size,
+#' where each range partition is given with a different colour on points.
+#' @param para.plot:      a vector specifying the parameters of the contour plot;
+#'  the first value is for controlling the degree of smoothing; the second
+#'                  is for controlling the degree of the polynomials fitting to
+#'                  be used (normally 1 or 2); the third is for controlling the
+#'                  number of contour lines.
+#' @param font.size:      a vector specifying the size of labels and text; the
+#'  first element is for the main title, the second is for for x-axis and y-axis
+#'  labels; the third is for the subtitle; the fourth is for the text in the
+#'  legend; the fifth is for the labels on contour lines.
 #' @param title:          a string specifying the main title.
 #' @param subtitle:       strings specifying the subtitle
 #
@@ -40,11 +49,10 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 18/08/17
 #' @export
-plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3),
-                        para.plot = c(0.35, 2, 20), font.size = c(1.5,1.2,1,0.85,0.8), title = NULL, subtitle = NULL)
-{
-
-
+plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
+                         setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3),
+                         para.plot = c(0.35, 2, 20), font.size = c(1.5,1.2,1,0.85,0.8),
+                         title = NULL, subtitle = NULL) {
 ################################################ 0. argument validity check  #################################################################
 
   if (missing(dat)) stop("Data have not been inputed!")

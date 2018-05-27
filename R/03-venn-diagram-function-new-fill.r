@@ -20,7 +20,22 @@
 #'               the sixth is for the unit label on the y axis.
 #'@param title:        a string specifying the main title.
 #'@param strip:        a string specifying the title of the colour strip.
-#
+#'
+#'@examples
+#'library(SubgrPlots)
+#'data(prca)
+#'plot_venn_fill(prca,
+#'         covari.sel = c(5, 7, 4),#vars,
+#'         cat.sel = c(2,2,2),
+#'         trt.sel = 3,
+#'         resp.sel = c(1,2),
+#'         outcome.type = "survival",
+#'         outside.area = FALSE,
+#'         range.strip = c(-3, 3),
+#'         n.brk = 31,
+#'         n.brk.axis = 7,
+#'         font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6),
+#'         strip = paste("Treatment effect size (log hazard ratio)"), palette = "hcl")
 # eg.1          main.title = paste("Treatment effect sizes across subgroups (N = 1000)", sep = "");
 #               strip.title = paste("Treatment effect size");
 #               vd(dat = dat, covari.sel = c(4, 5, 10), cat.sel = c(1, 2, 2), trt.sel = 2, resp.sel = 1, outcome.type = "continuous",

@@ -219,32 +219,8 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
         surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
-        difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
-        if (length(which(data.subgrp[[i]]$trt == 0)) == 0){
-          treatment.C.mean[i] = NA
-          treatment.C.upper[i] = NA
-          treatment.C.lower[i] = NA
-        }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
-          model.sum = summary(model.int)
-          treatment.C.mean[i] = difference$surv[1]
-          treatment.C.upper[i] = difference$upper[1]
-          treatment.C.lower[i] = difference$lower[1]
-        }
-
-        if (length(which(data.subgrp[[i]]$trt == 1)) == 0){
-          treatment.T.mean[i] = NA
-          treatment.T.upper[i] = NA
-          treatment.T.lower[i] = NA
-        }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
-          model.sum = summary(model.int)
-          treatment.T.mean[i] =  difference$surv[2]
-          treatment.T.upper[i] = difference$upper[2]
-          treatment.T.lower[i] = difference$lower[2]
-        }
       }
     }
   }
@@ -328,33 +304,6 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
-
-      surv.fit = survfit(Surv(time, status) ~ trt, data = dat)
-      difference <- summary(surv.fit, time=time)
-      plot.data[[n.subgrp.tol + 1]] = surv.fit
-      if (length(which(dat$trt == 0)) == 0){
-        treatment.C.mean[n.subgrp.tol + 1] = NA
-        treatment.C.upper[n.subgrp.tol + 1] = NA
-        treatment.C.lower[n.subgrp.tol + 1] = NA
-      }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
-        model.sum = summary(model.int)
-        treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
-        treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
-        treatment.C.lower[n.subgrp.tol + 1] = difference$lower[1]
-      }
-
-      if (length(which(dat$trt == 1)) == 0){
-        treatment.T.mean[n.subgrp.tol + 1] = NA
-        treatment.T.upper[n.subgrp.tol + 1] = NA
-        treatment.T.lower[n.subgrp.tol + 1] = NA
-      }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
-        model.sum = summary(model.int)
-        treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
-        treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
-        treatment.T.lower[n.subgrp.tol + 1] = difference$lower[2]
-      }
     }
   }
 
@@ -370,8 +319,8 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   lab.subgrp[n.subgrp.tol + 1] = "Full"
 
   est.range = cbind.data.frame(treatment.mean, treatment.lower, treatment.upper )
-  est.C.range = cbind.data.frame(treatment.C.mean, treatment.C.lower, treatment.C.upper )
-  est.T.range = cbind.data.frame(treatment.T.mean, treatment.T.lower, treatment.T.upper )
+  # est.C.range = cbind.data.frame(treatment.C.mean, treatment.C.lower, treatment.C.upper )
+  # est.T.range = cbind.data.frame(treatment.T.mean, treatment.T.lower, treatment.T.upper )
   dimnames(est.range) = list(c(lab.subgrp), c("mean", "lower","upper") )
 
   ################################################ 2. create plots #################################################################
@@ -418,7 +367,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
 
 
-
+  max.time = max(dat$time)
   circos.par(cell.padding = c(0,0,0,0), track.margin = c(0, 0))
   if (equal.width){
     circos.initialize(lab.subgrp[1:n.subgrp.tol],

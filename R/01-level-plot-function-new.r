@@ -465,7 +465,7 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
   if(show.overall){
     cat("Overall Treatment effect is:",
         overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")")
+        overall.treatment.lower,";",overall.treatment.upper,") \n")
     grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
     grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
     grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")

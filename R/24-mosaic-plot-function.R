@@ -897,6 +897,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
+    library(survival)
   }
 
   # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
@@ -1111,7 +1112,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  # library(grid)
+  library(grid)
   par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
@@ -1308,7 +1309,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
   if(show.overall){
     cat("Overall Treatment effect is:",
         overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")")
+        overall.treatment.lower,";",overall.treatment.upper,")\n")
     grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
     grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
     grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")

@@ -43,4 +43,20 @@ of the union of all the considered subgroups or not. In addition, this function 
 algorithms for displaying two or three set. In addition, the function uses log odd ratio and log hazard ratio for displaying
 subgroup effect sizes in binary and survival data, respectively.
 }
+\examples{
+library(SubgrPlots)
+data(prca)
+plot_venn_fill(prca,
+covari.sel = c(5, 7, 4),#vars,
+cat.sel = c(2,2,2),
+trt.sel = 3,
+resp.sel = c(1,2),
+outcome.type = "survival",
+outside.area = FALSE,
+range.strip = c(-3, 3),
+n.brk = 31,
+n.brk.axis = 7,
+font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6),
+strip = paste("Treatment effect size (log hazard ratio)"), palette = "hcl")
+}
 

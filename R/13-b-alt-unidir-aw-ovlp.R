@@ -155,7 +155,7 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
                            to   = c(x2[st[i]], y2[st[i]]),
                            curve = para[1], arr.pos = para[2], arr.adj = para[3],
                            arr.type = "curved",
-                           arr.col = col.idx[i], lcol =col.idx[i])
+                           arr.col = col.idx.rev[i], lcol =col.idx.rev[i])
     }
 
     circle1 = list()
