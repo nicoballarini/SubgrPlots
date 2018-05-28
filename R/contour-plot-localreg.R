@@ -50,12 +50,14 @@
 # revised by Yi-Da Chiu, 18/08/17
 #' @export
 plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-                         setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3),
-                         para.plot = c(0.35, 2, 20),
-                         font.size = c(1.5,1.2,1,0.85,0.8),
-                         unit.x = 1, unit.y = 1,
-                         title = NULL, subtitle = NULL, effect = "HR", show.overall = TRUE,
-                         strip = "Effect Size") {
+                                  setup.ss, n.grid = c(41, 41),
+                                  brk.es = c(0, 1, 2, 3),
+                                  n.brk.axis = 3,
+                                  para.plot = c(0.35, 2, 20),
+                                  font.size = c(1.5,1.2,1,0.85,0.8),
+                                  unit.x = 1, unit.y = 1,
+                                  title = NULL, subtitle = NULL, effect = "HR", show.overall = TRUE,
+                                  strip = "Effect Size") {
   ################################################ 0. argument validity check  #################################################################
 
   # if (missing(dat)) stop("Data have not been inputed!")
@@ -178,8 +180,6 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
 
   lab.vars = names(dat)[covari.sel]
 
-  brk.es = seq(-3,3,length.out = 31)
-  n.brk.axis =  7
   col.power = 0.75
   col.vec = rev(colorspace::diverge_hcl(n = length(brk.es)-1,
                                         c = 100, l = c(50,90),
@@ -190,7 +190,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
   layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
   par(mar=c(5,4,4,2))
   plot(grid.xy[,1], grid.xy[,2], type = "n",
-       yaxs="i", xaxs="i",
+       # yaxs="i", xaxs="i",
        xlim = range(grid.pts.x),
        ylim = range(grid.pts.y),
        xlab = lab.vars[1], ylab = lab.vars[2],
@@ -200,8 +200,8 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
        cex.lab  = font.size[2],
        cex.axis = font.size[2],
        cex.sub  = font.size[3])
-  breaks = pretty(c(-3,3), length(cols))
-  breaks.axis = pretty(c(-3,3), n.brk.axis)
+  breaks = seq(min(brk.es),max(brk.es),      length.out = length(cols)+1)
+  breaks.axis = seq(min(brk.es),max(brk.es), length.out = n.brk.axis)
   .filled.contour(grid.pts.x, grid.pts.y, z.matrix,
                   levels = breaks,
                   col = rev(cols))

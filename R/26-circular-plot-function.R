@@ -1018,7 +1018,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ii = 0
   var.ind = unlist(lapply(1:n.covari, function(x) rep(x, each = length(cats.var[[x]]))))
-  var.change = var.ind - lag(var.ind)
+  var.change = var.ind - dplyr::lag(var.ind)
   # var.change[1] = 1
   var.change[1] = 0
   for (i in 1:n.covari){
@@ -1090,7 +1090,7 @@ plot_circle_std_by <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   lab.vars = names(dat)[covari.sel]                          # set the names of the covariates which relates to the defined subgroup; if a covariate
   # are considered for multiple times, we make their name identical. (otherwise, the resulsting
   # names are like var, var.1, var.2 and so on.)
-
+time = 50
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
     names(dat)[resp.sel] = "resp"                        # rename the response variable
@@ -1482,7 +1482,7 @@ plot_circle_std_by <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ii = 0
   var.ind = unlist(lapply(1:n.covari, function(x) rep(x, each = length(cats.var[[x]]))))
-  var.change = var.ind - lag(var.ind)
+  var.change = var.ind - dplyr::lag(var.ind)
   # var.change[1] = 1
   var.change[1] = 0
   i=1
