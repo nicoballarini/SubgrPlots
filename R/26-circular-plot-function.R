@@ -472,7 +472,11 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   #                      transparency = 0.5)
   # cols = c('#e41a1c','#984ea3','#984ea3','#a6d854')
   # cols = col_mat[1:4]
-  col_mat = rep(add_transparency(c('#fee391','#fec44f','#fe9929'), 0.5),
+  # col_mat = rep(add_transparency(c('#fee391','#fec44f','#fe9929'), 0.5),
+  #               (dim(mat)[1]*dim(mat)[2])/3)
+  # dim(col_mat) = dim(mat)  # to make sure it is a matrix
+
+  col_mat = rep(add_transparency(c('#7FDBFF','#fec44f','#51D88A'), 0.5),
                 (dim(mat)[1]*dim(mat)[2])/3)
   dim(col_mat) = dim(mat)  # to make sure it is a matrix
 
@@ -1470,7 +1474,7 @@ time = 50
                  panel.fun = function(x, y) {
                    circos.text(CELL_META$xcenter,
                                CELL_META$cell.ylim[2] + uy(3, "mm"),
-                               CELL_META$sector.index)
+                               CELL_META$sector.index, cex = font.size[3])
                  })
     for (i in 1:(length(lab.subgrp)-1)){
       factor = lab.subgrp[i]
@@ -1494,8 +1498,7 @@ time = 50
       # ss.subgrp
       # for (i in 1:1){
       #   for (j in 1:1){
-      suppressMessages(
-      create_circos()) ## Create base plot without links
+      suppressMessages(create_circos()) ## Create base plot without links
       ii = ii + 1
       for (k in (ii):(n.subgrp.tol)){
         if(mat2[ii, k] == 0) next()

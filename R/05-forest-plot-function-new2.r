@@ -42,7 +42,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
                       title = NULL, lab.x = NULL, time = mean(dat[,resp.sel[1]]),
                       pdf = FALSE, KM = FALSE, show.km.axis = TRUE,
-                      widths = c(1,1,1))
+                      widths = c(1,1,1), max.time = NULL, n.brk = 10)
 {
 
   ################################################ 0. argument validity check  #################################################################
@@ -409,7 +409,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   ## 2.1 First panel: Table -----
   vp <- viewport(x = 0.5, width=0.99, height=1)
   pushViewport(vp)
-  vp <- viewport(x = 0, y = 0.08, width=widhts[1], height=0.85, just = c("left", "bottom"))
+  vp <- viewport(x = 0, y = 0.10, width=widhts[1], height=0.83, just = c("left", "bottom"))
   pushViewport(vp)
 
   ss.subgrp.list = vector()
@@ -444,7 +444,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   ## 2.2 Second panel: Forest plot -----
-  vp <- viewport(x = widhts[1], y = 0.85+0.08, width=widhts[2], height=0.07, just = c("left", "bottom"))
+  vp <- viewport(x = widhts[1], y = 0.83+0.10, width=widhts[2], height=0.07, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(title[[2]], gp = gpar(cex = font.size[1]))
   upViewport()
@@ -454,7 +454,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   upViewport()
 
 
-  vp <- viewport(x = widhts[1], y = 0.08, width=widhts[2], height=0.85, just = c("left", "bottom"))
+  vp <- viewport(x = widhts[1], y = 0.10, width=widhts[2], height=0.83, just = c("left", "bottom"))
   pushViewport(vp)
   # grid.rect()
   vp <- viewport(x = 0.05, y = 0, width=0.9, height=1, just = c("left", "bottom"))
@@ -480,7 +480,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   h = size.shape[2]
   ww = range((line.x.range[1, ]-x.lim.min)/x.lim.diff)
   w = (ww[2]-ww[1])/2*w
-  w2 = 0.33/0.85*w*h
+  w2 = 0.33/0.83*w*h
   # w2 = w*h/3
   i=1
   for (i in 1:(n.subgrp.tol)){
@@ -509,7 +509,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   ## 2.3 Third panel: Forest plot -----
-  vp <- viewport(x = widhts[1]+widhts[2], y = 0.85+0.08, width=widhts[3], height=0.07, just = c("left", "bottom"))
+  vp <- viewport(x = widhts[1]+widhts[2], y = 0.83+0.10, width=widhts[3], height=0.07, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(title[[3]], gp = gpar(cex = font.size[1]))
   upViewport()
@@ -520,7 +520,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   if (KM==FALSE){
-    vp <- viewport(x =  widhts[1]+widhts[2], y = 0.08, width=widhts[3], height=0.85, just = c("left", "bottom"))
+    vp <- viewport(x =  widhts[1]+widhts[2], y = 0.10, width=widhts[3], height=0.83, just = c("left", "bottom"))
     pushViewport(vp)
     # grid.rect()
     vp <- viewport(x = 0.3, y = 1-vertical_width/2, width=0.4, height=vertical_width/2, just = c("left", "bottom"))
@@ -606,7 +606,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
   ### Kaplan-Meier curves
   if (KM==TRUE){
-    vp <- viewport(x = widhts[1]+widhts[2], y = 0.08, width=widhts[3], height=0.85, just = c("left", "bottom"))
+    vp <- viewport(x = widhts[1]+widhts[2], y = 0.10, width=widhts[3], height=0.83, just = c("left", "bottom"))
     pushViewport(vp)
     # grid.rect()
 
@@ -614,12 +614,12 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     pushViewport(vp)
     grid.legend(labels = c("Treatment", "Control"), nrow = 1, do.lines = TRUE,
                 hgap = unit(0.5, "lines"),
-                gp=gpar(col = rev(col.line), cex = font.size[2]*0.6))
+                gp=gpar(col = rev(col.line), cex = font.size[2]))
     upViewport()
 
     vp <- viewport(x = 0.05, y = 0, width=0.9, height=1, just = c("left", "bottom"))
     pushViewport(vp)
-    max.time = round(max(dat$time), 0)
+    if (is.null(max.time)) max.time = round(max(dat$time), 0)
     for (i in 1:n.subgrp.tol){
       vp <- viewport(x = 0, y = 1 - vertical_width/2 - vertical_width*(i+1), width=1, height = vertical_width, just = c("left", "bottom"))
       pushViewport(vp)
@@ -663,8 +663,8 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     # vp <- viewport(x = 0, y = 0.1, width=1, height = 0.8, just = c("left", "bottom"))
     # pushViewport(vp)
 
-    grid.xaxis(at = seq(0,1, len = 9),
-               label = seq(0,max.time, len = 9),
+    grid.xaxis(at = seq(0, 1, len = n.brk),
+               label = seq(0, max.time, len = n.brk),
                gp = gpar(cex = font.size[3]),
                edits = gEdit(gPath="labels", rot=0))
     upViewport(3)

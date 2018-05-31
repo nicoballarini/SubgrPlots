@@ -244,6 +244,7 @@ EffectPlotsPlot_t <- function(effdat, att, att_color, outcome.type,  text_scale)
     y_axis_tick_label_scale <- text_scale
     intersection_size_number_scale <- text_scale
   }
+  bottom_margin <- (-1)*0.65
   upper_xlim <- as.numeric((max(effdat$x) + 1))
   plot_lims <- as.numeric(0:upper_xlim)
   effdat %>%
@@ -255,35 +256,27 @@ EffectPlotsPlot_t <- function(effdat, att, att_color, outcome.type,  text_scale)
     theme_bw() + ylab(yaxis) +
     scale_x_discrete(limits = plot_lims, expand = c(0,0)) +
     scale_y_continuous(limits = c(ymin, ymax), position = "right", expand = c(0,0)) +
-    theme(#plot.margin = unit(c(0,0,0,0), "lines"),
-      panel.background = element_rect(fill = "white"),
-      # plot.background = element_rect(fill = "darkgreen"),
-      legend.position = "none",
-      # legend.justification = c(0,0),
-      # axis.title.x.top = element_text(vjust = -0.8),
-      axis.line.x = element_line(),
-      axis.ticks.y = element_blank(),
-      axis.text.y  = element_blank(),
-      axis.title.y = element_blank(),
-      panel.border = element_blank(),
-      axis.title.x.top = element_text(vjust = -0.8, size = 8.3*y_axis_title_scale),
-      axis.text.x.top  = element_text(vjust =  0.3, size = 7*y_axis_tick_label_scale),
-      axis.text.x = element_text(colour = "gray0",
-                                 size = 7*name_size_scale, hjust = 0.4),
-      panel.grid.minor = element_blank(),
-                      panel.grid.major = element_blank()) +
-                coord_flip() +
-                geom_hline(yintercept = 0, colour = "gray50", linetype = 2) +
-                geom_hline(yintercept = effdat$mean[1], colour = "gray50", linetype = 1) +
-                geom_point(data = effdat, aes_string(x="x", y="mean"),
-                           colour = "gray20",
-                           shape = 15) +
-                geom_errorbar(data = effdat, aes_string(x="x",
-                                                        ymax = "upper",
-                                                        ymin = "lower"),
-                              width = 0.1,
-                              colour = "gray20")+
-                labs(color = NULL)
+    theme(panel.background = element_rect(fill = "white"),
+          legend.position = "none",
+          axis.line.x = element_line(),
+          axis.ticks.y = element_blank(),
+          axis.text.y  = element_blank(),
+          axis.title.y = element_blank(),
+          panel.border = element_blank(),
+          # plot.margin = unit(c(0.5, bottom_margin, 0.5,0.5), "lines"),
+          plot.margin = unit(c(0.5, 0.5, 0.5,0.5), "lines"),
+          axis.title.x.top = element_text(vjust =  0,   size = 8.3*y_axis_title_scale),
+          axis.text.x.top  = element_text(vjust =  0.3, colour = "gray0", size = 7*y_axis_tick_label_scale),
+          # axis.text.x = element_text(colour = "gray0", size = 7*name_size_scale, hjust = 0.4),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank()) +
+    coord_flip() +
+    geom_hline(yintercept = 0, colour = "gray50", linetype = 2) +
+    geom_hline(yintercept = effdat$mean[1], colour = "gray50", linetype = 1) +
+    geom_point(data = effdat, aes_string(x="x", y="mean"), colour = "gray20", shape = 15) +
+    geom_errorbar(data = effdat, aes_string(x="x", ymax = "upper", ymin = "lower"),
+                  width = 0.1, colour = "gray20") +
+    labs(color = NULL)
 
   effects <- suppressWarnings(ggplotGrob(ggobj))
   return(effects)

@@ -3,6 +3,7 @@
 export(alluvial_new)
 export(alluvial_transposed)
 export(contourplt_new)
+export(contourplt_new2)
 export(plot_barchart)
 export(plot_circle)
 export(plot_contour)

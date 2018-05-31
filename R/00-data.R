@@ -4,9 +4,14 @@
 #' Sylvan B. Green. The choice of treatment for cancer patients based on
 #' covariate information: application to prostate cancer.
 #' Bulletin du Cancer, 67:477–490, 1980.
-#' The data was downloaded from the web \url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}
-#' and modified to keep relevant variables.
+#' The data can be found in the web:
+#' \url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}.
+#' We downloaded it form the supplementary material of Rosenkranz (2016)
+#' https://onlinelibrary.wiley.com/doi/full/10.1002/bimj.201500147
+#'  modified the data to keep relevant variables, and created categorical
+#'  ones from age and weight.
 #'
+#' @usage data(prca)
 #' @format A data frame with 475 rows and 15 variables:
 #' \describe{
 #'   \item{survtime}{survival time. Response variable}
@@ -26,10 +31,15 @@
 #'   \item{weight_group}{weight categorized in 3 groups}
 #' }
 #' @source \url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}
+#' @source \url{https://onlinelibrary.wiley.com/doi/full/10.1002/bimj.201500147}
 "prca"
 
 # head(prca0)
-#
+# library(haven)
+# data_url = "https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fbimj.201500147&attachmentId=2173117089"
+# temp <- tempfile()
+# download.file(data_url,temp)
+# prca0 <- read_sas(unz(temp, "adv_prostate_ca.sas7bdat"))
 # # Select the variables that we use for the analysis
 # prca <- prca0[,c("SURVTIME","CENS","RX","BM","HX","STAGE","PF", "AGE", "WT")]
 # head(prca) # Preview dataset

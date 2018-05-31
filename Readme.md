@@ -5,7 +5,7 @@ This project contains the article and code for:
 
 * `/man` Documentation files for functions
 
-* `/paper` Has contains R code, figures, tables for the manuscript
+* `/paper` Contains R code and figures for the manuscript
 
   * `/figures` a folder containing the plots for the manuscript
   
@@ -13,9 +13,23 @@ This project contains the article and code for:
   
 * `/R`  R Code for functions in the package
 
-
 Dependencies:
-  diagram  polyclip  shape   spatstat  sp  UpSetR VennDiagram grid
-  colorspace  survRM2   dplyr   geoR  gridBase  pacman  alluvial  circlize
+    alluvial,
+    circlize,
+    colorspace,
+    diagram,
+    dplyr,
+    geoR,
+    grid,
+    gridBase,
+    pacman,
+    polyclip,
+    shape,
+    sp,
+    spatstat,
+    survRM2,
+    survival,
+    UpSetR,
+    VennDiagram
 Optional:
-rgeos for the proportional area venn diagram (This package requires additional dev libraries which may not be trivial to install)
+    rgeos for the proportional area venn diagram (This package requires additional dev libraries which may not be trivial to install)

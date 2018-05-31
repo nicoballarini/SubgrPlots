@@ -1285,11 +1285,17 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
   ##########  produce legend -------------------------------------------------------------
-  vp <- viewport(x = 0.75, width = 0.25, height = 1,just = c("left", "center"))
+  # vp <- viewport(x = mar.width/2, y = mar.width, width = mar.width/2,  height = 0.9,just = c("left", "bottom"))
+  # pushViewport(vp)
+  # vp <- viewport(x = 0, height = 1 - 4*sep.,just = c("left", "center"))
+  # pushViewport(vp)
+
+
+  vp <- viewport(x = 0.75, width = 0.25, height = 0.9, y = mar.width, just = c("left", "bottom"))
   pushViewport(vp)
   # grid.rect()
 
-  vp <- viewport(x = 0.4, width = 0.2, height = 1 - 4*sep., just = c("left", "center"))
+  vp <- viewport(x = 0.4,  width = 0.20, height = 1 - 4*sep., just = c("left", "center"))
   pushViewport(vp)
 
   col.bar.height = 1/ length(col.vec)

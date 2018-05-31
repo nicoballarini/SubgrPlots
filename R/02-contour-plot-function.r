@@ -116,8 +116,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
 
   ################################################ 1. create subgroup data  #################################################################
 
-  require(geoR)
-  library(survival)
 
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -127,6 +125,7 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
+    library(survival)
   }
 
 
@@ -404,7 +403,14 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
       if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
       col.point = col.vec
     }
-
+    if (palette == "hcl"){
+      col.vec = rev(colorspace::diverge_hcl(n = length(brk.es)-1,
+                                            # h = c(218, 0),
+                                            c = 100, l = c(50,90),
+                                            power = col.power))
+      if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
+      col.point = col.vec
+    }
 
 
 

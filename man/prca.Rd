@@ -24,17 +24,23 @@
 }}
 \source{
 \url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}
+
+\url{https://onlinelibrary.wiley.com/doi/full/10.1002/bimj.201500147}
 }
 \usage{
-prca
+data(prca)
 }
 \description{
 a prostate carcinoma dataset from a clinical trial David P. Byar and
 Sylvan B. Green. The choice of treatment for cancer patients based on
 covariate information: application to prostate cancer.
 Bulletin du Cancer, 67:477–490, 1980.
-The data was downloaded from the web \url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}
-and modified to keep relevant variables.
+The data can be found in the web:
+\url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}.
+We downloaded it form the supplementary material of Rosenkranz (2016)
+https://onlinelibrary.wiley.com/doi/full/10.1002/bimj.201500147
+ modified the data to keep relevant variables, and created categorical
+ ones from age and weight.
 }
 \keyword{datasets}
 

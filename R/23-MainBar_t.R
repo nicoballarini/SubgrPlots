@@ -61,7 +61,7 @@ Counter <- function(data, num_sets, start_col, name_of_sets, nintersections, mba
 
 ## Generate main bar plot
 Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_angles,
-                          ebar, ylabel, ymax, scale_intersections, text_scale, attribute_plots, 
+                          ebar, ylabel, ymax, scale_intersections, text_scale, attribute_plots,
                           treatment_var, fill.trt){
 
   bottom_margin <- (-1)*0.65
@@ -69,7 +69,7 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
   if(is.null(attribute_plots) == FALSE){
     bottom_margin <- (-1)*0.45
   }
-  
+
   if(length(text_scale) > 1 && length(text_scale) <= 6){
     y_axis_title_scale <- text_scale[1]
     y_axis_tick_label_scale <- text_scale[2]
@@ -80,7 +80,7 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
     y_axis_tick_label_scale <- text_scale
     intersection_size_number_scale <- text_scale
   }
-  
+
   if(is.null(Q) == F){
     inter_data <- Q
     if(nrow(inter_data) != 0){
@@ -89,7 +89,7 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
     else{inter_data <- NULL}
   }
   else{inter_data <- NULL}
-  
+
   if(is.null(ebar) == F){
     elem_data <- ebar
     if(nrow(elem_data) != 0){
@@ -98,15 +98,15 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
     else{elem_data <- NULL}
   }
   else{elem_data <- NULL}
-  Main_bar_data_all = data.frame(x= sort(unique(Main_bar_data$x)), 
+  Main_bar_data_all = data.frame(x= sort(unique(Main_bar_data$x)),
                                  freq = tapply(Main_bar_data$freq, Main_bar_data$x, FUN=sum))
-  
+
   #ten_perc creates appropriate space above highest bar so number doesnt get cut off
   if(is.null(ymax) == T){
   ten_perc <- ((max(Main_bar_data$freq)) * 0.1)
   ymax <- max(Main_bar_data_all$freq) + ten_perc
   }
-  
+
   if(ylabel == "Intersection Size" && scale_intersections != "identity"){
     ylabel <- paste("Intersection Size", paste0("( ", scale_intersections, " )"))
   }
@@ -118,18 +118,18 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
     Main_bar_data$freq <- round(log10(Main_bar_data$freq), 2)
     ymax <- log10(ymax)
   }
-  
+
   # Main_bar_data %>%
   #   group_by(bm, pf) %>%
   #   summarize(freq = sum(freq))
-  
+
   Main_bar_data %>%
     mutate(x = max(x)-x+1) -> Main_bar_data
   Main_bar_data_all %>%
     mutate(x = max(x)-x+1) -> Main_bar_data_all
   # aggregate(Main_bar_data$freq, by=list(x=Main_bar_data$x), FUN=sum)
-  
-  
+
+
   if (fill.trt){
     Main_bar_plot <- (ggplot(data = Main_bar_data, aes_string(x = "x", y = "freq"))
                       + geom_bar(aes(fill = as.factor(trt)), stat = "identity", width = 0.6)
@@ -139,29 +139,28 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
                       + geom_bar(stat = "identity", width = 0.6))
   }
   Main_bar_plot <- (Main_bar_plot
-                    + scale_y_continuous(trans = scale_intersections, 
-                                         position = "right", 
+                    + scale_y_continuous(trans = scale_intersections,
+                                         position = "right",
                                          expand = c(0,0))
-                    + coord_flip(ylim = c(0,ymax*1.05))
-                    # + ylim(0, ymax)
-                    + scale_x_continuous(limits = c(0,(max(Main_bar_data$x)+1 )), 
+                    + coord_flip(ylim = c(0,ymax*1.15))
+                    + scale_x_continuous(limits = c(0,(max(Main_bar_data$x)+1)),
                                          expand = c(0,0),
                                          breaks = NULL)
                     + xlab(NULL) + ylab(ylabel)
                     + labs(title = NULL, fill = "Treatment")
-                    + theme(#plot.margin = unit(c(0,0,0,0), "lines"),
+                    + theme(
                         axis.line.x = element_line(),
                         panel.background = element_rect(fill = "white"),
-                        # plot.background = element_rect(fill = "red"),
                         legend.position = "none",
-                        axis.title.x.top = element_text(vjust = -0.8, size = 8.3*y_axis_title_scale),
-                        axis.text.x.top  = element_text(vjust =  0.3, size = 7*y_axis_tick_label_scale),
-                        plot.margin = unit(c(0.5,bottom_margin,0.5,0.5), "lines"),
+                        axis.title.x.top = element_text(vjust =  0, size = 8.3*y_axis_title_scale),
+                        axis.text.x.top  = element_text(vjust =  0.3, size = 7*y_axis_tick_label_scale, color = "gray0"),
+                        # plot.margin = unit(c(0.5,bottom_margin,0.5,0.5), "lines"),
+                        plot.margin = unit(c(0.5,0.5,0.5,0.5), "lines"),
                         panel.border = element_blank()))
-  
+
   if((show_num == "yes") || (show_num == "Yes")){
     Main_bar_plot <- (Main_bar_plot + geom_text(data = Main_bar_data_all,
-                                                aes_string(x = "x",label = "freq"), 
+                                                aes_string(x = "x",label = "freq"),
                                                 size = 2.2*intersection_size_number_scale, hjust = 0,
                                                 angle = number_angles))
   }
@@ -217,11 +216,11 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
                                                  position = position_jitter(width = 0.2, height = 0.2),
                                                  colour = pElemDat$color, size = 2, shape = 17))
   }
-  
-  # Main_bar_plot <- (Main_bar_plot 
+
+  # Main_bar_plot <- (Main_bar_plot
   #                   + geom_hline(yintercept = 0, color = "gray0")
   #                   + geom_vline(xintercept = 0, color = "gray0"))
-  
+
   Main_bar_plot <- ggplotGrob(Main_bar_plot)
   return(Main_bar_plot)
 }

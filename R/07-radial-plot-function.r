@@ -570,7 +570,6 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
   ################################################ 1. create subgroup data  #################################################################
 
-  library(survival)
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]                                                # set the names of the covariates which relates to the defined subgroup; if a covariate
@@ -585,6 +584,7 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
+    library(survival)
   }
 
 
@@ -757,10 +757,8 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
                    lambda_c=unlist(lambda_c),
                    lambda = unlist(lambda)))
   ################################################ 2. produce a graph  #################################################################
-
-
-  par(mar = c(4,5,2,2))
-
+  # par(mar = c(4,5,2,2))
+  par(mar = c(4,4,1,1))
   if (is.null(range.v)){
     y.lim.max = ceiling(max(zscore, na.rm = TRUE))
     y.lim.min = floor(min(zscore, na.rm = TRUE))
@@ -772,11 +770,14 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   }
 
   plot(0, 0, type='n',
-       xlab = lab.xy[[1]], ylab = lab.xy[[2]],
+       xlab = "",#lab.xy[[1]],
+       ylab = "",#lab.xy[[2]],
        ylim = c(y.lim.min, y.lim.max),
        xlim = c(0,13.5), xaxt = 'n', yaxt='n', xaxs = "i",
        main = title, cex.lab = font.size[2], cex.main = font.size[1])
 
+  mtext(text =  lab.xy[[2]], side = 2, line = 2)
+  mtext(text =  lab.xy[[1]], side = 1, line = 3)
 
   expand.fac = 2                                                                  # the expansion factor of the original unit on the x-axis
   length.unit.xaxis = 5                                                            # the number of the units on the x-axis
@@ -1093,7 +1094,6 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
   ################################################ 1. create subgroup data  #################################################################
 
-  library(survival)
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]                                                # set the names of the covariates which relates to the defined subgroup; if a covariate
@@ -1108,6 +1108,7 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
+    library(survival)
   }
 
   for (i in 1: length(covari.sel)){

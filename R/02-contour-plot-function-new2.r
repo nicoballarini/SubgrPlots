@@ -116,9 +116,6 @@ contourplt_new2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, se
 
   ################################################ 1. create subgroup data  #################################################################
 
-  require(geoR)
-  library(survival)
-
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
     names(dat)[resp.sel] = "resp"                        # rename the response variable
@@ -127,6 +124,7 @@ contourplt_new2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, se
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
+    library(survival)
   }
 
 
@@ -482,7 +480,11 @@ contourplt_new2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, se
     }
 
     layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
-    par(mar=c(5,4,4,2))
+    if (is.null(title)){
+      par(mar=c(4,4,2,1))
+    } else{
+      par(mar=c(4,4,4,1))
+    }
     axis.sep = 0
     plot(x.range, y.range, type = "n",
          # yaxs="s", xaxs="s",
@@ -501,9 +503,14 @@ contourplt_new2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, se
     .filled.contour(x.range, y.range, treatment.df.model.fit,
                     levels = breaks,
                     col = rev(cols))
-    if(show.points) points(dat[, covari.sel], cex = 0.5)
+    if(show.points) points(dat[, covari.sel], cex = 0.5, lwd = 0.1)
     # box()
-    par(mar=c(5,2, 4, 2))
+    # par(mar=c(5,2, 4, 2))
+    if (is.null(title)){
+      par(mar=c(4,2,2,2.5))
+    } else{
+      par(mar=c(4,2,4,2.5))
+    }
     image.scale(brk.es,
                 col= rev(cols),
                 breaks = breaks,
@@ -516,7 +523,7 @@ contourplt_new2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, se
     if(show.overall){
       cat("Overall Treatment effect is:",
           overall.treatment.mean, ", with confidence interval: (",
-          overall.treatment.lower,";",overall.treatment.upper,")")
+          overall.treatment.lower,";",overall.treatment.upper,")\n")
       points(x = 0.5,
              (overall.treatment.mean), pch = 20)
       points(x = 0.5, overall.treatment.lower, pch = "-")

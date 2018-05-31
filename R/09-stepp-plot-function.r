@@ -240,7 +240,11 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   cat("The subgroup sample sizes are actually", ss.subgrp.covar1, "\n")
 
   ################################################ 2. produce a graph  #################################################################
-
+  if (is.null(title)){
+    par(mar=c(4,4,2,1))
+  } else{
+    par(mar=c(4,4,4,1))
+  }
 
   color = c("green", "red", "blue", "aquamarine2", "brown3", "blueviolet" )
   linetype = c(3:5, 6:8)
@@ -280,11 +284,11 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
        xlab = lab.var,
        ylab = lab.y,
        main = title,
-       sub = subtitle,
+       # sub = subtitle,
        cex.main = font.size[1],
        cex.lab =  font.size[2],
        cex.sub =  font.size[3])
-
+  mtext(subtitle, cex = font.size[3], line = .1)
   by. = ceiling(diff((range(cutpoint.covar1[[1]])))/10)
   # axis(side = 1, at = c(1 : n.subgrp.covar1), labels = round(cutpoint.covar1[[1]],1), tck = -0.01)
   axis(side = 1, at = seq(1, n.subgrp.covar1, by=by.),
