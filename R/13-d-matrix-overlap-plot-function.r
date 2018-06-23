@@ -21,7 +21,9 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 29/08/17
 #' @export
-plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1), title = NULL, new = TRUE)
+#' @import grid
+#' @import graphics
+plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1, 0.8), title = NULL, new = TRUE)
 {
 
   ################################################ 0. argument validity check  #################################################################
@@ -37,7 +39,7 @@ plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1), titl
   if (!(mode %in% c(1, 2) )) stop("The type of display is unrecognisable!")
 
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
-  if (!(length(font.size) == 2)) stop("The set-up of the font size for labels or text should have two elements only!")
+  if (!(length(font.size) == 3)) stop("The set-up of the font size for labels or text should have two elements only!")
 
   ################################################ 1. create subgroup overlap data  #################################################################
 
@@ -89,15 +91,20 @@ plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1), titl
 
   ################################################ 2. produce a graph  #################################################################
 
-  if (new) layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(5.5,1))
+  if (new) layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
   par(mar=c(0,2,2,2))
-
-  plot(0, 0, type='n', ylim = c(0, 11), xlim = c(0, 11), axes = FALSE, main= title, cex.main = font.size[1])
+  if (is.null(title)){
+    par(mar=c(0,2.1,0,0))
+  } else{
+    par(mar=c(0,2.1,2,0))
+  }
+  plot(0, 0, type='n', ylim = c(0, 11), xlim = c(0, 11),
+       axes = FALSE, main= title, cex.main = font.size[1])
 
   r.prop.tol = c(0,1)
   pal.2 = colorRampPalette(c("white", "yellow", "red"), space="rgb")
   breaks <- seq(min(r.prop.tol, na.rm = T), max(r.prop.tol, na.rm = T),length.out= 100)
-  rect(0.5, 0.5, 10.5, 10.5, col = "white",  border = "black"  )
+  rect(0.5, 0.5, 10.5, 10.5, col = "white",  border = "black")
   cell.width = seq(10.5, 0.5, len = n.subgrp.tol + 1)[1] - seq(10.5, 0.5, len = n.subgrp.tol + 1)[2]
   cell.height = cell.width
 
@@ -224,8 +231,8 @@ plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1), titl
   }
 
   # create an image scale bar for relative overlap proportions
-  par(mar=c(3.8,5,0,5))
-  image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8,axis.pos=1)
+  par(mar=c(3.5,4,0,2))
+  image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
+  mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
   box()
-
 }

@@ -18,6 +18,8 @@
 #
 # created by Nico, 12/03/18
 #' @export
+#' @import circlize
+#' @import grid
 plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         range.v = NULL, adj.ann.subgrp = 4,
                         range.strip=c(-3, 3),
@@ -33,9 +35,6 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         conf.int = TRUE, show.overall = TRUE, palette = "divergent", col.power = 0.5)
 {
   ################################################ 1. create subgroup data  #################################################################
-  library(survival)
-  library(grid)
-  library(circlize)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   n.covari = length(covari.sel)
@@ -69,7 +68,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -212,13 +211,13 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
 
         plot.data[[i]] = surv.fit
       }
@@ -299,7 +298,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
@@ -378,33 +377,6 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       sector.width = diag(ss.subgrp))
   }
 
-
-  if (show.KM){
-    circos.track(ylim = c(0, 1), track.height = uh(15, "mm"),
-                 panel.fun = function(x, y) {
-                   circos.text(CELL_META$xcenter, CELL_META$cell.ylim[2] + uy(3, "mm"),
-                               CELL_META$sector.index)
-                   # circos.lines(c(0, 0 + ux(5, "mm")), c(0.5, 0.5), col = "blue")
-                 })
-    for (i in 1:(length(lab.subgrp)-1)){
-      factor = lab.subgrp[i]
-      n.strata = plot.data[[i]]$strata
-      time. = plot.data[[i]]$time
-      surv. = plot.data[[i]]$surv
-      surv.0 = c(1, 1, rep(surv.[1:n.strata[1]], each=2))
-      time.0 = c(0, rep(time.[1:n.strata[1]], each=2), time.[n.strata[1]])
-      surv.1 = c(1, 1, rep(surv.[(n.strata[1]+1):(n.strata[1]+n.strata[2])], each=2))
-      time.1 = c(0, rep(time.[(n.strata[1]+1):(n.strata[1]+n.strata[2])], each=2), time.[(n.strata[1]+n.strata[2])])
-      # plot(range(time.), c(0,1), type = "n", xaxs="i", yaxs="i")
-      # lines(time.0, surv.0)
-      # lines(time.1, surv.1)
-      circos.lines(time.0, surv.0, sector.index = factor, col = col.line[1])#, track.index = 1)
-      circos.lines(time.1, surv.1, sector.index = factor, col = col.line[2])#, track.index = 1)
-    }
-  }
-
-
-
   if (show.effect & conf.int == FALSE){
     if(show.KM){
       circos.track(ylim = c(0, 1), track.height = uh(5, "mm"),
@@ -458,34 +430,14 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   diag(mat2) <- 0
   factor1 = lab.subgrp[1]
   factor2 = lab.subgrp[2]
-  # circos.link(factor1,c(1,1),factor2,c(1, 1))
-  # circos.link(factor1,max.time,factor2,max.time)
-
-  rowSums(mat2)
-  colSums(mat2)
-  mat2
-  i=1
-  j=3
-  # col_mat = rand_color(length(mat), hue = "yellow", luminosity = "bright",
-  #                      transparency = 0.5)
-  # col_mat = rand_color(4, hue = "yellow", luminosity = "bright",
-  #                      transparency = 0.5)
-  # cols = c('#e41a1c','#984ea3','#984ea3','#a6d854')
-  # cols = col_mat[1:4]
-  # col_mat = rep(add_transparency(c('#fee391','#fec44f','#fe9929'), 0.5),
-  #               (dim(mat)[1]*dim(mat)[2])/3)
-  # dim(col_mat) = dim(mat)  # to make sure it is a matrix
 
   col_mat = rep(add_transparency(c('#7FDBFF','#fec44f','#51D88A'), 0.5),
                 (dim(mat)[1]*dim(mat)[2])/3)
   dim(col_mat) = dim(mat)  # to make sure it is a matrix
 
   mat3 = cbind(rep(0, n.subgrp.tol), mat2)
-  i=1
-  j=4
   for (i in 1:(n.subgrp.tol-1)){
     for (j in (i+1):n.subgrp.tol){
-      # print(mat2[i, (j)])
 
       if(mat2[i, (j)] == 0) next()
       begin.1 = sum(mat2[i, 1:(j-1)])/(n.covari-1)*max.time
@@ -502,7 +454,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
   par(mar=c(1,2, 2, 2))
   par(mar=c(3,1, 5, 1), xpd = FALSE)
-  SubgrPlots:::image.scale(treatmeant.mean,
+  image.scale(treatment.mean,
                            col= col.vec,
                            breaks = breaks,
                            axis.pos = 4, add.axis = FALSE)
@@ -544,6 +496,9 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
 
+#' @export
+#' @import circlize
+#' @import grid
 plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         range.v = NULL, adj.ann.subgrp = 4,
                         range.strip=c(-3, 3),
@@ -559,9 +514,6 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         conf.int = TRUE, palette = "divergent", col.power = 0.5)
 {
   ################################################ 1. create subgroup data  #################################################################
-  library(survival)
-  library(grid)
-  library(circlize)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   n.covari = length(covari.sel)
@@ -624,15 +576,15 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   # set estimate (mean, 95% C.I. bounds) of the control group and the treatment group for each subgroup
 
   plot.data = list()
-  treatment.mean = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1 , ncol = 1)
-  treatment.upper = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.lower = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.C.mean = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol+ 1, ncol = 1)
-  treatment.C.upper = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol+ 1, ncol = 1)
-  treatment.C.lower = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.T.mean = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1 , ncol = 1)
-  treatment.T.upper = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.T.lower = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.mean  = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1 , ncol = 1)
+  treatment.upper = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.lower = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.mean  = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.upper = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.lower = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.T.mean  = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1 , ncol = 1)
+  treatment.T.upper = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.T.lower = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
   for (i in 1 : n.subgrp.tol){
 
     if (sum((data.subgrp[[i]]$trt == "1")) == 0 | sum((data.subgrp[[i]]$trt == "0")) == 0){
@@ -707,13 +659,13 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
@@ -722,7 +674,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -734,7 +686,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -818,13 +770,13 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
       plot.data[[n.subgrp.tol + 1]] = surv.fit
       if (length(which(dat$trt == 0)) == 0){
@@ -832,7 +784,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -844,7 +796,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
@@ -1060,7 +1012,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   par(mar=c(1,2, 2, 2))
   par(mar=c(5,1, 5, 1), xpd = FALSE)
-  SubgrPlots:::image.scale(treatmeant.mean, col= col.vec, breaks = breaks, axis.pos = 4, add.axis = FALSE)
+  image.scale(treatment.mean, col= col.vec, breaks = breaks, axis.pos = 4, add.axis = FALSE)
   axis(2, at = breaks, labels = round(breaks, 3), las = 0, cex.axis = font.size[4])
   box()
 
@@ -1070,6 +1022,10 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   mtext(side = 4, text = strip, cex.lab = font.size[4], las = 3)
 }
 
+
+#' @export
+#' @import circlize
+#' @import grid
 plot_circle_std_by <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                             range.v = NULL, adj.ann.subgrp = 4,
                             range.strip=c(-3, 3),
@@ -1085,9 +1041,6 @@ plot_circle_std_by <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                             conf.int = TRUE, palette = "divergent", col.power = 0.5)
 {
   ################################################ 1. create subgroup data  #################################################################
-  library(survival)
-  library(grid)
-  library(circlize)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   n.covari = length(covari.sel)
@@ -1233,13 +1186,13 @@ time = 50
 
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
@@ -1248,7 +1201,7 @@ time = 50
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -1260,7 +1213,7 @@ time = 50
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -1344,13 +1297,13 @@ time = 50
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
       plot.data[[n.subgrp.tol + 1]] = surv.fit
       if (length(which(dat$trt == 0)) == 0){
@@ -1358,7 +1311,7 @@ time = 50
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -1370,7 +1323,7 @@ time = 50
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
@@ -1529,7 +1482,6 @@ time = 50
         end.1   = sum(mat2[pos.i, (pos.j):n.subgrp.tol]) - sum(rev(var.change)[k:n.subgrp.tol]) + 1
         begin.2 = sum(mat3[pos.j, 1:pos.i]) - sum(var.change[ii:1]) + 1
         end.2   = sum(mat3[pos.j, 1:(pos.i+1)]) - sum(var.change[ii:1]) + 1
-        # cat(begin.1, begin.2, end.1, end.2)
         circos.link(lab.subgrp[ii],
                     c(begin.1, end.1),
                     lab.subgrp[k],
@@ -1539,18 +1491,5 @@ time = 50
     }
   }
 
-
-
-
-  # par(mar=c(1,2, 2, 2))
-  # par(mar=c(5,1, 5, 1), xpd = FALSE)
-  # SubgrPlots:::image.scale(treatmeant.mean, col= col.vec, breaks = breaks, axis.pos = 4, add.axis = FALSE)
-  # axis(2, at = breaks, labels = round(breaks, 3), las = 0, cex.axis = font.size[4])
-  # box()
-  #
-  # abline(h=breaks)
-  # title(ylab = strip, cex.lab = font.size[4])
-  #
-  # mtext(side = 4, text = strip, cex.lab = font.size[4], las = 3)
 }
 

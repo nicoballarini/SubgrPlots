@@ -35,7 +35,9 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 29/08/17
 #' @export
-plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5), title = NULL)
+#' @import grid
+#' @import graphics
+plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5, 1), title = NULL)
 {
   ################################################ 0. argument validity check  #################################################################
 
@@ -50,7 +52,7 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
   if (!(length(para) == 3)) stop("The set-up of the parameters for plot display should have three components only!")
 
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
-  if (!(length(font.size) == 2)) stop("The font size set-ups of labels or text should have two compoents only!")
+  if (!(length(font.size) == 3)) stop("The font size set-ups of labels or text should have two compoents only!")
 
   ################################################ 1. create subgroup overlap data  #################################################################
 
@@ -71,7 +73,6 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
       k = k + 1
       cond[[k]] = which((dat[, covari.sel[i]] == cats.var[[i]][j])  == T )
       cond.label[[k]] = paste0(lab.vars[i], "=", cats.var[[i]][j])
-      # print(cond.label[[k]])
       ss.subgrp[k, k] = length(cond[[k]])
       data.subgrp[[k]] = dat[cond[[k]], ]
     }
@@ -83,7 +84,6 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
     for (j in (i + 1) : (n.subgrp.tol) ){
       k = k + 1
       cond[[k]] = intersect(cond[[i]], cond[[j]])
-      # print(paste(cond.label[[i]], cond.label[[j]]))
 
       ss.subgrp[i, j] = length(cond[[k]])
       ss.subgrp[j, i] = length(cond[[k]])
@@ -98,18 +98,12 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
   for (j in 1 : 2){
     for (i in 1: length(covari.sel)){
       k = k + 1
-      # lab.subgrp[k] = paste(LETTERS[i], j, sep = "")
       lab.subgrp[k] = paste(lab.vars[i], "=", cats.var[[i]][j], sep = "")
     }
   }
 
   ################################################ 2. produce a graph  #################################################################
-
-
   layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
-
-  library(diagram)
-
   angle.circles = seq(pi/2, pi/2 + (n.subgrp.tol-1)* (2*pi/n.subgrp.tol), 2*pi/n.subgrp.tol)
   x = 4*cos(angle.circles) + 5
   y = 4*sin(angle.circles) + 5
@@ -140,8 +134,12 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
 
   # creat plot
 
-  par(mar=c(0,2,4,2))
-  openplotmat(main= title, cex.main = font.size[1])
+  if (is.null(title)){
+    par(mar=c(0,2,1,2))
+  } else{
+    par(mar=c(0,2,3,2))
+  }
+  diagram::openplotmat(main= title, cex.main = font.size[1])
 
   n.subgrp.pair = sum(sapply(2, function(x) choose(n.subgrp.tol, x)))
   arrow.pos.adj = matrix(rep(0, n.subgrp.tol * 2), ncol = 2)
@@ -169,18 +167,15 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
   circle = list()
   for (i in 1: n.subgrp.tol){
     j = i + 1
-    circle[[j]] = SubgrPlots:::circleSP(x[i]/10, y[i]/10, 0.1/20, 1000)
+    circle[[j]] = circleSP(x[i]/10, y[i]/10, 0.1/20, 1000)
     sp::plot(circle[[j]], add=TRUE, col= "white")
-    #points(x1[i], y1[i], col = "blue", cex = 1.5)
-    text.p = SubgrPlots:::text.pos(x[i]/10, y[i]/10, 0.5/10, angle.circles[i])
+    text.p = text.pos(x[i]/10, y[i]/10, 0.5/10, angle.circles[i])
     text(text.p[1], text.p[2],  labels= lab.subgrp[i], col = "black", cex = font.size[2])
   }
 
-  box()
-
   # create an image scale bar for relative overlap proportions
-  par(mar=c(3.8,4,1,4))
-  SubgrPlots:::image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8,axis.pos=1)
+  par(mar=c(3.5,4,0,4))
+  image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
+  mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
   box()
-
 }

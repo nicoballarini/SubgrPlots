@@ -7,7 +7,8 @@
 plot_forest2(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
   title = NULL, lab.x = NULL, time = mean(dat[, resp.sel[1]]),
-  pdf = FALSE, KM = FALSE, show.km.axis = TRUE, widths = c(1, 1, 1))
+  pdf = FALSE, KM = FALSE, show.km.axis = TRUE, widths = c(1, 1, 1),
+  max.time = NULL, n.brk = 10)
 }
 \arguments{
 \item{dat:}{a data set}

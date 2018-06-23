@@ -30,26 +30,8 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
   for(i in 1:length(intersections)){
     effect_plot_data <- rbind(effect_plot_data, intersections[[i]])
   }
-  
-  # Calculate treatment effects
 
-  
-  # effdat = do.call(rbind,
-  #                  lapply(unique(effect_plot_data$x), function(i){
-  #                    if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
-  #                      model.sum = summary(lm(attribute ~ trt, effect_plot_data[which(effect_plot_data$x==i), ]), confint=TRUE)
-  #                      data.frame(mean  = model.sum$coefficients[2, 1],
-  #                                 lower = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2],
-  #                                 upper = model.sum$coefficients[2, 1] + 1.96 * model.sum$coefficients[2, 2],
-  #                                 x = i)
-  #                    } else {
-  #                      data.frame(mean  = NA,
-  #                                 lower = NA,
-  #                                 upper = NA,
-  #                                 x = i)
-  #                    }
-  #                  })
-  # )
+  # Calculate treatment effects
   if (outcome.type == "continuous"){
     col <- match(att[1], colnames(effect_plot_data))
     colnames(effect_plot_data)[col] <- "attribute"
@@ -60,7 +42,7 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
                lower = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2],
                upper = model.sum$coefficients[2, 1] + 1.96 * model.sum$coefficients[2, 2],
                x = 0)
-    
+
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
                        if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
@@ -82,9 +64,9 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
     colnames(effect_plot_data)[col] <- "attribute"
     col <- match(att[1], colnames(data.all))
     colnames(data.all)[col] <- "attribute"
-    
-    
-    model.sum = summary(glm(attribute ~ trt, 
+
+
+    model.sum = summary(glm(attribute ~ trt,
                             family = "binomial", data.all))
     overall.effect = data.frame(mean  = model.sum$coefficients[2, 1],
                lower = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2],
@@ -93,7 +75,7 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
                        if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
-                         model.sum = summary(glm(attribute ~ trt, 
+                         model.sum = summary(glm(attribute ~ trt,
                                                  family = "binomial",
                                                  effect_plot_data[which(effect_plot_data$x==i), ]))
                          data.frame(mean  = model.sum$coefficients[2, 1],
@@ -117,18 +99,18 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
     status.ind <- match(att[2], colnames(data.all))
     colnames(data.all)[time.ind] <- "time"
     colnames(data.all)[status.ind] <- "status"
-    
-    model.sum = summary(coxph(Surv(time, status) ~ trt, 
+
+    model.sum = summary(survival::coxph(Surv(time, status) ~ trt,
                               data.all))
     overall.effect = data.frame(mean  = model.sum$coef[1, 1],
                upper = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3],
                lower = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3],
                x = 0)
-    
+
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
                        if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
-                         model.sum = summary(coxph(Surv(time, status) ~ trt, 
+                         model.sum = summary(survival::coxph(Surv(time, status) ~ trt,
                                                 effect_plot_data[which(effect_plot_data$x==i), ]))
                          data.frame(mean  = model.sum$coef[1, 1],
                                     upper = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3],
@@ -141,14 +123,15 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
                                     x = i)
                        }
                      }))
-    
+
   }
-  
-  effdat = rbind(overall.effect, effdat) 
+
+  effdat = rbind(overall.effect, effdat)
   return(effdat)
 }
 
 ## Generate boxplot summary plots
+#' @import ggplot2
 EffectPlotsPlot <- function(effdat, att, att_color, outcome.type){
   if (outcome.type == "continuous"){
     yaxis <- "Treatment effect"
@@ -165,7 +148,7 @@ EffectPlotsPlot <- function(effdat, att, att_color, outcome.type){
   ggobj = ggplot() +
    theme_bw() + ylab(yaxis) +
    scale_x_discrete(limits = plot_lims, expand = c(0,0)) +
-   theme(plot.margin = unit(c(-0.7,0,0,0), "cm"),  
+   theme(plot.margin = unit(c(-0.7,0,0,0), "cm"),
           legend.position = "none", legend.justification = c(0,0),
           axis.title.y = element_text(vjust = -0.8),
           axis.ticks.x = element_blank(),
@@ -179,9 +162,9 @@ EffectPlotsPlot <- function(effdat, att, att_color, outcome.type){
     geom_point(data = effdat, aes_string(x="x", y="mean"),
                colour = "gray20",
                shape = 15) +
-    geom_errorbar(data = effdat, aes_string(x="x", 
-                                            ymax = "upper", 
-                                            ymin = "lower"), 
+    geom_errorbar(data = effdat, aes_string(x="x",
+                                            ymax = "upper",
+                                            ymin = "lower"),
                   width = 0.1,
                   colour = "gray20")+
     geom_point(data = effdat[which(effdat$x==0),],
@@ -195,7 +178,7 @@ EffectPlotsPlot <- function(effdat, att, att_color, outcome.type){
                              color = shQuote("Overall treatment effect")),
                   width = 0.1) +
     labs(color = NULL)
-  
+
   effects <- suppressWarnings(ggplotGrob(ggobj))
   return(effects)
 }

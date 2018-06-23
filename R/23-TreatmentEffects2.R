@@ -137,17 +137,13 @@ IntersectionEffectPlot2 <- function(data1, data2, start_col, names, att, outcome
     colnames(data.all)[time.ind] <- "time"
     colnames(data.all)[status.ind] <- "status"
 
-    model.sum = summary(coxph(Surv(time, status) ~ trt,
+    model.sum = summary(survival::coxph(Surv(time, status) ~ trt,
                               data.all))
-    # overall.effect = data.frame(mean  = model.sum$coef[1, 1],
-    #            upper = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3],
-    #            lower = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3],
-    #            x = 0)
 
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
                        if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
-                         model.sum = summary(coxph(Surv(time, status) ~ trt,
+                         model.sum = summary(survival::coxph(Surv(time, status) ~ trt,
                                                    effect_plot_data[which(effect_plot_data$x==i), ]))
                          data.frame(mean  = model.sum$coef[1, 1],
                                     upper = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3],
@@ -203,16 +199,6 @@ EffectPlotsPlot <- function(effdat, att, att_color, outcome.type,  text_scale=1)
                                             ymin = "lower"),
                   width = 0.1,
                   colour = "gray20")+
-    # geom_point(data = effdat[which(effdat$x==0),],
-    #            aes_string(x="x", y="mean",
-    #                       color = shQuote("Overall treatment effect")),
-    #            shape = 15) +
-    # geom_errorbar(data = effdat[which(effdat$x==0),],
-    #               aes_string(x="x",
-    #                          ymax = "upper",
-    #                          ymin = "lower",
-    #                          color = shQuote("Overall treatment effect")),
-    #               width = 0.1) +
     labs(color = NULL)
 
   effects <- suppressWarnings(ggplotGrob(ggobj))
@@ -220,6 +206,7 @@ EffectPlotsPlot <- function(effdat, att, att_color, outcome.type,  text_scale=1)
 }
 
 ## Generate boxplot summary plots
+#' @import ggplot2
 EffectPlotsPlot_t <- function(effdat, att, att_color, outcome.type,  text_scale){
   if (outcome.type == "continuous"){
     yaxis <- "Treatment effect"
@@ -247,8 +234,7 @@ EffectPlotsPlot_t <- function(effdat, att, att_color, outcome.type,  text_scale)
   bottom_margin <- (-1)*0.65
   upper_xlim <- as.numeric((max(effdat$x) + 1))
   plot_lims <- as.numeric(0:upper_xlim)
-  effdat %>%
-    mutate(x = max(x)-x+1) -> effdat
+  effdat$x = max(effdat$x) - effdat$x + 1
   effdat$x <- as.factor(effdat$x)
   ymax = ceiling(max(effdat[, 1:3]))
   ymin = floor(min(effdat[, 1:3]))

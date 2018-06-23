@@ -10,7 +10,6 @@
 # revised by Yi-Da Chiu 31/08/2017                                                          #
 #                                                                                           #
 #############################################################################################
-
 image.scale <- function(z, zlim, col = grDevices::heat.colors(12),
                         breaks, axis.pos=1, add.axis=TRUE, add.box = FALSE, ...){
   if(!missing(breaks)){

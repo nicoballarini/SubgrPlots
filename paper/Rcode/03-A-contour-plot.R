@@ -24,22 +24,27 @@ dat <- prca
 setup.ss =  c(10,60,15,30)
 sub.title = bquote(N[11] %~~% .(setup.ss[2]) ~", "~
                      N[12] %~~% .(setup.ss[1]) ~", "~
-                        N[21] %~~% .(setup.ss[4]) ~", "~
-                          N[22] %~~% .(setup.ss[3]))
+                     N[21] %~~% .(setup.ss[4]) ~", "~
+                     N[22] %~~% .(setup.ss[3]))
+dat %>%
+  rename(Weight = weight,
+         Age = age) -> dat
+
 pdf("paper/figures/03-A-contour-plot.pdf", width = 6, height = 5)
-contourplt_new(dat,
-               covari.sel = c(8,9),
-               trt.sel = 3,
-               resp.sel = c(1,2),
-               outcome.type = "survival",
-               setup.ss =  setup.ss,
-               n.grid = c(100,100),
-               brk.es = seq(-3,3,length.out = 101),
-               n.brk.axis =  7,
-               para.plot = c(0.5, 2, 6),
-               font.size = c(1, 1, 0.7, 0.7, 0.75),
-               title = NULL,
-               subtitle = sub.title,
-               strip = paste("Treatment effect size (log hazard ratio)"),show.overall = T,
-               filled = T, palette = "hcl",col.power = 0.75)
+contourplt_new2(dat,
+                covari.sel = c(8,9),
+                trt.sel = 3,
+                resp.sel = c(1,2),
+                outcome.type = "survival",
+                setup.ss =  setup.ss,
+                n.grid = c(100,100),
+                brk.es = seq(-4.5,4.5,length.out = 101),
+                n.brk.axis =  7,
+                para.plot = c(0.5, 2, 6),
+                font.size = c(1, 1, 1, 1, 1),
+                title = NULL,
+                subtitle = sub.title,
+                strip = paste("Treatment effect size (log hazard ratio)"),
+                show.overall = T,show.points = T,
+                filled = T, palette = "hcl",col.power = 0.75)
 dev.off()

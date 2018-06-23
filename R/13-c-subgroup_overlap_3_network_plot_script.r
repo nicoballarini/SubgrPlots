@@ -33,7 +33,9 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 29/08/17
 #' @export
-plot_network <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5), title = NULL) {
+#' @import grid
+#' @import graphics
+plot_network <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5, 0.8), title = NULL) {
 ##################################################  1. subgroup data set-up  ########################################################
 
 # covari.sel = c(1, 2, 6, 7, 10)   # the covariates we select
@@ -93,20 +95,27 @@ for (i in 1: n.covari){
 ############################################################## 2. produce a graph  ##########################################################
 
 # dev.new(width=10,height=10,noRStudioGD = TRUE)
-layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(3,1))
+layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
 
 # par(mar=c(1,2,2,2))
 
-par(mar=c(0,2,4,2))
-plot(0, 0, xlim = c(-1.5,1.5), ylim = c(0,5.1), type="n",
+if (is.null(title)){
+  par(mar=c(1,2,2,2))
+} else{
+  par(mar=c(1,2,4,2))
+}
+plot(0, 0, xlim = c(-1.5,1.5), ylim = c(0,5.1), type="n", axes = FALSE,
      main = title,
      xaxt="n", yaxt="n", xlab="",ylab=" ",bty = "o")
-box()
+# box()
 
 # text(0.1, 5.05, labels = " Overlap proportions of pairwise subgroups ", adj = c(0.5, 1), cex = 1.3, font=4)
 
-y1.pos = rep(seq(4.65, 0.15, len = 4)[1], n.covari); y2.pos = rep(seq(4.65, 0.15, len = 4)[2], n.covari);
-y3.pos = rep(seq(4.65, 0.15, len = 4)[3], n.covari); y4.pos = rep(seq(4.65, 0.15, len = 4)[4], n.covari);
+y1.pos = rep(seq(4.85, 0.15, len = 5)[1], n.covari)
+y2.pos = rep(seq(4.85, 0.15, len = 5)[2], n.covari)
+y3.pos = rep(seq(4.85, 0.15, len = 5)[3], n.covari)
+y4.pos = rep(seq(4.85, 0.15, len = 5)[4], n.covari)
+y5.pos = rep(seq(4.85, 0.15, len = 5)[5], n.covari)
 x1.pos = seq(-1.4, 1.4, len = n.covari)
 
 r.prop.tol = c(0,1)
@@ -131,19 +140,25 @@ for (i in 1 : (n.covari)){
     col.idx[i+n.covari, j+n.covari] = col.vec[col.idx1 - 1]
   }
 }
-segments(x1.pos %x% rep(1, n.covari), rep(y1.pos, n.covari), rep(x1.pos, n.covari), rep(y2.pos, n.covari),  lwd = 2, col = c(t(col.idx[1:n.covari,1:n.covari ])) )
-segments(x1.pos %x% rep(1, n.covari), rep(y2.pos, n.covari), rep(x1.pos, n.covari), rep(y3.pos, n.covari),  lwd = 2, col = c(t(col.idx[1:n.covari,(n.covari+1):(2*n.covari)  ])) )
-segments(x1.pos %x% rep(1, n.covari), rep(y3.pos, n.covari), rep(x1.pos, n.covari), rep(y4.pos, n.covari),  lwd = 2, col = c(t(col.idx[(n.covari+1):(2*n.covari),(n.covari+1):(2*n.covari) ])) )
+
+col.idx[col.idx == "#FFFFFF"] = NA
+segments(x1.pos %x% rep(1, n.covari), rep(y1.pos, n.covari), rep(x1.pos, n.covari), rep(y2.pos, n.covari),  lwd = 2, col = c(t(col.idx[1:n.covari, 1:n.covari])))
+segments(x1.pos %x% rep(1, n.covari), rep(y2.pos, n.covari), rep(x1.pos, n.covari), rep(y3.pos, n.covari),  lwd = 2, col = c(t(col.idx[1:n.covari, (n.covari+1):(2*n.covari)])))
+segments(x1.pos %x% rep(1, n.covari), rep(y3.pos, n.covari), rep(x1.pos, n.covari), rep(y4.pos, n.covari),  lwd = 2, col = c(t(col.idx[(n.covari+1):(2*n.covari), (n.covari+1):(2*n.covari)])))
+segments(x1.pos %x% rep(1, n.covari), rep(y4.pos, n.covari), rep(x1.pos, n.covari), rep(y5.pos, n.covari),  lwd = 2, col = c(t(col.idx[(n.covari+1):(2*n.covari), 1:n.covari])))
 
 
 text(x1.pos-0.05, y1.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9)
 text(x1.pos-0.05, y2.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9)
 text(x1.pos-0.05, y3.pos, labels = lab.subgrp2[(n.covari+1):(n.covari*2)],   cex = 0.9)
 text(x1.pos-0.05, y4.pos, labels = lab.subgrp2[(n.covari+1):(n.covari*2)],   cex = 0.9)
+text(x1.pos-0.05, y5.pos, labels = lab.subgrp2[1:(n.covari)],   cex = 0.9)
 
 ### creeat plot 3
 
-par(mar=c(3.8,2,1,2))
-image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8,axis.pos=1)
+par(mar=c(3.5,4,0,4))
+image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
+mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
 box()
+
 }

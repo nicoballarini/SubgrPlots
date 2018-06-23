@@ -24,10 +24,10 @@ dat <- prca
 vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
 ###############################################################################-
 ## 1. Level plot ---------------------------------------------------------------
-pdf("paper/figures/19-alt-c-plot.pdf", width = 5, height = 5)
+pdf("paper/figures/19-alt-c-plot.pdf", width = 4, height = 4)
 plot_network(dat = dat,
              covari.sel = c(6,5,4,7),
              para = c(0.1, 0.5, 1),
-             font.size = c(1.2, 1.2),
+             font.size = c(1.2, 1.2, 0.8),
              title = NULL)
 dev.off()

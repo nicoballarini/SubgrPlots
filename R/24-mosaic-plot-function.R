@@ -18,6 +18,7 @@
 #
 # created by Nico, 12/03/18
 #' @export
+#' @import grid
 plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        range.v = NULL, adj.ann.subgrp = 4,
                        range.strip=c(-3, 3),
@@ -111,7 +112,7 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
             treatment.mean[[ii]] = model.sum$coefficients[2, 1]
           }else if (outcome.type == "survival"){
             if (effect == "HR"){
-              model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
+              model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
               model.sum = summary(model.int)
               treatment.mean[[ii]] = model.sum$coef[1, 1]
             }
@@ -129,9 +130,6 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   cat("The minimum of treatment effect sizes is", min(unlist(treatment.mean), na.rm = T), "\n")
   cat("The maximum of treatment effect sizes is", max(unlist(treatment.mean), na.rm = T), "\n")
-  # warning("The minimum of treatment effect sizes is ", min(unlist(treatment.mean), na.rm = T), "\n")
-  # warning("The maximum of treatment effect sizes is ", max(unlist(treatment.mean), na.rm = T), "\n")
-
 
   pal.YlRd = colorRampPalette(c("#fee090", "#d73027"), space = "rgb")
   pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
@@ -163,7 +161,6 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  # library(grid)
   par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
@@ -179,9 +176,6 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     #####   V2.1.1 -------------------------------------------------------------------
     for (j in 1:c2){
       if (j==1) {init.j = 0} else {init.j = sum(w2[(i-1)*c2+(j-1):1])}
-      # vp <- viewport(x = init.j, y = 0,
-      #                width = w2[(i-1)*c2+j]*0.99, height = 1,
-      #                just = c("left", "bottom"))
       vp <- viewport(x = c(0,1)[j], y = 0,
                      width = w2[(i-1)*c2+j]*0.98, height = 1,
                      just = c(c("left","right")[j], "bottom"))
@@ -237,14 +231,9 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   grid.text(labels[3], vjust = 0.5,  hjust = 0.5, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
 
-
-
-
-
   ##########  produce legend -------------------------------------------------------------
   vp <- viewport(x = 0.9, width = 0.1, height = 1,just = c("left", "center"))
   pushViewport(vp)
-  # grid.rect()
 
   vp <- viewport(x = 0.4, width = 0.2, height = 1 - 4*sep., just = c("left", "center"))
   pushViewport(vp)
@@ -256,7 +245,6 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     grid.rect(gp = gpar(fill = col.vec[i], col = NA))
     upViewport()
   }
-  # grid.rect()
 
   grid.yaxis(seq(0, 1, len = n.brk), vp = viewport(y = 0.5),
              label = seq(min(range.strip), max(range.strip), len = n.brk),
@@ -267,7 +255,6 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   vp <- viewport(x = 0.6, width = 0.4, height = 1 - 4*sep., just = c("left", "center"))
   pushViewport(vp)
-  #col.bar.title = strip #"Treatment effect size"
   grid.text(strip, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
   upViewport()
@@ -276,7 +263,8 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
 
-
+#' @export
+#' @import grid
 plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         range.v = NULL, adj.ann.subgrp = 4,
                         range.strip=c(-3, 3),
@@ -311,7 +299,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -362,7 +350,6 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   for (i in 1:c1){
     for (j in 1:c2){
       ii = ii + 1
-      # k = i + (j - 1) * n.subgrp.var2
       idx.subgrp[[ii]] =  intersect(idx1[[i]], idx2[[j]])
       data.subgrp[[ii]] =  dat[idx.subgrp[[ii]], ]
       ss.subgrp[[ii]] = dim(data.subgrp[[ii]])[1]
@@ -388,7 +375,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
             treatment.mean[[ii]] = model.sum$coefficients[2, 1]
           }else if (outcome.type == "survival"){
             if (effect == "HR"){
-              model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
+              model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
               model.sum = summary(model.int)
               treatment.mean[[ii]] = model.sum$coef[1, 1]
             }
@@ -406,8 +393,6 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   cat("The minimum of treatment effect sizes is", min(unlist(treatment.mean), na.rm = T), "\n")
   cat("The maximum of treatment effect sizes is", max(unlist(treatment.mean), na.rm = T), "\n")
-  # warning("The minimum of treatment effect sizes is ", min(unlist(treatment.mean), na.rm = T), "\n")
-  # warning("The maximum of treatment effect sizes is ", max(unlist(treatment.mean), na.rm = T), "\n")
 
 
   pal.YlRd = colorRampPalette(c("#fee090", "#d73027"), space = "rgb")
@@ -440,7 +425,6 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  # library(grid)
   par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
@@ -449,14 +433,13 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   vp <- viewport(x = 2*sep., width = 1-3*sep., height = 1 - 4*sep.,just = c("left", "center"))
   pushViewport(vp)
 
-  # i=2
+
   #####   V1.1 -------------------------------------------------------------------
   for (i in 1:c1){
     if (i==1) {init.i = 0 + sep.*(i-1)} else {init.i = sum(w1[(i-1):1]) + sep.*(i-1)}
     vp <- viewport(x = init.i, y = 0, width = w1[i], height = 1, just = c("left", "bottom"))
     pushViewport(vp)
-    # k=1
-    k=2
+
     for (k in 1:c2){
         ii=ii+1
         if (k==1) {init = 0} else {init = sum(w2[ii-((k-1):1)])}
@@ -468,7 +451,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         grid.rect(gp = gpar(fill = col.treat[ii], col = "white", lty = 1, lwd = lwd.))
         if(print.ss) {grid.text(ss.subgrp[[ii]], gp = gpar(fontsize = font.size[3]))}
         if (is.na(col.treat[ii])) {
-          if (w3[ii] == 0) {
+          if (w2[ii] == 0) {
             grid.rect(gp = gpar(col = "black",
                                 lty = 1, lwd = lwd.))
           }else{
@@ -502,9 +485,6 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   upViewport()
 
 
-
-
-
   ##########  produce legend -------------------------------------------------------------
   vp <- viewport(x = 0.9, width = 0.1, height = 1,just = c("left", "center"))
   pushViewport(vp)
@@ -520,7 +500,6 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     grid.rect(gp = gpar(fill = col.vec[i], col = NA))
     upViewport()
   }
-  # grid.rect()
 
   grid.yaxis(seq(0, 1, len = n.brk.axis), vp = viewport(y = 0.5),
              label = seq(min(range.strip), max(range.strip), len = n.brk.axis),
@@ -549,7 +528,8 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 }
 
 
-
+#' @export
+#' @import grid
 plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         range.v = NULL, adj.ann.subgrp = 4,
                         range.strip=c(-3, 3),
@@ -586,7 +566,7 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -676,7 +656,7 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
             treatment.mean[[ii]] = model.sum$coefficients[2, 1]
           }else if (outcome.type == "survival"){
             if (effect == "HR"){
-              model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
+              model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
               model.sum = summary(model.int)
               treatment.mean[[ii]] = model.sum$coef[1, 1]
             }
@@ -729,11 +709,8 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     warning("The minimum of treatment effect sizes is ", min(unlist(treatment.mean), na.rm = T), "\n")
     warning("The maximum of treatment effect sizes is ", max(unlist(treatment.mean), na.rm = T), "\n")
   }
-  # length(col.treat)
-  # length(treatment.mean)
 
   #####   Produce a plot -------------------------------------------------------------------
-  # library(grid)
   par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
@@ -749,8 +726,6 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     pushViewport(vp)
     # grid.rect()
     #####   V2.1.1 -------------------------------------------------------------------
-    # j=2
-    # f
     for (j in 1:c2){
       if (j==1) {
         init.j = 0
@@ -760,12 +735,7 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       vp <- viewport(x = init.j, y = 0,
                      width = w2[(i-1)*c2+j]*0.99, height = 1,
                      just = c("left", "bottom"))
-      # vp <- viewport(x = c(0,1)[j], y = 0,
-      #                width = w2[(i-1)*c2+j]*0.98, height = 1,
-      #                just = c(c("left","right")[j], "bottom"))
-      pushViewport(vp)
-      # grid.rect()
-      # upViewport()
+       pushViewport(vp)
       if (w2[(i-1)*c2+j] == 0) grid.rect(gp = gpar(col = "black", lty = 1, lwd = lwd.))
       k=2
       for (k in 1:c3){
@@ -819,14 +789,9 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   grid.text(labels[3], vjust = 0.5,  hjust = 0.5, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
 
-
-
-
-
   ##########  produce legend -------------------------------------------------------------
   vp <- viewport(x = 0.75, width = 0.25, height = 1,just = c("left", "center"))
   pushViewport(vp)
-  # grid.rect()
 
   vp <- viewport(x = 0.4, width = 0.2, height = 1 - 4*sep., just = c("left", "center"))
   pushViewport(vp)
@@ -838,7 +803,6 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     grid.rect(gp = gpar(fill = col.vec[i], col = NA))
     upViewport()
   }
-  # grid.rect()
 
   grid.yaxis(seq(0, 1, len = n.brk.axis), vp = viewport(y = 0.5),
              label = seq(min(range.strip), max(range.strip), len = n.brk.axis),
@@ -860,24 +824,13 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   vp <- viewport(x = 0.6, width = 0.4, height = 1 - 4*sep., just = c("left", "center"))
   pushViewport(vp)
-  #col.bar.title = strip #"Treatment effect size"
   grid.text(strip, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
   upViewport()
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+#' @export
+#' @import grid
 plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           range.v = NULL, adj.ann.subgrp = 4,
                           range.strip=c(-3, 3),
@@ -897,7 +850,6 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
-    library(survival)
   }
 
   # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
@@ -915,7 +867,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -1007,7 +959,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
           treatment.mean[[ii]] = model.sum$coefficients[2, 1]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
+            model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[ii]])
             model.sum = summary(model.int)
             treatment.mean[[ii]] = model.sum$coef[1, 1]
           }
@@ -1034,7 +986,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
           treatment.mean.mar[j,2] = model.sum$coefficients[2, 1]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = coxph(Surv(time, status) ~ trt, data = data.mar.subgrp2[[j]])
+            model.int = survival::coxph(Surv(time, status) ~ trt, data = data.mar.subgrp2[[j]])
             model.sum = summary(model.int)
             treatment.mean.mar[j,2] = model.sum$coef[1, 1]
           }
@@ -1061,7 +1013,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
         treatment.mean.mar[i,1] = model.sum$coefficients[2, 1]
       }else if (outcome.type == "survival"){
         if (effect == "HR"){
-          model.int = coxph(Surv(time, status) ~ trt, data = data.mar.subgrp1[[i]])
+          model.int = survival::coxph(Surv(time, status) ~ trt, data = data.mar.subgrp1[[i]])
           model.sum = summary(model.int)
           treatment.mean.mar[i,1] = model.sum$coef[1, 1]
         }
@@ -1112,7 +1064,6 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  library(grid)
   par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
@@ -1145,7 +1096,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
       grid.rect(gp = gpar(fill = col.treat[ii], col = col.line, lty = 1, lwd = lwd.))
       if(print.ss) {grid.text(ss.subgrp[[ii]], gp = gpar(fontsize = font.size[3]))}
       if (is.na(col.treat[ii])) {
-        if (w3[ii] == 0) {
+        if (w2[ii] == 0) {
           grid.rect(gp = gpar(col = "black",
                               lty = 1, lwd = lwd.))
         }else{
@@ -1203,7 +1154,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
     grid.rect(gp = gpar(fill = col.treat[k], col = col.line, lty = 1, lwd = lwd.))
     # if(print.ss) {grid.text(ss.subgrp[[k]], gp = gpar(fontsize = font.size[3]))}
     if (is.na(col.treat[k])) {
-      if (w3[k] == 0) {
+      if (w2[k] == 0) {
         grid.rect(gp = gpar(col = "black",
                             lty = 1, lwd = lwd.))
       }else{
@@ -1254,7 +1205,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
     grid.rect(gp = gpar(fill = col.treat[k], col = col.line, lty = 1, lwd = lwd.))
     # if(print.ss) {grid.text(ss.subgrp[[k]], gp = gpar(fontsize = font.size[3]))}
     if (is.na(col.treat[k])) {
-      if (w3[k] == 0) {
+      if (w1[k] == 0) {
         grid.rect(gp = gpar(col = "black",
                             lty = 1, lwd = lwd.))
       }else{
@@ -1341,7 +1292,8 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
 
-
+#' @export
+#' @import grid
 plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           range.v = NULL, adj.ann.subgrp = 4,
                           range.strip=c(-3, 3),
@@ -1407,7 +1359,6 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  # library(grid)
   col =c("#80b1d3", "#fccde5")
   col.treat = rep(col,10)
   par(mar=c(0,0,0,0), xpd = TRUE)

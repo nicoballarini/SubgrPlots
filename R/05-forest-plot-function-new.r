@@ -38,6 +38,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
                       title = NULL, lab.x = NULL, time = mean(dat[,resp.sel[1]]),
@@ -88,8 +90,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (!(length(font.size) == 4)) stop("The font size setups for labels or text should have four components only!")
 
   ################################################ 1. create subgroup data  #################################################################
-
-  library(survival)
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]                          # set the names of the covariates which relates to the defined subgroup; if a covariate
@@ -149,15 +149,15 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   # set estimate (mean, 95% C.I. bounds) of the control group and the treatment group for each subgroup
 
 
-  treatment.mean = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1 , ncol = 1)
-  treatment.upper = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.lower = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.C.mean = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol+ 1, ncol = 1)
-  treatment.C.upper = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol+ 1, ncol = 1)
-  treatment.C.lower = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.T.mean = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1 , ncol = 1)
-  treatment.T.upper = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.T.lower = matrix(rep(0, n.subgrp.tol+ 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.mean  = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.upper = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.lower = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.mean  = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.upper = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.lower = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.T.mean  = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.T.upper = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.T.lower = matrix(rep(0, n.subgrp.tol + 1), nrow = n.subgrp.tol + 1, ncol = 1)
   for (i in 1 : n.subgrp.tol){
 
     if (sum((data.subgrp[[i]]$trt == "1")) == 0 | sum((data.subgrp[[i]]$trt == "0")) == 0){
@@ -232,13 +232,13 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         if (length(which(data.subgrp[[i]]$trt == 0)) == 0){
@@ -246,7 +246,7 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -258,7 +258,7 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -342,13 +342,13 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
 
       if (length(which(dat$trt == 0)) == 0){
@@ -356,7 +356,7 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -368,18 +368,12 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
         treatment.T.lower[n.subgrp.tol + 1] = difference$lower[2]
       }
-
-      # if (KM){
-      #   km.by.trt <- survfit(Surv(time, status) ~ trt, data = dat)
-      #   plot(km.by.trt, col = c("red", "blue"))
-      #
-      # }
     }
   }
 
@@ -401,7 +395,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   ################################################ 2. create plots #################################################################
 
   if (new) layout(matrix(c(1,2,3), byrow = TRUE, nrow=1, ncol=3), widths=c(1, 1, 1), heights=c(1, 1, 1))
-
 
   col.line = c("blue", "red", "forestgreen", "orange", "darkorchid1", "darkgoldenrod3", "darkseagreen3", "chartreuse3", "cyan1", "deeppink1")
 
@@ -445,48 +438,24 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   sub.title = c("Eff.size", "Low.", "Upp.", "S.Size(T|C)")
   text(sub.title.xpos, sub.title.ypos, labels = sub.title, cex = font.size[3], font=4, adj = c(1,0))
 
-
   # forest plot (2)
-
   par(mar = c(4.1, 0, 2.5, 0))
   line.x.range = est.range[, 2:3]
   line.y.range = matrix(rep(seq(0.1, 0.1+ (n.subgrp.tol) * 0.3, 0.3),2), ncol = 2)
 
-  # x.lim.max = max(max(est.C.range[, 2:3]), max(est.T.range[, 2:3]))
-  # x.lim.min = min(min(est.C.range[, 2:3]), min(est.T.range[, 2:3]))
-  #
+
   x.lim.min = round(est.range[dim(est.range)[1],1],2) - 1.5
   x.lim.min = round(x.lim.min/0.5) * 0.5
   x.lim.max = x.lim.min + 3
-  #x.lim.max = max(max(est.range[, 2:3]))#, max(est.C.range[, 2:3]), max(est.T.range[, 2:3]))
-  #x.lim.min = min(min(est.range[, 2:3]))#, min(est.C.range[, 2:3]), min(est.T.range[, 2:3]))
 
   y.lim.max = 0.1 + (n.subgrp.tol + 1) * 0.3
   plot(0, 0, type='n',  xlab = lab.x[[2]], ylab = "", ylim = c(0, y.lim.max), xlim = c(x.lim.min, x.lim.max),
        xaxt="n", yaxt="n", cex.lab = font.size[2])
-  #axis(1, at = seq(-2.5, 3.5, 0.5), labels =seq(-2.5, 3.5, 0.5))
   axis(1, at = seq(x.lim.min, x.lim.max, 0.5), labels = seq(x.lim.min, x.lim.max, 0.5), cex.axis = font.size[4])
-  # axis(2, at = seq(0, y.lim.max, 0.5), cex.axis = font.size[4])
   title(main= title[[2]], cex.main = font.size[1])
 
   line.centre = est.range[, 1]
-  #w = 0.25; h = 0.1   # the width and height of the diamond for the full population
   w = size.shape[1]; h = size.shape[2]
-
-  #
-  # for (i in 1: (n.subgrp.tol)){
-  #   lines(line.x.range[i, ], line.y.range[i, ], col = "black")
-  #   x0 = line.centre[i]; y0 = line.y.range[i, 1]
-  #   r =  dim(data.subgrp[[i]])[1] / data.size
-  #   x = c(x0 - w * r, x0, x0 + w * r, x0, x0 - w * r)
-  #   y = c(y0, y0 - h * r, y0, y0 + h * r, y0)
-  #   polygon(x, y,col = "black", border = "black")
-  # }
-  # lines(line.x.range[n.subgrp.tol + 1, ], line.y.range[n.subgrp.tol + 1, ], col = "black")
-  # x0 = line.centre[n.subgrp.tol + 1]; y0 = line.y.range[n.subgrp.tol + 1, 1]
-  # x = c(x0 - w, x0, x0 + w, x0, x0 - w)
-  # y = c(y0, y0 - h, y0, y0 + h, y0)
-  # polygon(x, y,col = "black", border = "black")
   h1 = y.lim.max/(x.lim.max - x.lim.min)/h
   w2 = w*h1/3
   for (i in 1: (n.subgrp.tol)){
@@ -520,7 +489,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   if (KM==FALSE){
   axis(1, at = round(seq(x.lim.min, x.lim.max, len = 10 + 1), 2), labels = round(seq(x.lim.min, x.lim.max, len = 10 + 1), 2), cex.axis = font.size[4])
-  #axis(1, at = seq(-2.5, 3.5, 0.5), labels =seq(-2.5, 3.5, 0.5))
   title(main= title[[3]], cex.main = font.size[1])
 
   line.C.x.range = est.C.range[, 2:3]
@@ -539,8 +507,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     x0 = line.C.centre[i]; y0 = line.C.y.range[i, 1]
     ss.C = length(which(data.subgrp[[i]]$trt == 0))
     r =  ss.C / data.size
-    # x = c(x0 - w * r, x0, x0 + w * r, x0, x0 - w * r)
-    # y = c(y0, y0 - h * r, y0, y0 + h * r, y0)
     x = c(x0 - w * r, x0 + w * r, x0 + w * r, x0 - w * r)
     y = c(y0 - w2 * r, y0 - w2 * r, y0 + w2 * r, y0 + w2 * r)
     polygon(x, y,col = col.line[1], border = col.line[1])
@@ -549,8 +515,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     x0 = line.T.centre[i]; y0 = line.T.y.range[i, 1]
     ss.T = length(which(data.subgrp[[i]]$trt == 1))
     r =  ss.T / data.size
-    # x = c(x0 - w * r, x0, x0 + w * r, x0, x0 - w * r)
-    # y = c(y0, y0 - h * r, y0, y0 + h * r, y0)
     x = c(x0 - w * r, x0 + w * r, x0 + w * r, x0 - w * r)
     y = c(y0 - w2 * r, y0 - w2 * r, y0 + w2 * r, y0 + w2 * r)
     polygon(x, y,col = col.line[2], border = col.line[2])
@@ -559,8 +523,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   x0 = line.C.centre[n.subgrp.tol + 1]; y0 = line.C.y.range[n.subgrp.tol + 1, 1]
   ss.C = length(which(dat$trt == 0))
   r =  ss.C / data.size
-  # x = c(x0 - w * r, x0, x0 + w * r, x0, x0 - w * r)
-  # y = c(y0, y0 - h * r, y0, y0 + h * r, y0)
   x = c(x0 - w * r, x0 + w * r, x0 + w * r, x0 - w * r)
   y = c(y0 - w2 * r, y0 - w2 * r, y0 + w2 * r, y0 + w2 * r)
   polygon(x, y,col = col.line[1], border = col.line[1])
@@ -569,8 +531,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   x0 = line.T.centre[n.subgrp.tol + 1]; y0 = line.T.y.range[n.subgrp.tol + 1, 1]
   ss.T = length(which(dat$trt == 1))
   r =  ss.T / data.size
-  # x = c(x0 - w * r, x0, x0 + w * r, x0, x0 - w * r)
-  # y = c(y0, y0 - h * r, y0, y0 + h * r, y0)
   x = c(x0 - w * r, x0 + w * r, x0 + w * r, x0 - w * r)
   y = c(y0 - w2 * r, y0 - w2 * r, y0 + w2 * r, y0 + w2 * r)
   polygon(x, y,col = col.line[2], border = col.line[2])

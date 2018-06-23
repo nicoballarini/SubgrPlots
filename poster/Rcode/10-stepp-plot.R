@@ -24,7 +24,7 @@ dat <- prca
 ###############################################################################-
 ## 9. stepp Plot -----------------------------------------------------------
 pdf("poster/figures/10-stepp-plot.pdf", width = 6, height = 6)
-lab.y.title = paste("Treatment effect diffence");
+lab.y.title = paste("Treatment effect size (log-hazard ratio)");
 setup.ss = c(30,40)
 sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2], "; overlap sizes are set to ", setup.ss[1], ")" )
 plot_stepp(dat,

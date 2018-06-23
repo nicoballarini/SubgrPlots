@@ -6,7 +6,7 @@
 unidirectional arrowed lines around two circle}
 \usage{
 plot_overlap_alternative(dat, covari.sel, para = c(0.5, 0.15, 1), mode,
-  font.size, title = NULL)
+  font.size = c(1.5, 1.5, 0.8), title = NULL)
 }
 \arguments{
 \item{dat:}{a data set}

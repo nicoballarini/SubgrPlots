@@ -4,7 +4,7 @@
 \alias{plot_matrix_overlap}
 \title{matrix plots for relative overlap proportions of pairwise subgroups}
 \usage{
-plot_matrix_overlap(dat, covari.sel, mode, font.size = c(2, 1),
+plot_matrix_overlap(dat, covari.sel, mode, font.size = c(2, 1, 0.8),
   title = NULL, new = TRUE)
 }
 \arguments{

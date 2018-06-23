@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^paper$
+^poster$
+^Readme\.md$
+^rcmdcheck\.md$

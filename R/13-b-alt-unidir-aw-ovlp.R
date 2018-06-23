@@ -23,7 +23,9 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 29/08/17
 #' @export
-plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mode, font.size, title = NULL)
+#' @import grid
+#' @import graphics
+plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mode,  font.size = c(1.5, 1.5, 0.8), title = NULL)
 {
   ################################################ 0. argument validity check  #################################################################
 
@@ -41,7 +43,7 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
   if (!(length(para) == 3)) stop("The set-up of the parameters for plot display should have three components only!")
 
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
-  if (!(length(font.size) == 2)) stop("The font size set-ups of labels or text should have two compoents only!")
+  if (!(length(font.size) == 3)) stop("The font size set-ups of labels or text should have two compoents only!")
 
   ################################################ 1. create subgroup overlap data  #################################################################
 
@@ -95,14 +97,13 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
   ### linking lines between points on a circle
 
   layout(matrix(c(1, 1, 1, 1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
-
-  library(shape)
-
-  par(mar=c(0,2,4,2))
+  if (is.null(title)){
+    par(mar=c(0,2,1,2))
+  } else{
+    par(mar=c(0,2,3,2))
+  }
   plot(5,5, type='n', axes = FALSE, xlab = "", ylab = "", ylim = c(-10, 10), xlim = c(0,10))
   title(main= title, cex.main = font.size[1])
-  box()
-
   angle.circles = seq(pi/2, pi/2 + (n.subgrp.tol-1)* (2*pi/n.subgrp.tol), 2*pi/n.subgrp.tol)
   x1 = 4*cos(angle.circles) + 5
   y1 = 4*sin(angle.circles) + 5
@@ -137,15 +138,6 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
     n.subgrp.pair = sum(sapply(2, function(x) choose(n.subgrp.tol, x)))
     for (i in 1:n.subgrp.pair){
       if (col.idx[i] == col.vec[1]) next()
-      # Arrows(x1[st[i]], y1[st[i]], x1[se[i]], y1[se[i]],
-      #        arr.length = para[1], arr.width = para[2], arr.adj = para[3],
-      #        code = 2, arr.type = "curved",
-      #        arr.col = col.idx[i], lcol = col.idx[i], lwd = 2)
-      # Arrows(x2[se[i]], y2[se[i]], x2[st[i]], y2[st[i]],
-      #        arr.length = para[1], arr.width = para[2], arr.adj = para[3],
-      #        code = 2, arr.type = "curved",
-      #        arr.col = col.idx.rev[i], lcol = col.idx.rev[i], lwd = 2)
-
       diagram::curvedarrow(from = c(x1[st[i]], y1[st[i]]),
                            to   = c(x1[se[i]], y1[se[i]]),
                            curve = para[1], arr.pos = para[2], arr.adj = para[3],
@@ -212,9 +204,9 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
     n.subgrp.pair = sum(sapply(2, function(x) choose(n.subgrp.tol, x)))
     for (i in 1:n.subgrp.pair) {
       if (col.idx[i] == col.vec[1]) next()
-      Arrows(x1[st[i]], y1[st[i]], x1[se[i]], y1[se[i]], arr.length = para[1], arr.width = para[2], arr.adj = para[3],
+      shape::Arrows(x1[st[i]], y1[st[i]], x1[se[i]], y1[se[i]], arr.length = para[1], arr.width = para[2], arr.adj = para[3],
              code = 2, arr.type = "curved",  arr.col = "royalblue", lcol = "royalblue", lwd = lwd.idx[i], lty = lty.idx[i])
-      Arrows(x2[se[i]], y2[se[i]], x2[st[i]], y2[st[i]], arr.length = para[1], arr.width = para[2], arr.adj = para[3],
+      shape::Arrows(x2[se[i]], y2[se[i]], x2[st[i]], y2[st[i]], arr.length = para[1], arr.width = para[2], arr.adj = para[3],
              code = 2, arr.type = "curved",  arr.col = "royalblue", lcol = "royalblue", lwd = lwd.idx.rev[i], lty = lty.idx.rev[i])
     }
 
@@ -231,18 +223,14 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
 
 
   # create an image scale bar line labels for relative proportion
-
-  par(mar=c(3.8,4,1,4))
-
+  par(mar=c(3.5,4,0,4))
   if (mode == 1){
-    image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8,axis.pos=1)
+    image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
+    mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
     box()
-
   }else if (mode == 2){
-
     plot(5,5, type='n', axes = FALSE, xlab = "", ylab = "")
     lab.lines = c("0 <= p. < 0.2", "0.2 <= p. < 0.4", "0.4 <= p. < 0.6", "0.6 <= p. < 0.8", "0.8 <= p. <= 1" )
     legend("center", lab.lines, lty = c(2, 3, 1, 1, 1), lwd = c(1, 1, 1, 2, 3), col = "royalblue", ncol =2)
   }
-
 }

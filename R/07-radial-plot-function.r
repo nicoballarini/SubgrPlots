@@ -42,6 +42,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
           title = NULL, lab.xy = NULL)
 {
@@ -92,8 +94,6 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
   if (!(length(font.size) == 5)) stop("The font size setups for labels or text should have five components only!")
 
   ################################################ 1. create subgroup data  #################################################################
-
-  library(survival)
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]                                                # set the names of the covariates which relates to the defined subgroup; if a covariate
@@ -172,7 +172,7 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
@@ -212,7 +212,7 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
                                                                                         # estimator
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
@@ -519,6 +519,8 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
                         title = NULL, lab.xy = NULL, plot.full = FALSE)
 {
@@ -584,7 +586,6 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
-    library(survival)
   }
 
 
@@ -673,7 +674,7 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
@@ -721,7 +722,7 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
         # estimator
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
@@ -1043,6 +1044,8 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
                         title = NULL, lab.xy = NULL)
 {
@@ -1108,7 +1111,6 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
-    library(survival)
   }
 
   for (i in 1: length(covari.sel)){
@@ -1173,7 +1175,7 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
@@ -1213,7 +1215,7 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
         # estimator
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
@@ -1486,6 +1488,4 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
   }
   box()
-
 }
-

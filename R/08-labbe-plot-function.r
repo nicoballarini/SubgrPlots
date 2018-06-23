@@ -39,6 +39,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        effect = c("HR","RMST"), size.shape = 1/18, adj.ann.subgrp = 1/30, font.size = c(1, 1, 0.85, 0.85),
                      title = NULL, lab.xy = NULL, time = mean(dat[,resp.sel[1]]), show.ci = TRUE)
@@ -150,9 +152,9 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   # create matrices for treatment size and standard error of MLE
 
-  treatment.C.mean =  matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.C.mean = matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
   treatment.T.mean = matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
-  treatment.mean = matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
+  treatment.mean  = matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
   treatment.upper = matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
   treatment.lower = matrix(0, nrow = n.subgrp.tol + 1, ncol = 1)
   for (i in 1:n.subgrp.tol){
@@ -238,13 +240,13 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           }
         }
         if (effect == "HR"){
-          model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+          model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
           model.sum = summary(model.int)
           treatment.mean[i] = model.sum$coef[1, 1]
           treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
           treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-          surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+          surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
           difference <- summary(surv.fit, time=time)
           if (length(which(data.subgrp[[i]]$trt == 0)) == 0){
             treatment.C.mean[i] = NA
@@ -339,13 +341,13 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       }
 
       if (effect == "HR"){
-        model.int = coxph(Surv(time, status) ~ trt, data = dat)
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
         model.sum = summary(model.int)
         treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
         treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survfit(Surv(time, status) ~ trt, data = dat)
+        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
         difference <- summary(surv.fit, time=time)
 
         if (length(which(dat$trt == 0)) == 0){
@@ -377,11 +379,11 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   lab.subgrp[n.subgrp.tol + 1] = "Full"
   lab.subgrp2[n.subgrp.tol + 1] = "Full"
 
-  dimnames(treatment.C.mean) = list(c(lab.subgrp), c("C.mean") )
-  dimnames(treatment.T.mean) = list(c(lab.subgrp), c("T.mean") )
-  dimnames(treatment.mean) = list(c(lab.subgrp), c("mean diff") )
-  dimnames(treatment.upper) = list(c(lab.subgrp), c("upper") )
-  dimnames(treatment.lower) = list(c(lab.subgrp), c("lower") )
+  dimnames(treatment.C.mean) = list(c(lab.subgrp), c("C.mean"))
+  dimnames(treatment.T.mean) = list(c(lab.subgrp), c("T.mean"))
+  dimnames(treatment.mean)  = list(c(lab.subgrp), c("mean diff"))
+  dimnames(treatment.upper) = list(c(lab.subgrp), c("upper"))
+  dimnames(treatment.lower) = list(c(lab.subgrp), c("lower"))
 
   ################################################ 2. produce a graph  #################################################################
 
@@ -438,11 +440,7 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     h[i] = ss.subgrp.T[i]/data.T.size * prop.h
 
     rectangle[[i]] = rectangleSP_test(treatment.C.mean[i], treatment.T.mean[i], w[i], h[i])
-    # sp::plot(rectangle[[i]], add=TRUE, col= adjustcolor("lightblue", alpha.f = 0.5))
     sp::plot(rectangle[[i]], add=TRUE, col= adjustcolor("white", alpha.f = 0))
-    #xl = treatment.C.mean[i] - w[i]/2;  xr = treatment.C.mean[i] + w[i]/2;
-    #yb = treatment.T.mean[i] - h[i]/2;  yt = treatment.T.mean[i] + h[i]/2;
-    #rect(xl, yb, xr, yt,   border = "black", col="lightblue", density = NA)
 
     segments(treatment.C.mean[i], treatment.C.mean[i], treatment.C.mean[i], treatment.T.mean[i], col = col.seg[i], lwd = 2)
     if (show.ci){
@@ -455,7 +453,7 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   xy.current.pos = par("usr")
   lab.pos.adj = (x.lim.max - x.lim.min) * adj.ann.subgrp
   for (i in 1 : (n.subgrp.tol + 1)){
-    x.pos[i] = xy.current.pos[1] + lab.pos.adj   #0.2
+    x.pos[i] = xy.current.pos[1] + lab.pos.adj
     y.pos[i] = xy.current.pos[4] - (i - 1) * lab.pos.adj - lab.pos.adj * 2
   }
   text(x.pos, y.pos, labels = lab.subgrp, adj = c(0, 1),  cex = font.size[3])
@@ -463,12 +461,12 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
        y.pos,
        labels = round(treatment.mean[1 : (n.subgrp.tol + 1)], 2),
        col = col.seg[1 : (n.subgrp.tol + 1)],
-       adj = c(1, 1), #pos = 2,
+       adj = c(1, 1),
        cex = font.size[3])
 
   text(x.pos[n.subgrp.tol] + lab.pos.adj * 9, y.pos[1] + lab.pos.adj,
        labels = "Effect size",
-       adj = c(1, 1),  #pos = 2,
+       adj = c(1, 1),
        cex = font.size[3], font=4)
 
 }

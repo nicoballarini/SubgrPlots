@@ -19,7 +19,7 @@ data(prca)
 dat <- prca
 ###############################################################################-
 ## 1. Level plot ---------------------------------------------------------------
-pdf("paper/figures/19-alt-e-plot.pdf", width = 5, height = 5)
+pdf("paper/figures/19-alt-e-plot.pdf", width = 5, height = 4)
 plot_dissimilarity(dat = dat,
                    covari.sel = c(4,5,6),
                    mode = 3,

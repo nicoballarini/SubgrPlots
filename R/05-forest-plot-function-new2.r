@@ -38,6 +38,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
                       title = NULL, lab.x = NULL, time = mean(dat[,resp.sel[1]]),
@@ -91,9 +93,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (!(length(widths) == 3)) stop("The 'widths' should have three components only!")
   widhts = widths/(sum(widths))
   ################################################ 1. create subgroup data  #################################################################
-
-  library(survival)
-  library(grid)
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]                          # set the names of the covariates which relates to the defined subgroup; if a covariate
@@ -236,13 +235,13 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
@@ -251,7 +250,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -263,7 +262,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -347,13 +346,13 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
       plot.data[[n.subgrp.tol + 1]] = surv.fit
       if (length(which(dat$trt == 0)) == 0){
@@ -361,7 +360,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -373,7 +372,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
@@ -406,6 +405,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   col.line = c("#a6cee3", "#1f78b4")
   data.size = dim(dat)[1]
+
   ## 2.1 First panel: Table -----
   vp <- viewport(x = 0.5, width=0.99, height=1)
   pushViewport(vp)
@@ -439,9 +439,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   grid.text(x=0.70, y=y_p, label = round(treatment.upper[n.subgrp.tol+1],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
   grid.text(x=0.98, y=y_p, label = ss.subgrp.list[n.subgrp.tol+1],           gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
 
-  # grid.text(title, gp = gpar(fontsize=font.size[1], fontface = 2))
   upViewport()
-
 
   ## 2.2 Second panel: Forest plot -----
   vp <- viewport(x = widhts[1], y = 0.83+0.10, width=widhts[2], height=0.07, just = c("left", "bottom"))
@@ -456,7 +454,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   vp <- viewport(x = widhts[1], y = 0.10, width=widhts[2], height=0.83, just = c("left", "bottom"))
   pushViewport(vp)
-  # grid.rect()
   vp <- viewport(x = 0.05, y = 0, width=0.9, height=1, just = c("left", "bottom"))
   pushViewport(vp)
   line.centre  = est.range[, 1]
@@ -471,7 +468,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   x.lim.diff = x.lim.max-x.lim.min
 
   grid.xaxis(at = seq(0,1, len = 9),
-             # vp = viewport(x=0),
              label = round(seq(x.lim.min, x.lim.max, len =9), 2),
              gp = gpar(cex = font.size[3]),
              edits = gEdit(gPath="labels", rot=0))
@@ -481,7 +477,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   ww = range((line.x.range[1, ]-x.lim.min)/x.lim.diff)
   w = (ww[2]-ww[1])/2*w
   w2 = 0.33/0.83*w*h
-  # w2 = w*h/3
   i=1
   for (i in 1:(n.subgrp.tol)){
     grid.lines(x = (line.x.range[i, ]-x.lim.min)/x.lim.diff,
@@ -536,7 +531,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     x.lim.diff = x.lim.max-x.lim.min
 
     grid.xaxis(at = seq(0,1, len = 9),
-               # vp = viewport(x=0),
                label = round(seq(x.lim.min, x.lim.max, len =9), 2),
                gp = gpar(cex = font.size[3]),
                edits = gEdit(gPath="labels", rot=0))
@@ -544,11 +538,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     i = 1:(n.subgrp.tol + 1)
     y_p_vec = 1 - (vertical_width/2 + vertical_width*(i) + vertical_width/2)
     line.y.range = matrix(rep(y_p_vec,2), ncol = 2)
-
-    title[[3]]
-    # axis(1, at = round(seq(x.lim.min, x.lim.max, len = 10 + 1), 2), labels = round(seq(x.lim.min, x.lim.max, len = 10 + 1), 2), cex.axis = font.size[4])
-    # #axis(1, at = seq(-2.5, 3.5, 0.5), labels =seq(-2.5, 3.5, 0.5))
-    # title(main= title[[3]], cex.main = font.size[1])
 
     line.C.x.range = est.C.range[, 2:3]/x.lim.diff
     line.T.x.range = est.T.range[, 2:3]/x.lim.diff
@@ -558,10 +547,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     line.C.centre = est.C.range[, 1]/x.lim.diff
     line.T.centre = est.T.range[, 1]/x.lim.diff
 
-    # w = 0.25 * ((x.lim.max - x.lim.min) / 6 ); t = 0.15
-    # h1 = y.lim.max/(x.lim.max - x.lim.min)/h
-    # w2 = w*h1/3
-    i=1
     for (i in 1: (n.subgrp.tol)){
       grid.lines(line.C.x.range[i, ], line.C.y.range[i, ], gp = gpar(col = col.line[1]))
       x0 = line.C.centre[i]; y0 = line.C.y.range[i, 1]
@@ -608,7 +593,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (KM==TRUE){
     vp <- viewport(x = widhts[1]+widhts[2], y = 0.10, width=widhts[3], height=0.83, just = c("left", "bottom"))
     pushViewport(vp)
-    # grid.rect()
 
     vp <- viewport(x = 0.3, y = 1-vertical_width/2, width=0.4, height=vertical_width/2, just = c("left", "bottom"))
     pushViewport(vp)
@@ -656,12 +640,6 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       axis(side=2, at = c(0,1),        labels = NA, col="gray",tcl=-0.1, lwd = 0.1, las = 1, cex.axis = font.size[2]/2, mgp=c(0,0.125,0))
     }
     upViewport(2)
-
-
-    # vp <- viewport(x = 0, y = 1 - vertical_width/2 - vertical_width, width=1, height = vertical_width, just = c("left", "bottom"))
-    # pushViewport(vp)
-    # vp <- viewport(x = 0, y = 0.1, width=1, height = 0.8, just = c("left", "bottom"))
-    # pushViewport(vp)
 
     grid.xaxis(at = seq(0, 1, len = n.brk),
                label = seq(0, max.time, len = n.brk),

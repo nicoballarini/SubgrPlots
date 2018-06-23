@@ -38,6 +38,7 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
 plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect=FALSE, range.strip=c(-6, 6),
                        n.brk = 30,
                        n.brk.axis = NULL,
@@ -101,10 +102,6 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
   if (!(length(font.size) == 5)) stop("The font size setups for labels or text should have five components only!")
 
   ################################################ 1. create subgroup data  #################################################################
-
-  library(grid)
-  library(survival)
-
   lab.vars = names(dat)[covari.sel]                 # set the names of the covariates which relates to the defined subgroup; if a covariate
                                                     # are considered for multiple times, we make their name identical. (otherwise, the resulsting
                                                     # names are like var.1, var.2 and so on.)
@@ -134,7 +131,7 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -201,7 +198,7 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
           treatment.mean[i,j] = model.sum$coefficients[2, 1]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[k]])
+            model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[k]])
             model.sum = summary(model.int)
             treatment.mean[i,j] = model.sum$coef[1, 1]
           }
@@ -227,7 +224,7 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
           treatment.mean.mar[i,2] = model.sum$coefficients[2, 1]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = coxph(Surv(time, status) ~ trt, data = data.mar.subgrp2[[i]])
+            model.int = survival::coxph(Surv(time, status) ~ trt, data = data.mar.subgrp2[[i]])
             model.sum = summary(model.int)
             treatment.mean.mar[i,2] = model.sum$coef[1, 1]
           }
@@ -254,7 +251,7 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
         treatment.mean.mar[j,1] = model.sum$coefficients[2, 1]
       }else if (outcome.type == "survival"){
         if (effect == "HR"){
-          model.int = coxph(Surv(time, status) ~ trt, data = data.mar.subgrp1[[j]])
+          model.int = survival::coxph(Surv(time, status) ~ trt, data = data.mar.subgrp1[[j]])
           model.sum = summary(model.int)
           treatment.mean.mar[j,1] = model.sum$coef[1, 1]
         }
@@ -286,38 +283,38 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
   ##########  middle cell
 
   #####   middle-bottom gap
-  vp <- viewport(x = 0.15 + 0.0375, y = 0.15 + 0.04, width = 0.675, height = 0.0375, just = c("left", "bottom"))
-  pushViewport(vp)
+  vp <- grid::viewport(x = 0.15 + 0.0375, y = 0.15 + 0.04, width = 0.675, height = 0.0375, just = c("left", "bottom"))
+  grid::pushViewport(vp)
 
-  grid.xaxis(seq(0, 1, by = 1/n.subgrp.var1), vp = viewport(y=0.5), label = FALSE, gp = gpar(cex = 0.6))
-  upViewport()
+  grid::grid.xaxis(seq(0, 1, by = 1/n.subgrp.var1), vp = viewport(y=0.5), label = FALSE, gp = grid::gpar(cex = 0.6))
+  grid::upViewport()
 
-  vp <- viewport(x = 0.15 + 0.0375, y = 0.0775 + 0.075, width = 0.675, height = 0.0375, just = c("left", "bottom"))
-  pushViewport(vp)
+  vp <- grid::viewport(x = 0.15 + 0.0375, y = 0.0775 + 0.075, width = 0.675, height = 0.0375, just = c("left", "bottom"))
+  grid::pushViewport(vp)
   for (i in 1:n.subgrp.var1){
-    vp <- viewport(x = 0 + (i-1) * 1/n.subgrp.var1, y = 0, width = 1/n.subgrp.var1, height = 1, just = c("left", "bottom"))
-    pushViewport(vp)
-    grid.text(0.5, vp = viewport(y = 0.5), label = lab.subgrp.col[i], gp = gpar(cex = font.size[3]))
-    upViewport()
+    vp <- grid::viewport(x = 0 + (i-1) * 1/n.subgrp.var1, y = 0, width = 1/n.subgrp.var1, height = 1, just = c("left", "bottom"))
+    grid::pushViewport(vp)
+    grid::grid.text(0.5, vp = grid::viewport(y = 0.5), label = lab.subgrp.col[i], gp = grid::gpar(cex = font.size[3]))
+    grid::upViewport()
   }
-  upViewport()
+  grid::upViewport()
 
 
   #####   left-middle gap
-  vp <- viewport(x = 0.15, y = 0.19 + 0.0375, width=0.0375, height = 0.675, just = c("left", "bottom"))
-  pushViewport(vp)
-  grid.yaxis(seq(0, 1, by = 1/n.subgrp.var2), vp = viewport(y = 0.5), label = FALSE, gp = gpar(cex = 0.6))
-  upViewport()
+  vp <- grid::viewport(x = 0.15, y = 0.19 + 0.0375, width=0.0375, height = 0.675, just = c("left", "bottom"))
+  grid::pushViewport(vp)
+  grid::grid.yaxis(seq(0, 1, by = 1/n.subgrp.var2), vp = grid::viewport(y = 0.5), label = FALSE, gp = grid::gpar.text(cex = 0.6))
+  grid::upViewport()
 
-  vp <- viewport(x = 0.15 - 0.0375, y = 0.19 + 0.0375, width = 0.0375, height = 0.675, just = c("left", "bottom"))
-  pushViewport(vp)
+  vp <- grid::viewport(x = 0.15 - 0.0375, y = 0.19 + 0.0375, width = 0.0375, height = 0.675, just = c("left", "bottom"))
+  grid::pushViewport(vp)
   for (j in 1 : n.subgrp.var2){
-    vp <- viewport(x = 0, y = 0 + (j-1)*1/n.subgrp.var2, width = 1, height = 1/n.subgrp.var2, just = c("left", "bottom"))
-    pushViewport(vp)
-    grid.text(0.5, vp = viewport(y = 0.5), label = lab.subgrp.row[j], gp = gpar(cex = font.size[3]), rot = 90)
-    upViewport()
+    vp <- grid::viewport(x = 0, y = 0 + (j-1)*1/n.subgrp.var2, width = 1, height = 1/n.subgrp.var2, just = c("left", "bottom"))
+    grid::pushViewport(vp)
+    grid::grid.text(0.5, vp = grid::viewport(y = 0.5), label = lab.subgrp.row[j], gp = grid::gpar.text(cex = font.size[3]), rot = 90)
+    grid::upViewport()
   }
-  upViewport()
+  grid::upViewport()
 
 
   ##########   middle-middle cell
@@ -356,39 +353,39 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
 
   ##### the small rectangles representing subgroups
 
-  vp <- viewport(x= 0.15 + 0.0375, y = 0.19 + 0.0375,
+  vp <- grid::viewport(x= 0.15 + 0.0375, y = 0.19 + 0.0375,
                  width= 0.675, height= 0.675, just = c("left", "bottom"))
-  pushViewport(vp)
-  grid.rect()
+  grid::pushViewport(vp)
+  grid::grid.rect()
   for (j in 1 : (n.subgrp.var1 - 1)){
-    grid.lines(c(j * 1/n.subgrp.var1, j* 1/n.subgrp.var1), c(0, 1), gp = gpar(lty = 2, col = "gray"))
+    grid::grid.lines(c(j * 1/n.subgrp.var1, j* 1/n.subgrp.var1), c(0, 1), gp = grid::gpar.text(lty = 2, col = "gray"))
   }
   for (i in 1 : (n.subgrp.var2 - 1)){
-    grid.lines(c(0, 1), c(i * 1/n.subgrp.var2, i * 1/n.subgrp.var2), gp = gpar(lty = 2, col = "gray"))
+    grid::grid.lines(c(0, 1), c(i * 1/n.subgrp.var2, i * 1/n.subgrp.var2), gp = grid::gpar.text(lty = 2, col = "gray"))
   }
-  upViewport()
+  grid::upViewport()
 
   ind = 0
   data.size = dim(dat)[1]
   for (j in 1 : n.subgrp.var1){
     for (i in 1 : n.subgrp.var2){
       ind = ind + 1
-      vp <- viewport(x = 0.15 + 0.0375 + (j - 1) * (0.675/n.subgrp.var1), y = 0.19 + 0.0375 + (i - 1) * (0.675/n.subgrp.var2),
+      vp <- grid::viewport(x = 0.15 + 0.0375 + (j - 1) * (0.675/n.subgrp.var1), y = 0.19 + 0.0375 + (i - 1) * (0.675/n.subgrp.var2),
                      width=  (0.675/n.subgrp.var1), height = (0.675/n.subgrp.var2), just = c("left", "bottom"))
-      pushViewport(vp)
+      grid::pushViewport(vp)
 
       if (ss.rect){
         width.rect <- height.rect <- sqrt(ss.subgrp[i,j]/data.size)*blow.up
       }else{
         width.rect <- height.rect <- 1}
 
-      vp <- viewport(x = 0, y = 0, width = width.rect, height = height.rect, just = c("left", "bottom"))
-      pushViewport(vp)
+      vp <- grid::viewport(x = 0, y = 0, width = width.rect, height = height.rect, just = c("left", "bottom"))
+      grid::pushViewport(vp)
 
-      grid.rect(gp = gpar(fill= col.treat[ind], col = "black", lty = 1))
-      upViewport()
-      grid.text(ss.subgrp[i,j], gp = gpar(fontsize = font.size[4], fontface = 1, col = "black"), hjust = 0.5, vjust = 0.5)
-      upViewport()
+      grid::grid.rect(gp = grid::gpar.text(fill= col.treat[ind], col = "black", lty = 1))
+      grid::upViewport()
+      grid::grid.text(ss.subgrp[i,j], gp = grid::gpar.text(fontsize = font.size[4], fontface = 1, col = "black"), hjust = 0.5, vjust = 0.5)
+      grid::upViewport()
     }
   }
 
@@ -406,16 +403,16 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
     }
   }
 
-  vp <- viewport(x = 0.0375, y = 0.19 + 0.0375, width = 0.075, height = 0.675, just = c("left", "bottom"))
-  pushViewport(vp)
-  grid.rect(gp = gpar(fill="white"))
+  vp <- grid::viewport(x = 0.0375, y = 0.19 + 0.0375, width = 0.075, height = 0.675, just = c("left", "bottom"))
+  grid::pushViewport(vp)
+  grid.rect(gp = grid::gpar.text(fill="white"))
   for (i in 1:n.subgrp.var2){
-    vp <- viewport(x = 0 , y = 0 + (i-1)*1/n.subgrp.var2, width = 1, height = 1/n.subgrp.var2, just = c("left", "bottom"))
-    pushViewport(vp)
-    grid.rect(gp = gpar(fill= col.treat[i]))
-    upViewport()
+    vp <- grid::viewport(x = 0 , y = 0 + (i-1)*1/n.subgrp.var2, width = 1, height = 1/n.subgrp.var2, just = c("left", "bottom"))
+    grid::pushViewport(vp)
+    grid.rect(gp = grid::gpar.text(fill= col.treat[i]))
+    grid::upViewport()
   }
-  upViewport()
+  grid::upViewport()
 
   ###### horizontal mariginal effect sizes
 
@@ -431,77 +428,77 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect
     }
   }
 
-  vp <- viewport(x = 0.15 + 0.0375, y = 0.0775, width = 0.675, height = 0.075, just = c("left", "bottom"))
-  pushViewport(vp)
-  grid.rect(gp = gpar(fill = "white"))
+  vp <- grid::viewport(x = 0.15 + 0.0375, y = 0.0775, width = 0.675, height = 0.075, just = c("left", "bottom"))
+  grid::pushViewport(vp)
+  grid.rect(gp = grid::gpar.text(fill = "white"))
   for (i in 1 : n.subgrp.var1){
-    vp <- viewport(x = 0 + (i-1)*1/n.subgrp.var1, y = 0, width = 1/n.subgrp.var1, height = 1, just = c("left", "bottom"))
-    pushViewport(vp)
-    grid.rect(gp = gpar(fill= col.treat[i]))
-    upViewport()
+    vp <- grid::viewport(x = 0 + (i-1)*1/n.subgrp.var1, y = 0, width = 1/n.subgrp.var1, height = 1, just = c("left", "bottom"))
+    grid::pushViewport(vp)
+    grid::grid.rect(gp = grid::gpar.text(fill= col.treat[i]))
+    grid::upViewport()
   }
-  upViewport()
+  grid::upViewport()
 
 
   ##########  create legend right-middle cell ----------
 
-  vp <- viewport(x = 0.005 + 0.9, y = 0.19 + 0.0375, width = 0.055, height = 0.675, just = c("left", "bottom"))
-  pushViewport(vp)
+  vp <- grid::viewport(x = 0.005 + 0.9, y = 0.19 + 0.0375, width = 0.055, height = 0.675, just = c("left", "bottom"))
+  grid::pushViewport(vp)
 
   col.bar.height = 1/length(col.vec)
   for (i in 1 : length(col.vec)){
-    vp <- viewport(x = 0 , y = 0 + (i-1) * col.bar.height, width=1, height=col.bar.height,  just = c("left", "bottom"))
-    pushViewport(vp)
-    grid.rect(gp = gpar(fill = col.vec[i], col = NA))
-    upViewport()
+    vp <- grid::viewport(x = 0 , y = 0 + (i-1) * col.bar.height, width=1, height=col.bar.height,  just = c("left", "bottom"))
+    grid::pushViewport(vp)
+    grid.rect(gp = grid::gpar.text(fill = col.vec[i], col = NA))
+    grid::upViewport()
   }
   # grid.rect()
 
-  grid.yaxis(seq(0, 1, len = n.brk.axis), vp = viewport(y = 0.5),
+  grid::grid.yaxis(seq(0, 1, len = n.brk.axis), vp = grid::viewport(y = 0.5),
              label = seq(min(range.strip), max(range.strip), len = n.brk.axis),
-             gp = gpar(cex = font.size[5]),
-             edits = gEdit(gPath="labels", rot=90, hjust = 0.5, vjust = 0.5))
+             gp = grid::gpar.text(cex = font.size[5]),
+             edits = grid::gEdit(gPath="labels", rot=90, hjust = 0.5, vjust = 0.5))
 
   if(show.overall){
     cat("Overall Treatment effect is:",
         overall.treatment.mean, ", with confidence interval: (",
         overall.treatment.lower,";",overall.treatment.upper,") \n")
-    grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
-    grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
-    grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
-    grid.segments(x0 = 0.5, x1 = 0.5,
+    grid::grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
+    grid::grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
+    grid::grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
+    grid::grid.segments(x0 = 0.5, x1 = 0.5,
                   y0 = (overall.treatment.lower/ (range.strip[2]-range.strip[1])) + 0.5,
                   y1 = (overall.treatment.upper/ (range.strip[2]-range.strip[1])) + 0.5)
   }
-  upViewport()
+  grid::upViewport()
 
 
   ##########  middle-top cell
-  vp <- viewport(x = 0.5, y = 0.92, width = 0.75, height = 0.05, just = c("centre", "bottom"))
-  pushViewport(vp)
+  vp <- grid::viewport(x = 0.5, y = 0.92, width = 0.75, height = 0.05, just = c("centre", "bottom"))
+  grid::pushViewport(vp)
   #main.title = paste("Treatment effect sizes across subgroups (N =", data.size,")", sep = "")
-  grid.text(title, gp = gpar(fontsize = font.size[1], fontface = 1))
-  upViewport()
+  grid::grid.text(title, gp = grid::gpar.text(fontsize = font.size[1], fontface = 1))
+  grid::upViewport()
 
 
   ##########  middle-bottom cell
-  vp <- viewport(x = 0.15, y = 0.04, width = 0.75, height = 0.04, just = c("left", "bottom"))
-  pushViewport(vp)
-  grid.text(lab.vars[1], gp = gpar(fontsize = font.size[2], fontface = 1))
-  upViewport()
+  vp <- grid::viewport(x = 0.15, y = 0.04, width = 0.75, height = 0.04, just = c("left", "bottom"))
+  grid::pushViewport(vp)
+  grid::grid.text(lab.vars[1], gp = grid::gpar.text(fontsize = font.size[2], fontface = 1))
+  grid::upViewport()
 
   ##########  left-middle cell
-  vp <- viewport(x = 0, y = 0.2, width = 0.04, height = 0.75, just = c("left", "bottom"))
-  pushViewport(vp)
-  grid.text(lab.vars[2], gp = gpar(fontsize = font.size[2], fontface = 1), rot = 90)
-  upViewport()
+  vp <- grid::viewport(x = 0, y = 0.2, width = 0.04, height = 0.75, just = c("left", "bottom"))
+  grid::pushViewport(vp)
+  grid::grid.text(lab.vars[2], gp = grid::gpar.text(fontsize = font.size[2], fontface = 1), rot = 90)
+  grid::upViewport()
 
   ##########  right-middle cell
-  vp <- viewport(x = 0.96, y = 0.19, width = 0.04, height = 0.75, just = c("left", "bottom"))
-  pushViewport(vp)
+  vp <- grid::viewport(x = 0.96, y = 0.19, width = 0.04, height = 0.75, just = c("left", "bottom"))
+  grid::pushViewport(vp)
   #col.bar.title = strip #"Treatment effect size"
-  grid.text(strip, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
-  upViewport()
+  grid::grid.text(strip, gp = grid::gpar.text(fontsize= font.size[2], fontface = 1), rot = 90)
+  grid::upViewport()
 
 
 }

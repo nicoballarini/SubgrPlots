@@ -133,7 +133,6 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
-    library(survival)
   }
 
   x.lim = range(dat[covari.sel[1]])
@@ -162,7 +161,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
 
     if(sum(weight.>weight.up)>n.cutoff){
       sum((weight.>0.01))
-      cox.result = coxph(Surv(time, status) ~ trt,
+      cox.result = survival::coxph(Surv(time, status) ~ trt,
                          data = dat,
                          weights = weight.)
       summary(cox.result)
@@ -185,10 +184,15 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
                                         c = 100, l = c(50,90),
                                         power = col.power))
 
+  ### Create a nice plot -------------------------------------------------------
   if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
   cols = col.vec
   layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
-  par(mar=c(5,4,4,2))
+  if (is.null(title)){
+    par(mar=c(4,4,2,1))
+  } else{
+    par(mar=c(4,4,4,1))
+  }
   plot(grid.xy[,1], grid.xy[,2], type = "n",
        # yaxs="i", xaxs="i",
        xlim = range(grid.pts.x),
@@ -206,7 +210,11 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
                   levels = breaks,
                   col = rev(cols))
   points(dat[, covari.sel[1]], dat[, covari.sel[2]], cex = 0.5)
-  par(mar=c(5,2, 4, 2))
+  if (is.null(title)){
+    par(mar=c(4,2,2,2.5))
+  } else{
+    par(mar=c(4,2,4,2.5))
+  }
   image.scale(brk.es,
               col= rev(cols),
               breaks = breaks,
@@ -229,7 +237,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])

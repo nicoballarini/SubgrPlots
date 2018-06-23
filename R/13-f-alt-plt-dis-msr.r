@@ -26,6 +26,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 28/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_dissimilarity_alternative <- function(dat, covari.sel, mode, range.ds = c(0,1), font.size = c(1.3, 1, 1), title = NULL, lab.y = NULL)
 {
   ################################################ 0. argument validity check  #################################################################
@@ -215,6 +217,8 @@ plot_dissimilarity_alternative <- function(dat, covari.sel, mode, range.ds = c(0
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 28/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_dissimilarity_alternative_new <- function(dat, covari.sel, mode, range.ds = c(0,1), font.size = c(1.3, 1, 1), title = NULL, lab.y = NULL)
 {
   ################################################ 0. argument validity check  #################################################################

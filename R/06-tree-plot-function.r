@@ -36,6 +36,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       add.aux.line = FALSE,  font.size = c(15, 10, 0.5),
                       title = NULL, lab.y = NULL, text.shift = 0.005,
@@ -87,9 +89,6 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (!(length(font.size) == 3)) stop("The font size setups for labels or text should have three components only!")
 
   ################################################ 1. create subgroup data  ####################################################################
-
-  library(grid)
-  library(survival)
 
   # define the colors we use
   col.line = c("blue", "red", "forestgreen", "orange", "darkorchid1", "darkgoldenrod3", "darkseagreen3", "chartreuse3", "cyan1", "deeppink1")
@@ -270,7 +269,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.low[i] = model.sum$coefficients[2, 1] - 1.96 * treatment.std[i]
         treatment.upp[i] = model.sum$coefficients[2, 1] + 1.96 * treatment.std[i]
       }else if (outcome.type == "survival"){
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
@@ -525,19 +524,4 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     upViewport(2)
   }
   upViewport()
-  ######## add annotation of the colors of the division
-
-  # vp <- viewport(x=0.08, y = 0, width= 0.84, height= 0.08, just = c("left", "bottom"))
-  # pushViewport(vp)
-  #
-  # lab.line = vector()
-  # for (m in 1 : max(n.cat.var)){
-  #   vp <- viewport(x= (m -1) * (1/max(n.cat.var)), y = 0, width= 1/max(n.cat.var), height= 1, just = c("left", "bottom"))
-  #   pushViewport(vp)
-  #   lab.line[m] = paste("Category", m)
-  #   grid.lines(c(0.4, 0.6), c(0.7, 0.7), gp=gpar(col = col.line1[m], lty = "solid", lwd = 3))
-  #   grid.text(lab.line[m], gp = gpar(fontsize = font.size[2], fontface = 2))
-  #   upViewport()
-  # }
-  # upViewport()
 }

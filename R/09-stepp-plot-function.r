@@ -51,6 +51,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, alpha, font.size = c(1.2,1,1,0.85), title = NULL, lab.y = NULL,
                       subtitle = NULL)
 {
@@ -111,8 +113,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   if (!(length(font.size) == 4)) stop("The font size setups for labels or text should have four components only!")
 
   ################################################ 1. create subgroup data  #################################################################
-
-  library(survival)
 
   ## slide-oriented window
 
@@ -204,7 +204,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
         treatment.lower.idl[i] = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2]
 
       }else if (outcome.type == "survival"){
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp.covar1[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp.covar1[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.lower[i] = model.sum$coefficients[1, 1] - gamma * 1.96 * model.sum$coef[1, 3]
@@ -231,7 +231,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
       treatment.mean.overall = model.sum$coefficients[2, 1]
 
     }else if (outcome.type == "survival"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.overall = model.sum$coef[1, 1]
     }
@@ -258,24 +258,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   cutpoint.all = vector()
   cutpoint.all = c(cutpoint.covar1[[1]], cutpoint.covar1[[2]])
 
-  #plot(covari.subgrp.mid, treatment.mean, type = "o", lwd = 1.5, pch = 16, lty = 1,  col = "red", xaxt = "n",
-  #     ylim = c(min(treatment.lower, na.rm = TRUE), max(treatment.upper, na.rm = TRUE)),
-  #     xlim = c(min(cutpoint.covar1[[1]]), max(cutpoint.covar1[[2]]) ),
-  #     xlab = lab.var, ylab = "Treatment effect diffence", main = paste("STEPP for treatment effect size of overlapping subgroups defined by", lab.var),
-  #     sub = paste("(Subgroup sample size is approx.", N2, ", overlap sample size is approx.", N1, ")" ), cex.main = font.size[1],
-  #                                                                               cex.lab = font.size[2], cex.sub =  font.size[3])
-  #axis(side = 1, at = cutpoint.all, labels = cutpoint.all, tck = -0.01)
-  #lines(covari.subgrp.mid, treatment.upper, lty = 2, lwd = 1.5, col = "blue" )
-  #lines(covari.subgrp.mid, treatment.lower, lty = 2, lwd = 1.5, col = "blue" )
-  #lines(covari.subgrp.mid, treatment.upper.idl, lty = 2, lwd = 1.5, col = "orange" )
-  #lines(covari.subgrp.mid, treatment.lower.idl, lty = 2, lwd = 1.5, col = "orange" )
-  #abline(h = 0, col = "black", lty = 2)
-  #abline(h = treatment.mean.overall, col = "green", lty = 1)
-
-  # paste("STEPP for treatment effect size of overlapping subgroups defined by", lab.var)
-  # "Treatment effect diffence"
-  # paste("(Subgroup sample sizes are set to", N2, "; overlap sizes are set to", N1, ")" )
-
   plot(c(1 : n.subgrp.covar1),
        treatment.mean,
        type = "o", lwd = 1.5, pch = 16, lty = 1,  col = "red", xaxt = "n",
@@ -290,7 +272,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
        cex.sub =  font.size[3])
   mtext(subtitle, cex = font.size[3], line = .1)
   by. = ceiling(diff((range(cutpoint.covar1[[1]])))/10)
-  # axis(side = 1, at = c(1 : n.subgrp.covar1), labels = round(cutpoint.covar1[[1]],1), tck = -0.01)
   axis(side = 1, at = seq(1, n.subgrp.covar1, by=by.),
        cex.axis = font.size[2], #tck = -0.01,
        labels = round(cutpoint.covar1[[1]],1)[seq(1, n.subgrp.covar1, by=by.)])

@@ -25,6 +25,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 28/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_dissimilarity <- function(dat, covari.sel, mode, range.ds = c(0,1), font.size = c(1, 0.9, 1, 0.7), title = NULL, lab.x = NULL)
 {
   ################################################ 0. argument validity check  #################################################################

@@ -49,6 +49,7 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 18/08/17
 #' @export
+#' @import ggplot2
 plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                          setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3),
                          para.plot = c(0.35, 2, 20), font.size = c(1.5,1.2,1,0.85,0.8),
@@ -119,9 +120,6 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ################################################ 1. create subgroup data  #################################################################
 
-  require(geoR)
-  library(survival)
-
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
     names(dat)[resp.sel] = "resp"                        # rename the response variable
@@ -129,7 +127,7 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     names(dat)[resp.sel] = "resp"                        # rename the response variable
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
-    names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
+    names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
   }
 
   covari1.table = round(sort(dat[, covari.sel[1]]), 4)
@@ -153,9 +151,7 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     cutpoint.covar1[[2]][i] = covari1.table[upp.bd.covar1.idx]
   }
 
-
   ## searching the index set of subgroups over the first covariate
-
   idx.covar1 = list()                              # the index set of subgroups over the first covariate
   n.subgrp.covar1 = length(cutpoint.covar1[[1]])   # the number of subgroups over the first covariate
   ss.subgrp.covar1 = vector()
@@ -167,8 +163,6 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
 
   ## decide the cutting point over the second covariate
-
-
   N3 = setup.ss[3]; N4 = setup.ss[4]
   cutpoint.covar2 = list()
   for (i in 1 : n.subgrp.covar1){
@@ -191,9 +185,7 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     }
   }
 
-
   ## searching the index set of subgroups over the second covariate
-
   idx.covar2 = list()
   n.subgrp.covar2 = vector()
   ss.subgrp.covar2 = list()
@@ -213,8 +205,6 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
 
   ## create the data set for subgroups over the first and second covariates
-
-
   treatment.mean = vector()
   ss.subgrp = vector()
   x = vector()
@@ -230,25 +220,18 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       if (cond1 | cond2 ){
         treatment.mean[i] = NA
       }else{
-
         if (outcome.type == "continuous"){
-
           model.int = lm(resp ~ trt,  data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coefficients[2, 1]
-
         }else if (outcome.type == "binary"){
-
           model.int = glm(resp ~ trt,  family = "binomial", data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coefficients[2, 1]
-
         }else if (outcome.type == "survival"){
-
-          model.int = coxph(Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
+          model.int = survival::coxph(Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coef[1, 1]
-
         }
       }
 
@@ -266,8 +249,6 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ################################################ 2. produce a graph  #################################################################
 
-  # grid.newpage()
-
   treatment.df = data.frame(x, y, treatment.mean)
   treatment.df.model = loess(treatment.mean ~ x*y, data = treatment.df, span = para.plot[1], degree = para.plot[2])
 
@@ -277,29 +258,10 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   x.range = seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1])
   y.range = seq(min(y) + 0.01, max(y) - 0.01, len = n.grid[2])
 
-  # plot(x, y, type = "p", xlim = range(x.range), ylim = range(y.range),
-  #      xlab = lab.vars[1], ylab = lab.vars[2],
-  #      main = title,
-  #      sub = subtitle, col = "gray80",
-  #      cex.main = font.size[1],
-  #      cex.lab = font.size[2], cex.axis = font.size[4],
-  #      cex.sub = font.size[3])
   cutoff.es = rev(c(-Inf, brk.es, Inf))
-  # col.point = c("red", "blue", "orange", "green", "violet")
+
   pal.2 = colorRampPalette(c("#91bfdb", "#ffffbf", "#fc8d59"), space = "rgb")
   col.point = pal.2(length(brk.es)+1)
-  # for (i in 1 : (length(cutoff.es) - 2) ){
-  #   points(x[setdiff(which((treatment.mean > cutoff.es[i + 1]) ),  which((treatment.mean > cutoff.es[i]) ))],
-  #          y[setdiff(which((treatment.mean > cutoff.es[i + 1]) ),  which((treatment.mean > cutoff.es[i]) ))], col = col.point[i] )
-  # }
-
-
-  # contour(x.range,
-  #         y.range,
-  #         treatment.df.model.fit,
-  #         levels = round(seq(min(treatment.mean), max(treatment.mean), len = para.plot[3]), 2),
-  #         vfont = c("sans serif", "plain"),
-  #         labcex = font.size[5], col = "darkgreen", lty = "solid", add = TRUE)         # "len" in levels controls the number of levels
   lab0.es = paste("ES >", brk.es[length(brk.es)])
   lab1.es = vector()
   for (i in length(brk.es) : 2){
@@ -307,9 +269,7 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     lab1.es = c(lab1.es, lab.es.temp)
   }
   lab2.es =paste("ES <", brk.es[1])
-
   lab.es = c(lab0.es, lab1.es, lab2.es)
-  # legend("topleft", lab.es, cex = font.size[4], col= c(col.point[1:length(brk.es)], "gray80"), pch = 1, bg = "white")
 
   dataplot = data.frame(x, y, treatment.mean, levels = cut(treatment.mean, cutoff.es))
   levels(dataplot$levels) = rev(lab.es)
@@ -317,31 +277,25 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        y = rep(y.range, each = length(x.range)),
                        z = as.vector(treatment.df.model.fit))
 
-  ggplot(dataplot) +
-    geom_point(aes(x = x, y = y, color = levels),
-               shape = 1) +
-    geom_contour(aes(x = x, y = y, #color = ..level..,
-                     z = z), color = "gray80",
+  ggplot2::ggplot(dataplot) +
+    ggplot2::geom_point(ggplot2::aes_string(x = "x", y = "y", color = "levels"), shape = 1) +
+    ggplot2::geom_contour(ggplot2::aes_string(x = "x", y = "y", z = "z"), color = "gray80",
                  bins = para.plot[3],
                  show.legend = FALSE,
-                 # breaks = cutoff.es,
                  data = datcont) +
-    guides(color = NULL) +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          panel.background = element_rect(color = "black", size = 0.25),
-          plot.title = element_text(face = "bold", hjust = 0.5),
-          plot.subtitle = element_text(hjust = 0.5),
-          legend.background = element_rect(color = "black", size = 0.25),
-          legend.key.size = unit(0.4, "cm"),
-          legend.spacing = unit(0.01, "cm"),
+    ggplot2::guides(color = NULL) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid = ggplot2::element_blank(),
+          panel.background = ggplot2::element_rect(color = "black", size = 0.25),
+          plot.title = ggplot2::element_text(face = "bold", hjust = 0.5),
+          plot.subtitle = ggplot2::element_text(hjust = 0.5),
+          legend.background = ggplot2::element_rect(color = "black", size = 0.25),
+          legend.key.size = ggplot2::unit(0.4, "cm"),
+          legend.spacing = ggplot2::unit(0.01, "cm"),
           legend.justification = c(1, 1), legend.position = c(1, 1)) +
-    labs(x = lab.vars[1], y = lab.vars[2], fill = NULL, color = NULL,
+    ggplot2::labs(x = lab.vars[1], y = lab.vars[2], fill = NULL, color = NULL,
          title = title,
          subtitle = subtitle) +
-    # scale_x_continuous(expand=c(0,0)) +
-    # scale_y_continuous(expand=c(0,0)) +
-    scale_color_brewer(direction = -1, type = "seq", palette = "YlGn") -> p
-    # scale_colour_continuous(low = "#004529", high = "#ffffe5")
+    ggplot2::scale_color_brewer(direction = -1, type = "seq", palette = "YlGn") -> p
   p
 }

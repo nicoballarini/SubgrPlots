@@ -24,11 +24,11 @@ dat <- prca
 
 ###############################################################################-
 ## 1. Level plot ---------------------------------------------------------------
-pdf("paper/figures/19-alt-d-plot.pdf", width = 5, height = 5)
+pdf("paper/figures/19-alt-d-plot.pdf", width = 4.1, height = 4)
 plot_matrix_overlap(dat,
                     covari.sel = c(6,5,4,7),
                     mode = 1,
-                    font.size = c(1.5, 1.25),
+                    font.size = c(1.5, 1.25, 0.8),
                     title = NULL)
 dev.off()
 

@@ -32,6 +32,8 @@
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
+#' @import grid
+#' @import graphics
 plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
                           outcome.type, font.size = c(15, 12, 10, 0.6),
                           title = NULL, lab.y = NULL, effect = "RMST", time = 50, sig.dig = 0)
@@ -79,9 +81,6 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
   if (!(length(font.size) == 4)) stop("The font size setups for labels or text should have four components only!")
 
   ################################################ 1. create subgroup data  #################################################################
-
-  library(grid)
-  library(survival)
 
   lab.vars = names(dat)[covari.sel]                                                             # set the names of the covariates which relates to the defined subgroup; if a covariate
                                                                                                 # are considered for multiple times, we make their name identical. (otherwise, the resulsting
@@ -147,7 +146,7 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
           treatment.std[i,j] = model.sum$coefficients[ 2, 2]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[k]])
+            model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[k]])
             model.sum = summary(model.int)
             treatment.mean[i,j] = model.sum$coef[1, 1]
             treatment.std[i,j] = model.sum$coef[1, 3]
@@ -180,7 +179,6 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
   grid.newpage()
 
   ##########  middle-top cell (set title)
-
   vp <- viewport(x = 0.1 + 0.02, y = 0.91, width = 0.85, height = 0.05, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(title, gp = gpar(fontsize = font.size[1], fontface = 2))
@@ -297,11 +295,8 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
 
   ## draw bars
 
-  # col.bar = c("red", "blue", "green", "orange", "violet","darkorchid1", "darkgoldenrod3", "darkseagreen3", "chartreuse3", "cyan1")
-  # col.bar = rep("gray89", 10)
   col.bar = rep("gray25", 10)
   col.bar = c("gray25", "gray50", "gray75")
-  # col.bar =
   for (i in 1 : n.subgrp.tol){
     y.pos.bar = 0.8 / (axis.max - axis.min) * abs(t(treatment.mean)[i])
     if (t(treatment.mean)[i] > 0){
@@ -353,7 +348,6 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
   upViewport()
 
   # back to the initial viewport
-
 
   ############ horizontal area (middle-bottom, set labels)
 

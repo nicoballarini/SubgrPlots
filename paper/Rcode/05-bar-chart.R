@@ -23,7 +23,7 @@ data(prca)
 dat <- prca
 levels(dat$age_group) = c("Young","Middle-aged","Old")
 levels(dat$weight_group)  = c("Low","Mid","High")
-names(dat)[covari.sel] = c("age", "weight")
+names(dat)[c(14,15)] = c("Age", "Weight")
 
 ###############################################################################-
 ## 4. Bar chart -----------------------------------------------------------

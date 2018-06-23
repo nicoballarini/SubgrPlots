@@ -4,23 +4,28 @@ Title: Graphical Displays for Subgroup Analysis in Clinical Trials
 Version: 0.1.0
 Author: Nicolas Ballarini, Yi-Da Chiu
 Maintainer: Nicolas Ballarini <nicolas.ballarini@meduniwien.ac.at>
-Description: This package provides functions for obtaining the graphical
-    displays from the manuscript. An example with a prostate cancer dataset is
-    provided
+Description: This package provides functions for obtaining the graphical displays from the manuscript. An example with a prostate cancer dataset is provided.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
+Depends:
+    graphics
 Imports:
     alluvial,
     circlize,
     colorspace,
     diagram,
     dplyr,
+    ggplot2,
     geoR,
     grid,
     gridBase,
+    gridExtra,
+    methods,
     pacman,
+    plyr,
     polyclip,
+    scales,
     shape,
     sp,
     spatstat,
@@ -28,6 +33,4 @@ Imports:
     survival,
     UpSetR,
     VennDiagram
-Suggests:
-    rgeos
 RoxygenNote: 5.0.1

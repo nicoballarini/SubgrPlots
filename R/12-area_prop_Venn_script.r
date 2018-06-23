@@ -1,4 +1,4 @@
-##################################################################################################################################################
+#################################################################################################################################################-
 #                                                                                                                                                #
 #                                                    Area-proportional Venn diagram for subgroup effect sizes                                    #
 #                                                                                                                                                #
@@ -8,7 +8,7 @@
 #                                                                                                                                                #
 #  created by Yi-Da Chiu 22/07/17                                                                                                                #
 #                                                                                                                                                #
-##################################################################################################################################################
+#################################################################################################################################################-
 #' Venn diagram for subgroup effect size
 #'
 #' This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.
@@ -59,9 +59,16 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                                    effect = "HR", show.overall = TRUE,
                                    palette = "divergent", col.power = 0.5){
   ####################################################### 1. create subgroup data  #################################################################
+  if (!requireNamespace("rgeos", quietly = TRUE)) {
+    stop("Package \"rgeos\" needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+  if (!requireNamespace("pacman", quietly = TRUE)) {
+    stop("Package \"pacman\" needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
   data.size = dim(dat)[1]
-  # covari.sel = c(6, 10, 4)    #  the covariates we select
-  # cat.sel = c(2, 2, 3)        #  the category indices in the above covariates
+
   n.subgrp = length(covari.sel)
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -73,10 +80,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
   }
 
-
-
-
-  # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
+  # Calculate overall Treatment effect -----------------------------------------
   if (outcome.type == "continuous"){
     model.int = lm(resp ~ trt,  data = dat)
     model.sum = summary(model.int)
@@ -91,7 +95,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -121,8 +125,6 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
   }
   lab.vars = names(dat)[covari.sel]
 
-
-
   if (n.subgrp == 2){
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
@@ -141,24 +143,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       data.subgrp[[i]] =  dat[cond[[i]], ]
     }
 
-    # create matrices for treatment effect size and standard error of MLE
-
-    # treatment.mean = matrix(rep(0, n.subgrp.tol), nrow = n.subgrp.tol, ncol = 1)
-    # for (i in 1 : n.subgrp.tol ){
-    #
-    #   cond1 = sum(data.subgrp[[i]]$trt == "0") == 0
-    #   cond2 = sum(data.subgrp[[i]]$trt == "1") == 0
-    #
-    #   if (cond1 | cond2 ){
-    #     treatment.mean[i] = NA
-    #   }else{
-    #     model.int =  lm(resp ~ trt,  data = data.subgrp[[i]])
-    #     model.sum = summary(model.int)
-    #     treatment.mean[i] = model.sum$coefficients[2, 1]
-    #   }
-    # }
     ## search for the between-cetre distances and angles
-
     w.A = length(which( A  == T  ))/data.size #802/1000   #  length(which( A  == T  ))
     w.B = length(which( B  == T  ))/data.size #740/1000   #  length(which( B  == T  ))
     w.AB = length(which( A & B  == T  ))/data.size #603/1000  #  length(which( A & B  == T  ))
@@ -296,7 +281,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
           model.sum = summary(model.int)
           treatment.mean[i] = model.sum$coefficients[2, 1]
         }else if (outcome.type == "survival"){
-          model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+          model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
           model.sum = summary(model.int)
           treatment.mean[i] = model.sum$coef[1, 1]
         }
@@ -311,16 +296,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
 
 
   ################################################ 2. produce a graph  #################################################################
-
-  if (!require("pacman")) install.packages("pacman")
-  pacman::p_load(sp, rgeos)
-  #library(sp)
-  #library(rgeos)
-
   grid::grid.newpage()
-
-  # pal.2 = colorRampPalette(c("black", "red", "yellow"), space="rgb")
-  # pal.2 = colorRampPalette(c("#fc8d59", "#ffffbf", "#91bfdb"), space = "rgb")
   breaks <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk)
   breaks.axis <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk.axis)
   levs=breaks
@@ -341,13 +317,6 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                                       power = col.power)
     if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
   }
-
-  # dev.new(width=10,height=10,noRStudioGD = TRUE)
-  # dev.off()
-  # layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
-
-  # par(mar=c(1,1,1,1))
-  # par(mar=c(0,0,0,0))
 
   if (fill) layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
   par(mar=c(1,1,1,1))
@@ -371,7 +340,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       circle.x[i, ] = c(r*cos(theta)+ circle.ox[i], r*cos(theta[1000])+ circle.ox[i])
       circle.y[i, ] = c(r*sin(theta)+ circle.oy[i], r*sin(theta[1000])+ circle.oy[i])
 
-      picture[[i]] =  SpatialPolygons(list(Polygons(list(Polygon(cbind(rev(circle.x[i, ]), rev(circle.y[i, ])))), ID = i)))
+      picture[[i]] =  sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(cbind(rev(circle.x[i, ]), rev(circle.y[i, ])))), ID = i)))
     }
 
     ind = 0
@@ -379,10 +348,10 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       for (j in (i + 1) : n.subgrp){
         ind = ind + 1
         k = ind + n.subgrp
-        picture[[k]] = gIntersection( picture[[i]], picture[[j]] )
+        picture[[k]] = rgeos::gIntersection( picture[[i]], picture[[j]] )
       }
     }
-    picture[[n.subgrp.tol - 1]] <- gIntersection(picture[[n.subgrp.tol - 2]], picture[[1]] )
+    picture[[n.subgrp.tol - 1]] <- rgeos::gIntersection(picture[[n.subgrp.tol - 2]], picture[[1]] )
 
     main.title = paste("Treatment effect sizes across subgroups (N = 1000)", sep = "");
     plot(-1:1, -1:1, type='n', axes = FALSE, xlab = "", ylab = "", main = main.title)
@@ -442,7 +411,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       circle.x[i, ] = c(r*cos(theta)+ circle.ox[i], r*cos(theta[1000])+ circle.ox[i])
       circle.y[i, ] = c(r*sin(theta)+ circle.oy[i], r*sin(theta[1000])+ circle.oy[i])
 
-      picture[[i]] =  SpatialPolygons(list(Polygons(list(Polygon(cbind(rev(circle.x[i, ]), rev(circle.y[i, ])))), ID = i)))
+      picture[[i]] =  sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(cbind(rev(circle.x[i, ]), rev(circle.y[i, ])))), ID = i)))
     }
 
     ind = 0
@@ -450,15 +419,11 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       for (j in (i + 1) : n.subgrp){
         ind = ind + 1
         k = ind + n.subgrp
-        picture[[k]] = gIntersection( picture[[i]], picture[[j]] )
+        picture[[k]] = rgeos::gIntersection( picture[[i]], picture[[j]] )
       }
     }
-    picture[[n.subgrp.tol - 1]] <- gIntersection(picture[[n.subgrp.tol - 2]], picture[[1]] )
+    picture[[n.subgrp.tol - 1]] <- rgeos::gIntersection(picture[[n.subgrp.tol - 2]], picture[[1]] )
 
-    # main.title = paste("Treatment effect sizes across subgroups (N = 1000)", sep = "");
-    # plot(-1:1, -1:1, type='n', axes = FALSE, xlab = "", ylab = "", main = title)
-    # plot(c(-0.5,1), c(-0.5,1), type='n', axes = FALSE, xlab = "", ylab = "", main = title)
-    # The plot should have an area = 1
     plot_center_x = (max(circle.x)+min(circle.x))/2
     plot_center_y = (max(circle.y)+min(circle.y))/2
     plot(c(plot_center_x - 0.5, plot_center_x + 0.5),
@@ -520,7 +485,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
 
   if (fill){
     par(mar=c(1,2, 1, 2))
-    SubgrPlots:::image.scale(treatmeant.mean, col=col.vec,
+    image.scale(treatment.mean, col=col.vec,
                              breaks = breaks-1e-8, axis.pos = 4, add.axis = FALSE)
     axis(2,
          at = breaks.axis,
@@ -538,9 +503,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                y0 = overall.treatment.lower,
                y1 = overall.treatment.upper)
     }
-    # abline(h=levs)
     mtext(strip, side=4, line=1, cex.lab = font.size[5])
     par(mfrow=c(1,1))
   }
-
 }

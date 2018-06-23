@@ -125,7 +125,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
-    library(survival)
   }
 
 
@@ -144,7 +143,7 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -276,7 +275,7 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
 
         }else if (outcome.type == "survival"){
 
-          model.int = coxph(Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
+          model.int = survival::coxph(Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coef[1, 1]
 
@@ -357,15 +356,12 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
       fxy(vv[1], vv[2], vv[3], vv[4], factor = 2, length = 0.4)
     })
 
-    dfall = do.call(rbind,dfs)
-    dfall %>%
-      # filter(x1<40,x2<40,y1<40, y2<40) %>%
-      # filter(id %in% 1:1000) %>%
-      ggplot() +
-      geom_path(aes(x=x1,y=y1, group = id), size=0.4) +
-      geom_path(aes(x=x2,y=y2, group = id), size=0.4) +
-      theme(panel.grid = element_blank()) +
-      coord_equal() -> pp
+    dfall = do.call(rbind, dfs)
+    ggplot2::ggplot(dfall) +
+      ggplot2::geom_path(ggplot2::aes_string(x="x1", y="y1", group = "id"), size=0.4) +
+      ggplot2::geom_path(ggplot2::aes_string(x="x2", y="y2", group = "id"), size=0.4) +
+      ggplot2::theme(panel.grid = ggplot2::element_blank()) +
+      ggplot2::coord_equal() -> pp
     return(pp)
   }
   if(!filled){ # Contour lines --------------

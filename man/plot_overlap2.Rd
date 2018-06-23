@@ -5,7 +5,7 @@
 \title{a graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional arrowed curved lines around a circle}
 \usage{
 plot_overlap2(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5,
-  1.5), title = NULL)
+  1.5, 0.8), title = NULL)
 }
 \arguments{
 \item{dat:}{a data set}

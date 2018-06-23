@@ -26,6 +26,6 @@ pdf("paper/figures/23-alt-a-plot-matrix.pdf", width = 7, height = 5)
 plot_overlap2(dat = dat,
               covari.sel = c(6,5,4,7),
               para = c(0.05, 0.75, 1),
-              font.size = c(1.2, 1.2),
+              font.size = c(1.2, 1.2, 0.8),
               title = NULL)
 dev.off()

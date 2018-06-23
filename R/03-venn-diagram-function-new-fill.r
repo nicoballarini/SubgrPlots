@@ -22,7 +22,6 @@
 #'@param strip:        a string specifying the title of the colour strip.
 #'
 #'@examples
-#'library(SubgrPlots)
 #'data(prca)
 #'plot_venn_fill(prca,
 #'         covari.sel = c(5, 7, 4),#vars,
@@ -53,6 +52,7 @@
 #
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
+#' @import graphics
 #' @export
 plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                            outside.area=FALSE, range.strip=c(-6, 6), n.brk=13,
@@ -120,11 +120,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
   ################################################ 1. create subgroup data  #################################################################
 
   grid::grid.newpage()
-
-  library(sp)
-  # library(rgeos)
-  library(survival)
-
   lab.vars = names(dat)[covari.sel]              # set the names of the covariates which relates to the defined subgroup; if a covariate
                                                  # are considered for multiple times, we make their name identical. (otherwise, the resulsting
                                                  # names are like var.1, var.2 and so on.)
@@ -138,8 +133,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
   }
-
-
 
   # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
   if (outcome.type == "continuous"){
@@ -156,7 +149,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -186,12 +179,10 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
 
   if (n.subgrp == 1){
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
-
     cond = list()
     cond[[1]] = which( A  == T  );  n.1 = length(which( A == T  ))
     cond[[2]] = which( A  != T  );  n.compl = length(which( A != T  ))
     cat("Only one subgroup defining variable. Try with two or more.")
-
     vp = VennDiagram::draw.single.venn(area = sum(A),
                                   category = names(dat)[covari.sel],
                                   lty = 1, ind = F,
@@ -200,34 +191,23 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
     B = dat[, covari.sel[2]] == cats.var.all[[2]][cat.sel[2]]
-
     cond = list()
     cond[[1]] = which( A & !B == T  );  n.1 = length(which( A & !B == T  ))
     cond[[2]] = which( !A & B == T  );  n.2 = length(which( !A & B == T  ))
     cond[[3]] = which(A & B == T  );    n.12 = length(which(A & B == T  ))
     cond[[4]] = which(!A & !B == T  );  n.compl = length(which(!A & !B == T  ))
 
-    vp =
-      VennDiagram::draw.pairwise.venn(area1 = sum(A),
-                                      area2 = sum(B),
-                                      cross.area = sum(A&B),
-                                      # scaled = F,
-                                      ext.pos = c(90,90),
-                                      # inverted = sum(A)<sum(B),
-                                      category = names(dat)[covari.sel],
-                                      lty = 1,
-                                      fill = "white", ind = F,
-                                      title = title)
-    # VennDiagram::draw.pairwise.venn(area1 = sum(B),
-    #                                 area2 = sum(A),
-    #                                 cross.area = sum(B&A),
-    #                                 euler.d = F, scaled = F,
-    #                                 ext.pos = c(90,90),
-    #                                 # inverted = sum(A)<sum(B),
-    #                                 category = names(dat)[covari.sel],
-    #                                 lty = 1,
-    #                                 fill = "white",
-    #                                 title = title)
+    vp = VennDiagram::draw.pairwise.venn(area1 = sum(A),
+                                        area2 = sum(B),
+                                        cross.area = sum(A&B),
+                                        # scaled = F,
+                                        ext.pos = c(90,90),
+                                        # inverted = sum(A)<sum(B),
+                                        category = names(dat)[covari.sel],
+                                        lty = 1,
+                                        fill = "white", ind = F,
+                                        title = title)
+
   }else if (n.subgrp == 3){
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
@@ -385,16 +365,13 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
   for (i in 1 : n.subgrp.tol )  data.subgrp[[i]] =  dat[cond[[i]], ]
 
   # create matrices for treatment size and standard error of MLE
-
   treatment.mean = vector()
   for (i in 1 : n.subgrp.tol){
     cond1 = sum(data.subgrp[[i]]$trt == "0") == 0
     cond2 = sum(data.subgrp[[i]]$trt == "1") == 0
-
     if (cond1 | cond2 ){
       treatment.mean[i] = NA
     }else{
-
       if (outcome.type == "continuous"){
         model.int = lm(resp ~ trt,  data = data.subgrp[[i]])
         model.sum = summary(model.int)
@@ -404,7 +381,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coefficients[2, 1]
       }else if (outcome.type == "survival"){
-        model.int = coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
       }
@@ -415,14 +392,12 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
   cat("The maximum of treatment effect sizes is", c(max(treatment.mean, na.rm = T)), "\n")
 
   ################################################ 2. produce a graph  #################################################################
-
   colors = numeric(n.subgrp.tol)
-  # pal.2=colorRampPalette(c("black", "red", "yellow"), space="rgb")
   pal.2 = colorRampPalette(c("#fc8d59", "#ffffbf", "#91bfdb"), space = "rgb")
   breaks <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk)
   breaks.axis <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk.axis)
   col.vec = pal.2((length(breaks)-1))
-  levs=breaks
+  levs = breaks
 
   pal.YlRd = colorRampPalette(c("#fee090", "#d73027"),  space = "rgb")
   pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
@@ -454,7 +429,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
     # Plot it!
-
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
@@ -471,7 +445,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
     # Plot it!
-
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
@@ -495,7 +468,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
     # Plot it!
-
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
@@ -532,7 +504,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
     # Plot it!
-
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
@@ -635,12 +606,11 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     }
   }
 
-
   layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
   par(mar=c(1,1,1,1))
   vpf()
   par(mar=c(1,2, 1, 2))
-  image.scale(treatmeant.mean, col=col.vec,
+  image.scale(treatment.mean, col=col.vec,
               breaks = breaks-1e-8, axis.pos = 4, add.axis = FALSE)
   if(show.overall){
     cat("Overall Treatment effect is:",
@@ -658,8 +628,6 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
        at = breaks.axis,
        labels = round(breaks.axis, 3),
        las = 0, cex.axis = font.size[6])
-  # abline(h=levs)
   mtext(strip, side=4, line=1, cex.lab = font.size[5])
   par(mfrow=c(1,1))
-
 }

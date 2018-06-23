@@ -1,4 +1,4 @@
-#########################################################################################################################################################
+########################################################################################################################################################-
 #                                                                                                                                                       #
 #                               a graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional               #
 #                               arrowed curved lines around a circle                                                                                    #
@@ -10,7 +10,7 @@
 #                  subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be#
 #                  changed by setting different values on the argument "para".                                                                          #
 #                                                                                                                                                       #
-#########################################################################################################################################################
+########################################################################################################################################################-
 
 #' a graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional arrowed curved lines around a circle
 #'
@@ -35,7 +35,9 @@
 # created by Yi-Da Chiu, 01/08/17
 # created by Yi-Da Chiu, 29/08/17
 #' @export
-plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5), title = NULL)
+#' @import grid
+#' @import graphics
+plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5, 0.8), title = NULL)
 {
   ################################################ 0. argument validity check  #################################################################
 
@@ -50,7 +52,7 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
   if (!(length(para) == 3)) stop("The set-up of the parameters for plot display should have three components only!")
 
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
-  if (!(length(font.size) == 2)) stop("The font size set-ups of labels or text should have two compoents only!")
+  if (!(length(font.size) == 3)) stop("The font size set-ups of labels or text should have two compoents only!")
 
   ################################################ 1. create subgroup overlap data  #################################################################
 
@@ -143,9 +145,8 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
 
 
     # creat plot
-
     par(mar=c(1,1,1,1))
-    openplotmat(main= title, cex.main = font.size[1])
+    diagram::openplotmat(main= title, cex.main = font.size[1])
 
     # n.subgrp.pair = sum(sapply(2, function(x) choose(n.subgrp.tol, x)))
     arrow.pos.adj = matrix(rep(0, n.subgrp.tol * 2), ncol = 2)
@@ -158,16 +159,6 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
 
     se = vector()                          # generate the sequence of the ending position of the lines
     se = 1:n.subgrp.tol
-    # seq = 1:n.subgrp.tol
-    # for (i in 1 : (n.subgrp.tol-1)) {
-    #   se = c(se, seq[-(1:i)])
-    # }
-    st
-    se
-
-    i=2
-    # subgroup = 1
-
     for (i in 1:n.subgrp.tol) {
       if (col.idx[i] == col.vec[1]) next()
       if (subgroup == i) next()
@@ -179,20 +170,14 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
                            arr.col  = col.idx[i],
                            lcol     = col.idx[i],
                            arr.type = "curved")
-      # diagram::curvedarrow(from = pos[se[i], ] + arrow.pos.adj[se[i]],
-      #                      to   = pos[st[i], ] + arrow.pos.adj[st[i]],
-      #                      curve = para[1], arr.pos = para[2], arr.adj = para[3],
-      #                      arr.type = "curved",
-      #                      arr.col = col.idx.rev[i], lcol =col.idx.rev[i] )
     }
 
     circle = list()
     for (i in 1: n.subgrp.tol){
       j = i + 1
-      circle[[j]] = SubgrPlots:::circleSP(x[i]/10, y[i]/10, 0.1/20, 1000)
+      circle[[j]] = circleSP(x[i]/10, y[i]/10, 0.1/20, 1000)
       sp::plot(circle[[j]], add=TRUE, col= "white")
-      #points(x1[i], y1[i], col = "blue", cex = 1.5)
-      text.p = SubgrPlots:::text.pos(x[i]/10, y[i]/10, 0.5/10, angle.circles[i])
+      text.p = text.pos(x[i]/10, y[i]/10, 0.5/10, angle.circles[i])
       text(text.p[1], text.p[2],  labels= lab.subgrp[i], col = "black", cex = font.size[2])
     }
   }
@@ -204,8 +189,6 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
                   rep(n.subgrp.tol+1, ncol.)),
                 byrow = TRUE, nrow=nrow., ncol=ncol.),
          heights = c(rep((6)/(nrow.-1),(nrow.-1)),1))
-
-  library(diagram)
   i=1
   i=i+1
   par(xpd=TRUE)
@@ -215,8 +198,9 @@ plot_overlap2 <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(
   # box()
 
   # create an image scale bar for relative overlap proportions
-  par(mar=c(3.8,4,1,4))
-  SubgrPlots:::image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8,axis.pos=1)
+  par(mar=c(4,4,0,4))
+  image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
+  mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
   box()
   par(xpd=FALSE)
 }
