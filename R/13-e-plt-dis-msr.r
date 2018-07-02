@@ -8,14 +8,14 @@
 #' at the middle of the category of dissimilarity distances. Note that some dissimilarity distances are known (such as 0 and 1) and
 #' therefore they are not shown in the graphical display. Also, the range of dissimilarity distances can be adjusted.
 #'
-#' @param dat:          a data set
-#' @param covari.sel:   a vector of indices of covariates
-#' @param mode:         a value specifying the type of display; either 1 or 2.
-#' @param range.ds:     a vector specifying the range of the dissimilarity distance
-#' @param font.size:    a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of covariates
+#' @param mode         a value specifying the type of display; either 1 or 2.
+#' @param range.ds     a vector specifying the range of the dissimilarity distance
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
 #'  is for the labels of baseline subgroups; the fourth is for the remaining subgroup labels (except for the baseline subgroup).
-#' @param title:        a string specifying the main titles.
-#' @param lab.x:        a string specifying the x-axis label.
+#' @param title        a string specifying the main titles.
+#' @param lab.x        a string specifying the x-axis label.
 #
 # e.g.          main.title = "Dissimilarity measure of pairwise subgroups";
 #               label.x = paste("Dissimilarity distance ");

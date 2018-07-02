@@ -9,11 +9,11 @@
 #'
 #'
 #'
-#' @param dat:          a data set
-#' @param covari.sel:   a vector of indices of covariates
-#' @param mode:         a value specifying the type of display; either 1 or 2,
-#' @param font.size:    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
-#' @param title:        a string specifying the main title.
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of covariates
+#' @param mode         a value specifying the type of display; either 1 or 2,
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
+#' @param title        a string specifying the main title.
 #
 # e.g.          main.title = "Relative overlapping proportions of pairwise subgroups";
 #               mat.subgrp.op(dat, c(4,6, 10), mode = 1, font.size = c(2, 1), title = main.title)
@@ -23,7 +23,8 @@
 #' @export
 #' @import grid
 #' @import graphics
-plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1, 0.8), title = NULL, new = TRUE)
+plot_matrix_overlap <- function(dat, covari.sel, mode,
+                                font.size = c(2, 1, 0.8), title = NULL)
 {
 
   ################################################ 0. argument validity check  #################################################################
@@ -91,7 +92,7 @@ plot_matrix_overlap <- function(dat, covari.sel, mode, font.size = c(2, 1, 0.8),
 
   ################################################ 2. produce a graph  #################################################################
 
-  if (new) layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
+  layout(matrix(c(1,1, 1,1, 1, 1, 2, 2), byrow = TRUE, nrow=4, ncol=2), heights=c(4,1))
   par(mar=c(0,2,2,2))
   if (is.null(title)){
     par(mar=c(0,2.1,0,0))

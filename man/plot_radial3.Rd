@@ -9,28 +9,28 @@ plot_radial3(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
   lab.xy = NULL)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{range.v:}{a vector specifying the vertical range of graphical display.}
+\item{range.v}{a vector specifying the vertical range of graphical display.}
 
-\item{adj.ann.subgrp:}{a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+\item{adj.ann.subgrp}{a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
 is, the larger the distance is.}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title, the second is for
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title, the second is for
 for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 labels near points; the fifth is for the unit labels on all the axes.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{lab.xy:}{a list of two strings specifying the labels of the x and y axes.}
+\item{lab.xy}{a list of two strings specifying the labels of the x and y axes.}
 }
 \description{
 This function produces a modified Galbraith's radial plot showing the treatment effect size of subgroups defined by the categories

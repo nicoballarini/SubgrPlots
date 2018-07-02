@@ -9,14 +9,14 @@
 #' covariate or not. The number of types shows how many categories (from the same covariate) are considered as subgroups. The
 #' range of dissimilarity distances can be adjusted.
 #'
-#' @param dat:          a data set
-#' @param covari.sel:   a vector of indices of covariates
-#' @param mode:         a value specifying the type of display; either 1 or 2.
-#' @param range.ds:     a vector specifying the range of the dissimilarity distance
-#' @param font.size:    a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of covariates
+#' @param mode         a value specifying the type of display; either 1 or 2.
+#' @param range.ds     a vector specifying the range of the dissimilarity distance
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
 #' is for the labels of baseline subgroups; the fourth is for the remaining subgroup labels (except for the baseline subgroup).
-#' @param title:        a string specifying the main titles.
-#' @param lab.y:        a string specifying the y-axis label.
+#' @param title        a string specifying the main titles.
+#' @param lab.y        a string specifying the y-axis label.
 #
 # e.g.          main.title = "Dissimilarity measure of pairwise subgroups";
 #               label.y = paste("Dissimilarity distance ");
@@ -200,14 +200,14 @@ plot_dissimilarity_alternative <- function(dat, covari.sel, mode, range.ds = c(0
 #' covariate or not. The number of types shows how many categories (from the same covariate) are considered as subgroups. The
 #' range of dissimilarity distances can be adjusted.
 #'
-#' @param dat:          a data set
-#' @param covari.sel:   a vector of indices of covariates
-#' @param mode:         a value specifying the type of display; either 1 or 2.
-#' @param range.ds:     a vector specifying the range of the dissimilarity distance
-#' @param font.size:    a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of covariates
+#' @param mode         a value specifying the type of display; either 1 or 2.
+#' @param range.ds     a vector specifying the range of the dissimilarity distance
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
 #' is for the labels of baseline subgroups; the fourth is for the remaining subgroup labels (except for the baseline subgroup).
-#' @param title:        a string specifying the main titles.
-#' @param lab.y:        a string specifying the y-axis label.
+#' @param title        a string specifying the main titles.
+#' @param lab.y        a string specifying the y-axis label.
 #
 # e.g.          main.title = "Dissimilarity measure of pairwise subgroups";
 #               label.y = paste("Dissimilarity distance ");

@@ -8,38 +8,56 @@ contourplt_new(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss,
   n.grid = c(41, 41), brk.es = c(0, 1, 2, 3), n.brk.axis = 7,
   para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2, 1, 0.85, 0.8),
   title = NULL, subtitle = NULL, effect = "HR", point.size = 1.2,
-  filled = FALSE, spiral = FALSE, strip = NULL, show.overall = FALSE,
-  verbose = TRUE, palette = "divergent", col.power = 0.5)
+  filled = FALSE, strip = NULL, time = NULL, show.overall = FALSE,
+  palette = "divergent", col.power = 0.5)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a variable index specifying the treatment code}
+\item{trt.sel}{a variable index specifying the treatment code}
 
-\item{resp.sel:}{a variable index specifying the response variable}
+\item{resp.sel}{a variable index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{setup.ss:}{a vector specifying approximate subgroup sample size and neibourghing subgroup overlap sample size. The first and the second elements
+\item{setup.ss}{a vector specifying approximate subgroup sample size and neibourghing subgroup overlap sample size. The first and the second elements
 are for overlap sizes and subgroup sample sizes over the first covariate; the third and thefourth are for further divided overlap sizes
 and subgroup sample sizes over the second covariate.}
 
-\item{n.grid:}{a vector specifying the numbers of the grid points on the x-axis and the y-axis respectively.}
+\item{n.grid}{a vector specifying the numbers of the grid points on the x-axis and the y-axis respectively.}
 
-\item{brk.es:}{a vector specifying the break points on effect size, where each range partition is given with a different colour on points.}
+\item{brk.es}{a vector specifying the break points on effect size, where each range partition is given with a different colour on points.}
 
-\item{para.plot:}{a vector specifying the parameters of the contour plot; the first value is for controlling the degree of smoothing; the second
+\item{n.brk.axis}{a number specifying the number of breakpoints dividing the axis of the argument "range.strip".}
+
+\item{para.plot}{a vector specifying the parameters of the contour plot; the first value is for controlling the degree of smoothing; the second
 is for controlling the degree of the polynomials fitting to be used (normally 1 or 2); the third is for controlling the number of
 contour lines.}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title, the second is for for x-axis and y-axis
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title, the second is for for x-axis and y-axis
 labels; the third is for the subtitle; the fourth is for the text in the legend; the fifth is for the labels on contour lines.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{subtitle:}{strings specifying the subtitle}
+\item{subtitle}{strings specifying the subtitle}
+
+\item{effect}{either "HR" or "RMST". only when outcome.type = "survival"}
+
+\item{point.size}{size of points for raw data points}
+
+\item{filled}{a logical indicator whether to show filled contour plot. If FALSE, contour lines are drawn}
+
+\item{strip}{the title for the strip showing treatment effect size}
+
+\item{time}{time for calculating the RMST}
+
+\item{show.overall}{logical. whether to show or not the overall treatment effect in the strip}
+
+\item{palette}{either "divergent" or "hcl"}
+
+\item{col.power}{to be used when palette = "hcl". see colorspace package for reference}
 }
 \description{
 this function produces a contour plot showing the treatment effect size of subgroups. The subgroups are first defined by certain

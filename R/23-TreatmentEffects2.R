@@ -2,7 +2,6 @@
 IntersectionEffectPlot2 <- function(data1, data2, start_col, names, att, outcome.type){
   end_col <- ((start_col + length(names)) - 1)
   data.all <- data2
-  # data2 <- data2[which(rowSums(data2[ ,start_col:end_col]) != 0), ]
   #tagging because x axis values need to be 1:number of sets so they line up with their intersections
   data2$tag <- 1:nrow(data2)
   sets <- list()
@@ -23,62 +22,21 @@ IntersectionEffectPlot2 <- function(data1, data2, start_col, names, att, outcome
     sel.subjects = apply(data2[names[sel.vars]],
                          MARGIN = 1,
                          function(x) all(x == values[sel.vars]))
-    # data[sel.subjects, ]
     intersections[[i]] = data2[sel.subjects, ]
     intersections[[i]]$x <- i
-    # intersections[[i]] <- intersections[[i]]$tag
   }
 
-
-  # for(i in 1:length(sets)){
-  #   intersections[[i]] <- data2[(rowSums(data2[ ,start_col:end_col]) == (length(names) - length(as.character(sets[[i]])))), ]
-  #   intersections[[i]] <- SubgroUpSetR:::Wanted(intersections[[i]], as.character(sets[[i]]))
-  #   end <- ((start_col + (length(names) - length(as.character(sets[[i]]))))-1)
-  #   if(start_col == end){
-  #     intersections[[i]] <- intersections[[i]][(intersections[[i]][ ,start_col]) == 1, ]
-  #     intersections[[i]] <- intersections[[i]]$tag
-  #   }
-  #   else{
-  #     num <- length(names) - length(as.character(sets[[i]]))
-  #     intersections[[i]] <- intersections[[i]][(rowSums(intersections[[i]][ ,start_col:end]) == num), ]
-  #     intersections[[i]] <- intersections[[i]]$tag
-  #   }
-  #   intersections[[i]] <- data2[data2$tag %in% as.numeric(intersections[[i]]), ]
-  #   intersections[[i]]$x <- i
-  # }
   for(i in 1:length(intersections)){
     effect_plot_data <- rbind(effect_plot_data, intersections[[i]])
   }
 
   # Calculate treatment effects
-
-
-  # effdat = do.call(rbind,
-  #                  lapply(unique(effect_plot_data$x), function(i){
-  #                    if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
-  #                      model.sum = summary(lm(attribute ~ trt, effect_plot_data[which(effect_plot_data$x==i), ]), confint=TRUE)
-  #                      data.frame(mean  = model.sum$coefficients[2, 1],
-  #                                 lower = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2],
-  #                                 upper = model.sum$coefficients[2, 1] + 1.96 * model.sum$coefficients[2, 2],
-  #                                 x = i)
-  #                    } else {
-  #                      data.frame(mean  = NA,
-  #                                 lower = NA,
-  #                                 upper = NA,
-  #                                 x = i)
-  #                    }
-  #                  })
-  # )
   if (outcome.type == "continuous"){
     col <- match(att[1], colnames(effect_plot_data))
     colnames(effect_plot_data)[col] <- "attribute"
     col <- match(att[1], colnames(data.all))
     colnames(data.all)[col] <- "attribute"
     model.sum = summary(lm(attribute ~ trt, data.all))
-    # overall.effect = data.frame(mean  = model.sum$coefficients[2, 1],
-    #            lower = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2],
-    #            upper = model.sum$coefficients[2, 1] + 1.96 * model.sum$coefficients[2, 2],
-    #            x = 0)
 
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
@@ -105,10 +63,6 @@ IntersectionEffectPlot2 <- function(data1, data2, start_col, names, att, outcome
 
     model.sum = summary(glm(attribute ~ trt,
                             family = "binomial", data.all))
-    # overall.effect = data.frame(mean  = model.sum$coefficients[2, 1],
-    #            lower = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2],
-    #            upper = model.sum$coefficients[2, 1] + 1.96 * model.sum$coefficients[2, 2],
-    #            x = 0)
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
                        if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
@@ -137,13 +91,13 @@ IntersectionEffectPlot2 <- function(data1, data2, start_col, names, att, outcome
     colnames(data.all)[time.ind] <- "time"
     colnames(data.all)[status.ind] <- "status"
 
-    model.sum = summary(survival::coxph(Surv(time, status) ~ trt,
+    model.sum = summary(survival::coxph(survival::Surv(time, status) ~ trt,
                               data.all))
 
     effdat = do.call(rbind,
                      lapply(unique(effect_plot_data$x), function(i){
                        if (length(unique(effect_plot_data[which(effect_plot_data$x==i), "trt"]))==2){
-                         model.sum = summary(survival::coxph(Surv(time, status) ~ trt,
+                         model.sum = summary(survival::coxph(survival::Surv(time, status) ~ trt,
                                                    effect_plot_data[which(effect_plot_data$x==i), ]))
                          data.frame(mean  = model.sum$coef[1, 1],
                                     upper = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3],
@@ -158,8 +112,6 @@ IntersectionEffectPlot2 <- function(data1, data2, start_col, names, att, outcome
                      }))
 
   }
-
-  # effdat = rbind(overall.effect, effdat)
   return(effdat)
 }
 

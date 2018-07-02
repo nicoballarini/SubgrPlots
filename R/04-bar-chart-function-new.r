@@ -5,29 +5,18 @@
 #' which is proportional to the ratio of the corresponding sample size to the full size. In addition, the function uses log odd ratio
 #' and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
-#'@param  dat:          a data set
-#'@param  covari.sel:   a vector of indices of the two covariates
-#'@param  trt.sel:      a covariate index specifying the treatment code
-#'@param  resp.sel:     a covariate index specifying the response variable
-#'@param  outcome.type: a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param  font.size:    a vector specifying the size of labels and text; the first element is for the main title; the second element is for the covariates
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of the two covariates
+#' @param trt.sel      a covariate index specifying the treatment code
+#' @param resp.sel     a covariate index specifying the response variable
+#' @param outcome.type a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the main title; the second element is for the covariates
 #'              labels and the y-axis label; the third is for the category labels; the forth is for the unit label of the y axis.
-#'@param  title:        a string specifying the main title.
-#'@param  lab.y:        a string specifying the y-axis label.
-# eg.1          main.title = paste("Treatment effect sizes across subgroups", sep = "");
-#               lab.y.title = paste("Effect size");
-#               barcht(dat = dat, covari.sel = c(4, 6), trt.sel = 2, resp.sel = 1, outcome.type = "continuous", title = main.title,
-#               lab.y = lab.y.title)
-#
-# eg.2          main.title = paste("Treatment effect sizes across subgroups", sep = "");
-#               lab.y.title = paste("Effect size (log odd ratio)");
-#               barcht(dat = dat2, covari.sel = c(2, 3), trt.sel = 4, resp.sel = 5, outcome.type = "binary", title = main.title,
-#               lab.y = lab.y.title)
-#
-# eg.3          main.title = paste("Treatment effect sizes across subgroups", sep = "");
-#               lab.y.title = paste("Treatment effect size (log hazard ratio)");
-#               barcht(dat = dat3, covari.sel = c(6, 7), trt.sel = 1, resp.sel = c(4, 3), outcome.type = "survival", title = main.title,
-#               lab.y = lab.y.title)
+#' @param title        a string specifying the main title.
+#' @param lab.y        a string specifying the y-axis label.
+#' @param effect       either "HR" or "RMST". only when outcome.type = "survival"
+#' @param time         time for calculating the RMST
+#' @param decimals      decimal places for the axis
 #
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
@@ -36,7 +25,8 @@
 #' @import graphics
 plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
                           outcome.type, font.size = c(15, 12, 10, 0.6),
-                          title = NULL, lab.y = NULL, effect = "RMST", time = 50, sig.dig = 0)
+                          title = NULL, lab.y = NULL,
+                          effect = "RMST", time = NULL, decimals = 0)
 {
 
   ################################################ 0. argument validity check  #################################################################
@@ -146,7 +136,7 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
           treatment.std[i,j] = model.sum$coefficients[ 2, 2]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[k]])
+            model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[k]])
             model.sum = summary(model.int)
             treatment.mean[i,j] = model.sum$coef[1, 1]
             treatment.std[i,j] = model.sum$coef[1, 3]
@@ -223,13 +213,12 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
     if(outcome.type != "survival"){
       axis.min = min(treatment.mean - treatment.std, na.rm = T) - 1e-8
       axis.max = max(treatment.mean + treatment.std, na.rm = T) + 1e-8
-      axis.max = ceiling(max(axis.max, abs(axis.min))*(10^sig.dig))/(10^sig.dig)
+      axis.max = ceiling(max(axis.max, abs(axis.min))*(10^decimals))/(10^decimals)
       axis.min = -axis.max
     }else{
-
       axis.min = min(treatment.mean, na.rm = T) - 1e-8
       axis.max = max(treatment.mean, na.rm = T) + 1e-8
-      axis.max = ceiling(max(axis.max, abs(axis.min))*(10^sig.dig))/(10^sig.dig)
+      axis.max = ceiling(max(axis.max, abs(axis.min))*(10^decimals))/(10^decimals)
       axis.min = -axis.max
     }
   }

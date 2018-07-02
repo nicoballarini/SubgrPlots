@@ -8,20 +8,20 @@ plot_dissimilarity_alternative_new(dat, covari.sel, mode, range.ds = c(0, 1),
   font.size = c(1.3, 1, 1), title = NULL, lab.y = NULL)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of covariates}
+\item{covari.sel}{a vector of indices of covariates}
 
-\item{mode:}{a value specifying the type of display; either 1 or 2.}
+\item{mode}{a value specifying the type of display; either 1 or 2.}
 
-\item{range.ds:}{a vector specifying the range of the dissimilarity distance}
+\item{range.ds}{a vector specifying the range of the dissimilarity distance}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the title; the second is for the x-axis label; the third
 is for the labels of baseline subgroups; the fourth is for the remaining subgroup labels (except for the baseline subgroup).}
 
-\item{title:}{a string specifying the main titles.}
+\item{title}{a string specifying the main titles.}
 
-\item{lab.y:}{a string specifying the y-axis label.}
+\item{lab.y}{a string specifying the y-axis label.}
 }
 \description{
 this function produces a plot for displaying dissimilarity distances of pairwise subgroups, where dissmiliarity distance is

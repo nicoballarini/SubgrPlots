@@ -5,18 +5,18 @@
 \title{matrix plots for relative overlap proportions of pairwise subgroups}
 \usage{
 plot_matrix_overlap(dat, covari.sel, mode, font.size = c(2, 1, 0.8),
-  title = NULL, new = TRUE)
+  title = NULL)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of covariates}
+\item{covari.sel}{a vector of indices of covariates}
 
-\item{mode:}{a value specifying the type of display; either 1 or 2,}
+\item{mode}{a value specifying the type of display; either 1 or 2,}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.}
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 }
 \description{
 this function produces a matrix plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion

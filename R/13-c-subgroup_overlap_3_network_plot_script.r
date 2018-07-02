@@ -19,13 +19,13 @@
 #' subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be
 #' changed by setting different values on the argument "para".
 #'
-#' @param dat:          a data set
-#' @param covari.sel:   a vector of indices of covariates
-#' @param para:         a vector with three elements specifying the parameters of plot display; the first element is for adjusting the curvature of curves;
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of covariates
+#' @param para         a vector with three elements specifying the parameters of plot display; the first element is for adjusting the curvature of curves;
 #'  the second is for placing the relative position of arrowheads on the lines; the third is for specifying the adjustment of the arrowhead
 #'  (there are three possible values, 0, 0.5 and 1)
-#' @param font.size:    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
-#' @param title:        a string specifying the main title.
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
+#' @param title        a string specifying the main title.
 #
 # e.g.          main.title = "Relative overlapping proportions of pairwise subgroups";
 #               unidir.aw.ovlp(dat = dat, covari.sel = c(4, 6, 10), para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5), title = main.title)

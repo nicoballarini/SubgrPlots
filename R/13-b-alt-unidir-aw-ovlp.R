@@ -8,14 +8,14 @@
 #' different colours, reflecting the level of overlap proportions; the other is that lines have five thickness and types,
 #' indicating five levels of overlap proportions.
 #'
-#' @param dat:          a data set
-#' @param covari.sel:   a vector of indices of covariates
-#' @param para:         a vector with three elements specifying the parameters of plot display; the first element is for specifying the length of the arrowhead;
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of covariates
+#' @param para         a vector with three elements specifying the parameters of plot display; the first element is for specifying the length of the arrowhead;
 #'  the second is for specifying the width of the arrowheads; the third is for specifying the adjustment of the arrowhead
 #'  (there are three possible values, 0, 0.5 and 1)
-#' @param mode:         a value specifying the type of display; either 1 or 2.
-#' @param font.size:    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
-#' @param title:        a string specifying the main title.
+#' @param mode         a value specifying the type of display; either 1 or 2.
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
+#' @param title        a string specifying the main title.
 #
 # e.g.          main.title = "Relative overlapping proportions of pairwise subgroups";
 #               alt.unidir.aw.ovlp(dat = dat, covari.sel = c(4, 6, 10), mode = 1, para = c(0.5, 0.15, 1), font.size = c(1.5, 1.5), title = main.title)

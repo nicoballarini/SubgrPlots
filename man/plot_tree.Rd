@@ -9,25 +9,28 @@ plot_tree(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   lab.y = NULL, text.shift = 0.005, keep.y.axis = FALSE)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{add.aux.line:}{a logical operator displaying the auxiliary horizontal line for checking heterogeneity in treatment effects if TRUE}
+\item{add.aux.line}{a logical operator displaying the auxiliary horizontal line for checking heterogeneity in treatment effects if TRUE}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title and  the second element}
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title and  the second element
+is for the text in the left, right and bottom labels; the third is for the unit labels on the y-axis.}
 
-\item{is}{for the text in the left, right and bottom labels; the third is for the unit labels on the y-axis.}
+\item{title}{a string specifying the main title.}
 
-\item{title:}{a string specifying the main title.}
+\item{lab.y}{a string specifying the y-axis label}
 
-\item{lab.y:}{a string specifying the y-axis label}
+\item{text.shift}{a numeric indicating the separation of the text in the branches}
+
+\item{keep.y.axis}{a logical indicating whether to keep the y axis fixed across the levels}
 }
 \description{
 This function produces a tree plot showing the treatment effect size of subgroups defined by the categories of covariates. The left

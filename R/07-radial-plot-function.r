@@ -9,19 +9,19 @@
 #' be changed by setting different values on the associated input argument. In addition, the function uses log odd ratio and log hazard
 #' ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
-#'@param dat:              a data set
-#'@param covari.sel:       a vector of indices of the two covariates
-#'@param trt.sel:          a covariate index specifying the treatment code
-#'@param resp.sel:         a covariate index specifying the response variable
-#'@param outcome.type:     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.v:          a vector specifying the vertical range of graphical display.
-#'@param adj.ann.subgrp:   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+#'@param dat              a data set
+#'@param covari.sel       a vector of indices of the two covariates
+#'@param trt.sel          a covariate index specifying the treatment code
+#'@param resp.sel         a covariate index specifying the response variable
+#'@param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.v          a vector specifying the vertical range of graphical display.
+#'@param adj.ann.subgrp   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
 #' is, the larger the distance is.
-#'@param font.size:        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#'@param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
 #' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 #' labels near points; the fifth is for the unit labels on all the axes.
-#'@param title:            a string specifying the main title.
-#'@param lab.xy:           a list of two strings specifying the labels of the x and y axes.
+#'@param title            a string specifying the main title.
+#'@param lab.xy           a list of two strings specifying the labels of the x and y axes.
 #
 # eg.1              main.title = "Radial plot"
 #                   label.xy = list("1/SE", "Standardized effect size difference   ")
@@ -172,7 +172,7 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
@@ -212,7 +212,7 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
                                                                                         # estimator
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
@@ -486,19 +486,20 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 #' be changed by setting different values on the associated input argument. In addition, the function uses log odd ratio and log hazard
 #' ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
-#'@param dat:              a data set
-#'@param covari.sel:       a vector of indices of the two covariates
-#'@param trt.sel:          a covariate index specifying the treatment code
-#'@param resp.sel:         a covariate index specifying the response variable
-#'@param outcome.type:     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.v:          a vector specifying the vertical range of graphical display.
-#'@param adj.ann.subgrp:   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+#'@param dat              a data set
+#'@param covari.sel       a vector of indices of the two covariates
+#'@param trt.sel          a covariate index specifying the treatment code
+#'@param resp.sel         a covariate index specifying the response variable
+#'@param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.v          a vector specifying the vertical range of graphical display.
+#'@param adj.ann.subgrp   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
 #' is, the larger the distance is.
-#'@param font.size:        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#'@param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
 #' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 #' labels near points; the fifth is for the unit labels on all the axes.
-#'@param title:            a string specifying the main title.
-#'@param lab.xy:           a list of two strings specifying the labels of the x and y axes.
+#'@param title            a string specifying the main title.
+#'@param lab.xy           a list of two strings specifying the labels of the x and y axes.
+#'@param plot.full a logical indicating whether to show the overall treatment effect
 #
 # eg.1              main.title = "Radial plot"
 #                   label.xy = list("1/SE", "Standardized effect size difference   ")
@@ -674,7 +675,7 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
@@ -722,7 +723,7 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
         # estimator
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
@@ -1011,19 +1012,19 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 #' be changed by setting different values on the associated input argument. In addition, the function uses log odd ratio and log hazard
 #' ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
-#'@param dat:              a data set
-#'@param covari.sel:       a vector of indices of the two covariates
-#'@param trt.sel:          a covariate index specifying the treatment code
-#'@param resp.sel:         a covariate index specifying the response variable
-#'@param outcome.type:     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.v:          a vector specifying the vertical range of graphical display.
-#'@param adj.ann.subgrp:   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+#'@param dat              a data set
+#'@param covari.sel       a vector of indices of the two covariates
+#'@param trt.sel          a covariate index specifying the treatment code
+#'@param resp.sel         a covariate index specifying the response variable
+#'@param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.v          a vector specifying the vertical range of graphical display.
+#'@param adj.ann.subgrp   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
 #' is, the larger the distance is.
-#'@param font.size:        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#'@param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
 #' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 #' labels near points; the fifth is for the unit labels on all the axes.
-#'@param title:            a string specifying the main title.
-#'@param lab.xy:           a list of two strings specifying the labels of the x and y axes.
+#'@param title            a string specifying the main title.
+#'@param lab.xy           a list of two strings specifying the labels of the x and y axes.
 #
 # eg.1              main.title = "Radial plot"
 #                   label.xy = list("1/SE", "Standardized effect size difference   ")
@@ -1175,7 +1176,7 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
@@ -1215,7 +1216,7 @@ plot_radial3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
         # estimator
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]

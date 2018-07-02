@@ -119,20 +119,13 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
     ymax <- log10(ymax)
   }
 
-  # Main_bar_data %>%
-  #   group_by(bm, pf) %>%
-  #   summarize(freq = sum(freq))
-
-  Main_bar_data %>%
-    mutate(x = max(x)-x+1) -> Main_bar_data
-  Main_bar_data_all %>%
-    mutate(x = max(x)-x+1) -> Main_bar_data_all
-  # aggregate(Main_bar_data$freq, by=list(x=Main_bar_data$x), FUN=sum)
-
+  Main_bar_data$x =  max(Main_bar_data$x) - Main_bar_data$x +1
+  Main_bar_data_all$x = max(Main_bar_data_all$x) - Main_bar_data_all$x + 1
 
   if (fill.trt){
+    Main_bar_data$trt = as.factor(Main_bar_data$trt)
     Main_bar_plot <- (ggplot(data = Main_bar_data, aes_string(x = "x", y = "freq"))
-                      + geom_bar(aes(fill = as.factor(trt)), stat = "identity", width = 0.6)
+                      + geom_bar(aes_string(fill = "trt"), stat = "identity", width = 0.6)
                       + scale_fill_manual(values = c("#a6cee3","#1f78b4")))
   } else{
     Main_bar_plot <- (ggplot(data = Main_bar_data, aes_string(x = "x", y = "freq"))

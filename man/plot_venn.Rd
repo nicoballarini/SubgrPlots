@@ -5,34 +5,35 @@
 \title{Venn diagram for subgroup effect size}
 \usage{
 plot_venn(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
-  outside.area = FALSE, range.strip = c(-6, 6), n.brk = 13,
-  font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL, strip = NULL,
-  cat.dist = rep(0.04, 3))
+  range.strip = c(-6, 6), n.brk = 13, font.size = c(1, 1.5, 1, 0.9, 1, 1),
+  title = NULL, strip = NULL, cat.dist = rep(0.04, 3))
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of covariates}
+\item{covari.sel}{a vector of indices of covariates}
 
-\item{cat.sel:}{a vector of indices of the categories for each covariate}
+\item{cat.sel}{a vector of indices of the categories for each covariate}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{range.strip:}{a vector with two elements specifying the range of treatment effect size for display}
+\item{range.strip}{a vector with two elements specifying the range of treatment effect size for display}
 
-\item{n.brk:}{a number specifying the number of the points dividing the range of the argument "range.strip".}
+\item{n.brk}{a number specifying the number of the points dividing the range of the argument "range.strip".}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
 the third is for the sample size labels; the fourth is for the legend text; the fifth is for the y-axis label of the colour strip;
 the sixth is for the unit label on the y axis.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{strip:}{a string specifying the title of the colour strip.}
+\item{strip}{a string specifying the title of the colour strip.}
+
+\item{cat.dist}{A vector (length same as covari.sel) giving the distances (in npc units) of the category names from the edges of the circles (can be negative)}
 }
 \description{
 This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.

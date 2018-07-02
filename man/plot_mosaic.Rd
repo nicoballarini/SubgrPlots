@@ -5,34 +5,66 @@
 \title{Circular plot using circlize package}
 \usage{
 plot_mosaic(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
-  adj.ann.subgrp = 4, range.strip = c(-3, 3), n.brk = 7,
-  font.size = c(1, 1, 0.85, 0.85, 1), title = NULL, lab.xy = NULL,
-  strip = "Treatment effect size", effect = "HR", lwd. = 2, sep. = 0.05,
-  palette = "divergent", col.power = 0.5)
+  adj.ann.subgrp = 4, range.strip = c(-3, 3), n.brk = 30,
+  n.brk.axis = NULL, font.size = c(1, 1, 0.85, 0.85, 1), title = NULL,
+  lab.xy = NULL, strip = "default", effect = "HR", lwd. = 2,
+  sep. = 0.05, show.overall = TRUE, palette = "divergent",
+  col.power = 0.5, print.ss = FALSE, col.line = "white", time = NULL,
+  show.marginal = TRUE, show.effect = TRUE)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{range.v:}{a vector specifying the vertical range of graphical display.}
+\item{range.v}{a vector specifying the vertical range of graphical display.}
 
-\item{adj.ann.subgrp:}{a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+\item{adj.ann.subgrp}{a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
 is, the larger the distance is.}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title, the second is for
+\item{range.strip}{range for the treatment effect scale}
+
+\item{n.brk}{number of breaks in the treatment effect scale}
+
+\item{n.brk.axis}{number of breaks in the axis of the treatment effect scale}
+
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title, the second is for
 for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 labels near points; the fifth is for the unit labels on all the axes.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{lab.xy:}{a list of two strings specifying the labels of the x and y axes.}
+\item{lab.xy}{a list of two strings specifying the labels of the x and y axes.}
+
+\item{strip}{title for the treatment effect scale}
+
+\item{effect}{either "HR" or "RMST". only when outcome.type = "survival"}
+
+\item{lwd.}{line width for the mosaics}
+
+\item{sep.}{separation for the mosaics}
+
+\item{show.overall}{logical. whether to show or not the overall treatment effect in the strip}
+
+\item{palette}{either "divergent" or "hcl"}
+
+\item{col.power}{to be used when palette = "hcl". see colorspace package for reference}
+
+\item{print.ss}{logival indicating whether to show the sample sizes of subgroups}
+
+\item{col.line}{color of the mosaics' border}
+
+\item{time}{time for calculating the RMST}
+
+\item{show.marginal}{logical indicating whether to show the marginal subgroups. only when 2 covariates are used}
+
+\item{show.effect}{logical indicating whether to show effect size using color or not. only when 3 covariates are used}
 }
 \description{
 This function produces a circular plot for subgroup analysis

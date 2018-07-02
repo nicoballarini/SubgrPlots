@@ -69,7 +69,7 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
   if(is.null(attribute_plots) == FALSE){
     bottom_margin <- (-1)*0.45
   }
-  
+
   if(length(text_scale) > 1 && length(text_scale) <= 6){
     y_axis_title_scale <- text_scale[1]
     y_axis_tick_label_scale <- text_scale[2]
@@ -80,7 +80,7 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
     y_axis_tick_label_scale <- text_scale
     intersection_size_number_scale <- text_scale
   }
-  
+
   if(is.null(Q) == F){
     inter_data <- Q
     if(nrow(inter_data) != 0){
@@ -89,7 +89,7 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
     else{inter_data <- NULL}
   }
   else{inter_data <- NULL}
-  
+
   if(is.null(ebar) == F){
     elem_data <- ebar
     if(nrow(elem_data) != 0){
@@ -98,16 +98,16 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
     else{elem_data <- NULL}
   }
   else{elem_data <- NULL}
-  
-  Main_bar_data_all = data.frame(x= unique(Main_bar_data$x), 
+
+  Main_bar_data_all = data.frame(x= unique(Main_bar_data$x),
                                  freq = tapply(Main_bar_data$freq, Main_bar_data$x, FUN=sum))
-  
+
   #ten_perc creates appropriate space above highest bar so number doesnt get cut off
   if(is.null(ymax) == T){
   ten_perc <- ((max(Main_bar_data$freq)) * 0.1)
   ymax <- max(Main_bar_data_all$freq) + ten_perc
   }
-  
+
   if(ylabel == "Intersection Size" && scale_intersections != "identity"){
     ylabel <- paste("Intersection Size", paste0("( ", scale_intersections, " )"))
   }
@@ -121,8 +121,9 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
   }
   # aggregate(Main_bar_data$freq, by=list(x=Main_bar_data$x), FUN=sum)
   if (fill.trt){
+    Main_bar_data$trt = as.factor(Main_bar_data$trt)
     Main_bar_plot <- (ggplot(data = Main_bar_data, aes_string(x = "x", y = "freq"))
-                      + geom_bar(aes(fill = as.factor(trt)), stat = "identity", width = 0.6)
+                      + geom_bar(aes_string(fill = "trt"), stat = "identity", width = 0.6)
                       + scale_fill_manual(values = c("#a6cee3","#1f78b4")))
   } else {
     Main_bar_plot <- (ggplot(data = Main_bar_data, aes_string(x = "x", y = "freq"))
@@ -140,7 +141,7 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
                             axis.text.y = element_text(vjust=0.3,size=7*y_axis_tick_label_scale)))
   if((show_num == "yes") || (show_num == "Yes")){
     Main_bar_plot <- (Main_bar_plot + geom_text(data = Main_bar_data_all,
-                                                aes_string(x = "x",label = "freq"), 
+                                                aes_string(x = "x",label = "freq"),
                                                 size = 2.2*intersection_size_number_scale, vjust = -1,
                                                 angle = number_angles))
   }
@@ -196,11 +197,11 @@ Make_main_bar <- function(Main_bar_data, Q, show_num, ratios, customQ, number_an
                                                  position = position_jitter(width = 0.2, height = 0.2),
                                                  colour = pElemDat$color, size = 2, shape = 17))
   }
-  
-  Main_bar_plot <- (Main_bar_plot 
+
+  Main_bar_plot <- (Main_bar_plot
                     + geom_vline(xintercept = 0, color = "gray0")
                     + geom_hline(yintercept = 0, color = "gray0"))
-  
+
   Main_bar_plot <- ggplotGrob(Main_bar_plot)
   return(Main_bar_plot)
 }

@@ -7,32 +7,20 @@
 #' each level so as to check homogeneity across subgroup effects with repective to the overall effect. In addition, the function uses log
 #' odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
-#'@param dat:          a data set
-#'@param covari.sel:   a vector of indices of the two covariates
-#'@param trt.sel:      a covariate index specifying the treatment code
-#'@param resp.sel:     a covariate index specifying the response variable
-#'@param outcome.type: a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param add.aux.line: a logical operator displaying the auxiliary horizontal line for checking heterogeneity in treatment effects if TRUE
-#'@param font.size:    a vector specifying the size of labels and text; the first element is for the main title and  the second element
-#'@param               is for the text in the left, right and bottom labels; the third is for the unit labels on the y-axis.
-#'@param title:        a string specifying the main title.
-#'@param lab.y:        a string specifying the y-axis label
-#
-# eg.1          main.title = paste("Tree plot for treatment effect difference across subgroups", sep = "");
-#               lab.y.title = paste("Effect size");
-#               treeplt(dat = dat, covari.sel = c(4, 6), trt.sel = 2, resp.sel = 1, outcome.type = "continuous", title = main.title,
-#               lab.y = lab.y.title)
-#
-# eg.2          main.title = paste("Tree plot for treatment effect difference across subgroups", sep = "");
-#               lab.y.title = paste("Effect size (log odds ratio)");
-#               treeplt(dat = dat2, covari.sel = c(2, 3), trt.sel = 4, resp.sel = 5, outcome.type = "binary", title = main.title,
-#               lab.y = lab.y.title)
-#
-# eg.3          main.title = paste("Tree plot for treatment effect difference across subgroups", sep = "");
-#               lab.y.title = paste("Effect size (log hazard ratio)");
-#               treeplt(dat = dat3, covari.sel = c(6, 7), trt.sel = 1, resp.sel = c(4,3), outcome.type = "survival", title = main.title,
-#               lab.y = lab.y.title)
-#
+#' @param dat          a data set
+#' @param covari.sel   a vector of indices of the two covariates
+#' @param trt.sel      a covariate index specifying the treatment code
+#' @param resp.sel     a covariate index specifying the response variable
+#' @param outcome.type a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#' @param add.aux.line a logical operator displaying the auxiliary horizontal line for checking heterogeneity in treatment effects if TRUE
+#' @param font.size    a vector specifying the size of labels and text; the first element is for the main title and  the second element
+#'       is for the text in the left, right and bottom labels; the third is for the unit labels on the y-axis.
+#' @param title        a string specifying the main title.
+#' @param lab.y        a string specifying the y-axis label
+#' @param text.shift a numeric indicating the separation of the text in the branches
+#' @param keep.y.axis a logical indicating whether to keep the y axis fixed across the levels
+#'
+#'
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
@@ -269,7 +257,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.low[i] = model.sum$coefficients[2, 1] - 1.96 * treatment.std[i]
         treatment.upp[i] = model.sum$coefficients[2, 1] + 1.96 * treatment.std[i]
       }else if (outcome.type == "survival"){
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]

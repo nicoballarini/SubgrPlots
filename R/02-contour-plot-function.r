@@ -12,41 +12,47 @@
 #' hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively. Also, the actual subgroup sample
 #' sizes over the covariates are shown on the console window.
 #'
-#' @param dat:            a data set
-#' @param covari.sel:     a vector of indices of the two covariates
-#' @param trt.sel:        a variable index specifying the treatment code
-#' @param resp.sel:       a variable index specifying the response variable
-#' @param outcome.type:   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#' @param setup.ss:       a vector specifying approximate subgroup sample size and neibourghing subgroup overlap sample size. The first and the second elements
+#' @param dat            a data set
+#' @param covari.sel     a vector of indices of the two covariates
+#' @param trt.sel        a variable index specifying the treatment code
+#' @param resp.sel       a variable index specifying the response variable
+#' @param outcome.type   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#' @param setup.ss       a vector specifying approximate subgroup sample size and neibourghing subgroup overlap sample size. The first and the second elements
 #'                  are for overlap sizes and subgroup sample sizes over the first covariate; the third and thefourth are for further divided overlap sizes
 #'                  and subgroup sample sizes over the second covariate.
-#' @param n.grid:         a vector specifying the numbers of the grid points on the x-axis and the y-axis respectively.
-#' @param brk.es:         a vector specifying the break points on effect size, where each range partition is given with a different colour on points.
-#' @param para.plot:      a vector specifying the parameters of the contour plot; the first value is for controlling the degree of smoothing; the second
+#' @param n.grid         a vector specifying the numbers of the grid points on the x-axis and the y-axis respectively.
+#' @param brk.es         a vector specifying the break points on effect size, where each range partition is given with a different colour on points.
+#' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
+#' @param para.plot      a vector specifying the parameters of the contour plot; the first value is for controlling the degree of smoothing; the second
 #'                  is for controlling the degree of the polynomials fitting to be used (normally 1 or 2); the third is for controlling the number of
 #'                  contour lines.
-#' @param font.size:      a vector specifying the size of labels and text; the first element is for the main title, the second is for for x-axis and y-axis
+#' @param font.size      a vector specifying the size of labels and text; the first element is for the main title, the second is for for x-axis and y-axis
 #'                  labels; the third is for the subtitle; the fourth is for the text in the legend; the fifth is for the labels on contour lines.
-#' @param title:          a string specifying the main title.
-#' @param subtitle:       strings specifying the subtitle
-#
-# e.g.            covari.sel = c(3, 9);
-#                 main.title = paste("Effect sizes (ES) on the plane of ", names(dat)[covari.sel[1]], "and", names(dat)[covari.sel[2]]) ;
-#                 setup.ss = c(35,40,15,20);
-#                 sub.title = paste("(N1 approx.", setup.ss[1], "; N2 approx.", setup.ss[2], "; N3 approx.", setup.ss[3], "; N4 approx.", setup.ss[4], ")" )
-#                 contour.plt(dat, covari.sel = c(3, 9), trt.sel = 2, resp.sel = 1, outcome.type = "continuous", setup.ss = c(35,40,15,20), title = main.title,
-#                 subtitle = sub.title, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3), para.plot = c(0.35, 2, 20), font.size = c(1.5,1.2,1,0.85,0.8))
-#
+#' @param title          a string specifying the main title.
+#' @param subtitle       strings specifying the subtitle
+#' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
+#' @param point.size        size of points for raw data points
+#' @param filled            a logical indicator whether to show filled contour plot. If FALSE, contour lines are drawn
+#' @param strip             the title for the strip showing treatment effect size
+#' @param time             time for calculating the RMST
+#' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
+#' @param palette          either "divergent" or "hcl"
+#' @param col.power        to be used when palette = "hcl". see colorspace package for reference
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 18/08/17
 #' @export
-contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, n.grid = c(41, 41),
+contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
+                           setup.ss, n.grid = c(41, 41),
                            brk.es = c(0, 1, 2, 3),
                            n.brk.axis =  7,
-                        para.plot = c(0.35, 2, 20), font.size = c(1.5,1.2,1,0.85,0.8), title = NULL, subtitle = NULL,
-                        effect = "HR", point.size = 1.2, filled = FALSE, spiral = FALSE,
-                        strip = NULL, show.overall = FALSE, verbose = TRUE,
-                        palette = "divergent", col.power = 0.5)
+                           para.plot = c(0.35, 2, 20),
+                           font.size = c(1.5,1.2,1,0.85,0.8),
+                           title = NULL, subtitle = NULL,
+                           effect = "HR", point.size = 1.2,
+                           filled = FALSE,
+                           strip = NULL, time = NULL,
+                           show.overall = FALSE,
+                           palette = "divergent", col.power = 0.5)
 {
 
 
@@ -143,7 +149,7 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -275,7 +281,7 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
 
         }else if (outcome.type == "survival"){
 
-          model.int = survival::coxph(Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
+          model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coef[1, 1]
 
@@ -288,12 +294,10 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
     }
   }
 
-  if(verbose){
     cat("The number of subgroups over the first covariate is", n.subgrp.covar1, "\n")
     cat("The subgroup sample sizes over the first covariate are actually", ss.subgrp.covar1, "\n")
     cat("The number of further divided subgroups over the second covariate is", n.subgrp.covar2, "\n")
-    #print("The sampel sizes of the further divided subgroups over the second covariate are", ss.subgrp.covar2, "\n")
-  }
+
 
   ################################################ 2. produce a graph  #################################################################
 
@@ -330,40 +334,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, set
   x.range = seq(min.x, max.x, len = n.grid[1])
   y.range = seq(min.y, max.y, len = n.grid[2])
 
-  if (spiral){
-    fxy = function(xx, yy, zz, id = 1, factor = 1, length = 0.5){
-      r = (zz * factor)
-      angle = (-1)^(xx+yy)*pi/4 - r*pi
-      t <- seq(0, pi, by=0.05)
-      x = t*cos(r*t)
-      y = t*sin(r*t)
-      x. = (x*cos(angle) - y*sin(angle))/sqrt(pi^2/2)/3
-      y. = (x*sin(angle) + y*cos(angle))/sqrt(pi^2/2)/3
-      x1 =  x. + xx
-      x2 = -x. + xx
-      y1 =  y. + yy
-      y2 = -y. + yy
-      data.frame(x1=x1, y1=y1, x2=x2, y2=y2, z=zz, id = id)
-    }
-
-    xy.fit.pt = expand.grid(list(x = seq(floor(min(x)), ceiling(max(x))),
-                                 y = seq(floor(min(y)), ceiling(max(y)))))
-    treatment.df.model.fit = predict(treatment.df.model, newdata = xy.fit.pt)
-    xy.fit.pt$z = as.vector(treatment.df.model.fit)
-    xy.fit.pt$id = 1:nrow(xy.fit.pt)
-    dfs = apply(X = xy.fit.pt, MARGIN = 1, FUN = function(vv){
-      vv = unname(vv)
-      fxy(vv[1], vv[2], vv[3], vv[4], factor = 2, length = 0.4)
-    })
-
-    dfall = do.call(rbind, dfs)
-    ggplot2::ggplot(dfall) +
-      ggplot2::geom_path(ggplot2::aes_string(x="x1", y="y1", group = "id"), size=0.4) +
-      ggplot2::geom_path(ggplot2::aes_string(x="x2", y="y2", group = "id"), size=0.4) +
-      ggplot2::theme(panel.grid = ggplot2::element_blank()) +
-      ggplot2::coord_equal() -> pp
-    return(pp)
-  }
   if(!filled){ # Contour lines --------------
     layout(matrix(c(1,2), ncol = 1), heights = c(9,1))
     par(mar=c(4, 4, 3, 2) + 0.1)

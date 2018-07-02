@@ -11,18 +11,18 @@
 #' for displaying subgroup effect sizes in binary and survival data, respectively. The actual subgroup sample sizes over the covariate
 #' are shown on the console window as well.
 #'
-#'@param dat:            a data set
-#'@param covari.sel:     a vector of indices of the two covariates
-#'@param trt.sel:        a variate index specifying the treatment code
-#'@param resp.sel:       a variate index specifying the response variable
-#'@param outcome.type:   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param setup.ss:       a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).
-#'@param alpha:          the type I error rate
-#'@param font.size:      a vector specifying the size of labels and text; the first element is for main titles, the second is for
+#'@param dat            a data set
+#'@param covari.sel     a vector of indices of the two covariates
+#'@param trt.sel        a variate index specifying the treatment code
+#'@param resp.sel       a variate index specifying the response variable
+#'@param outcome.type   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param setup.ss       a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).
+#'@param alpha          the type I error rate
+#'@param font.size      a vector specifying the size of labels and text; the first element is for main titles, the second is for
 #'               for x-axis and y-axis labels; the thrid is for the text in the legend; the fourth is for the subtitle.
-#'@param title:          a string specifying the main title.
-#'@param lab.y:          a string specifying the labels of the y-axis.
-#'@param subtitle:       strings specifying the subtitle
+#'@param title          a string specifying the main title.
+#'@param lab.y          a string specifying the labels of the y-axis.
+#'@param subtitle       strings specifying the subtitle
 #'
 # eg.1            var.sel = 3;
 #                 main.title = paste("STEPP for treatment effect size of overlapping subgroups defined by", names(dat)[var.sel]);
@@ -204,7 +204,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
         treatment.lower.idl[i] = model.sum$coefficients[2, 1] - 1.96 * model.sum$coefficients[2, 2]
 
       }else if (outcome.type == "survival"){
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp.covar1[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp.covar1[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.lower[i] = model.sum$coefficients[1, 1] - gamma * 1.96 * model.sum$coef[1, 3]
@@ -231,7 +231,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
       treatment.mean.overall = model.sum$coefficients[2, 1]
 
     }else if (outcome.type == "survival"){
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean.overall = model.sum$coef[1, 1]
     }

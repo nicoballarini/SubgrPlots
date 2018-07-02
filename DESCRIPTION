@@ -2,13 +2,23 @@ Package: SubgrPlots
 Type: Package
 Title: Graphical Displays for Subgroup Analysis in Clinical Trials
 Version: 0.1.0
-Author: Nicolas Ballarini, Yi-Da Chiu
-Maintainer: Nicolas Ballarini <nicolas.ballarini@meduniwien.ac.at>
-Description: This package provides functions for obtaining the graphical displays from the manuscript. An example with a prostate cancer dataset is provided.
-License: GPL-2
+Authors@R: c(
+    person("Nicolas", "Ballarini", email = "nicolas.ballarini@meduniwien.ac.at",
+    role = c("aut","cre")),
+    person("Yi-Da", "Chiu", email = "yi-da.chiu@alumni.ucl.ac.uk", 
+    role = c("aut")),
+    person("Jake", "Conway", role = "ctb"),
+    person("Nils", "Gehlenborg", role = "ctb"),
+    person("Michal", "Bojanowski", role = "ctb"),
+    person("Robin", "Edwards", role = "ctb"))
+Description: This package provides functions for obtaining the a variety of 
+    graphical displays that may be useful in the subgroup analysis setting. 
+    An example with a prostate cancer dataset is provided.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends:
+Depends: 
+    R (>= 2.10),
     graphics
 Imports:
     alluvial,
@@ -33,4 +43,6 @@ Imports:
     survival,
     UpSetR,
     VennDiagram
+Suggests:
+    rgeos
 RoxygenNote: 5.0.1

@@ -9,19 +9,19 @@ plot_overlap_alternative2(dat, covari.sel, para = c(0.5, 0.15, 1), mode,
   font.size, title = NULL)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of covariates}
+\item{covari.sel}{a vector of indices of covariates}
 
-\item{para:}{a vector with three elements specifying the parameters of plot display; the first element is for specifying the length of the arrowhead;
+\item{para}{a vector with three elements specifying the parameters of plot display; the first element is for specifying the length of the arrowhead;
 the second is for specifying the width of the arrowheads; the third is for specifying the adjustment of the arrowhead
 (there are three possible values, 0, 0.5 and 1)}
 
-\item{mode:}{a value specifying the type of display; either 1 or 2.}
+\item{mode}{a value specifying the type of display; either 1 or 2.}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.}
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 }
 \description{
 this function produces a plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion

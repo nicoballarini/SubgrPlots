@@ -2,7 +2,7 @@
 % Please edit documentation in R/23-subgroupset.R
 \name{subgroupset}
 \alias{subgroupset}
-\title{UpSetR Plot}
+\title{UpSetR Plot with treatment effects}
 \usage{
 subgroupset(data, nsets = 5, nintersects = 40, sets = NULL,
   keep.order = F, set.metadata = NULL, intersections = NULL,
@@ -98,7 +98,9 @@ See examples section on how to do this.}
 \item{boxplot.summary}{Boxplots representing the distribution of a selected attribute for each intersection. Select attributes by entering a character vector of attribute names (e.g. c("Name1", "Name2")).
 The maximum number of attributes that can be entered is 2.}
 
-\item{effects.summary}{Forest plot. Select the response variable by entering a character attribute name (e.g. "y" or "survtime")}
+\item{effects.summary}{Forest plot. Select the response variable by entering a character attribute name (e.g. "y" or c("survtime", "cens")}
+
+\item{outcome.type}{One of "continuous", "binary", or "survival" to determine the model to implement}
 
 \item{attribute.plots}{Create custom ggplot using intersection data represented in the main bar plot. Prior to adding custom plots, the UpSet plot is set up in a 100 by 100 grid.
 The attribute.plots parameter takes a list that contains the number of rows that should be allocated for the custom plot, and a list of plots with specified positions.
@@ -113,17 +115,22 @@ a custom ggplots and the x and y aesthetics for the function. ncols is the numbe
 in the following format: c(intersection size title, intersection size tick labels, set size title, set size tick labels, set names, numbers above bars)}
 
 \item{set_size.angles}{Numeric, angle to rotate the set size plot x-axis text}
+
+\item{treatment.var}{A character indicating the name of the treatment variable in the dataset}
+
+\item{min.n}{The minimum number of subjects in a subgroup to be included in the plot}
+
+\item{icon}{One of "dots", "pm", "pm.circle", or "value" which determines the icon to use in the matrix plot}
+
+\item{fill.trt}{A logical indicating whether the bar plot is coloured by treatment.}
 }
 \description{
-Visualization of set intersections using novel UpSet matrix design.
+Visualization of set intersections using novel UpSet matrix design, modified to show treatment effects and confidence intervals
 }
 \details{
 Visualization of set data in the layout described by Lex and Gehlenborg in \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}.
-UpSet also allows for visualization of queries on intersections and elements, along with custom queries queries implemented using
-Hadley Wickhams apply function. To further analyze the data contained in the intersections, the user may select additional attribute plots
-to be displayed alongside the UpSet plot. The user also has the the ability to pass their own plots into the function to further analyze
-data belonging to queries of interest. Most aspects of the UpSet plot are customizable, allowing the user to select the plot that best suits their style.
-Depending on how the featuers are selected, UpSet can display between 25-65 sets and between 40-100 intersections.
+The plot is modified here to select a treatment variable, compute the treatment effects and display them along with their confidence
+intervals in a forest plot-like panel.
 }
 \note{
 Data set must be formatted as described on the orginal UpSet github page: \url{http://github.com/VCG/upset/wiki}.

@@ -2,20 +2,31 @@
 #'
 #' This function produces a circular plot for subgroup analysis
 #'
-#'@param dat:              a data set
-#'@param covari.sel:       a vector of indices of the two covariates
-#'@param trt.sel:          a covariate index specifying the treatment code
-#'@param resp.sel:         a covariate index specifying the response variable
-#'@param outcome.type:     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.v:          a vector specifying the vertical range of graphical display.
-#'@param adj.ann.subgrp:   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+#'@param dat              a data set
+#'@param covari.sel       a vector of indices of the two covariates
+#'@param trt.sel          a covariate index specifying the treatment code
+#'@param resp.sel         a covariate index specifying the response variable
+#'@param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.v          a vector specifying the vertical range of graphical display.
+#'@param adj.ann.subgrp   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
 #' is, the larger the distance is.
-#'@param font.size:        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#'@param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
 #' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 #' labels near points; the fifth is for the unit labels on all the axes.
-#'@param title:            a string specifying the main title.
-#'@param lab.xy:           a list of two strings specifying the labels of the x and y axes.
-#
+#'@param title            a string specifying the main title.
+#'@param lab.xy           a list of two strings specifying the labels of the x and y axes.
+#' @param range.strip  a vector with two elements specifying the range of treatment effect size for display
+#' @param n.brk        a number specifying the number of the points dividing the range of the argument "range.strip".
+#' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
+#' @param strip        a string specifying the title of the colour strip.
+#' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
+#' @param palette          either "divergent" or "hcl"
+#' @param col.power        to be used when palette = "hcl". see colorspace package for reference
+#' @param equal.width  A logical indicating whether the sectors should have equal width or proportional to their sample sizes
+#' @param show.KM      A logical indicating whether to show the Kaplan-Meier curves for the subgroups
+#' @param show.effect  A logical indicating whether to show the treatment effect
+#' @param conf.int     A logical indicating whether to show confidence intervals for the treatment effect.
+#' @param show.overall A logical indicating whether to show the overall treatment effect and its confidence intervals in the reference strip
 # created by Nico, 12/03/18
 #' @export
 #' @import circlize
@@ -68,7 +79,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -211,13 +222,13 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
 
         plot.data[[i]] = surv.fit
       }
@@ -298,7 +309,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
@@ -495,7 +506,36 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
 
+#' Circular plot using circlize package
+#'
+#' This function produces a circular plot for subgroup analysis
+#'
+#'@param dat              a data set
+#'@param covari.sel       a vector of indices of the two covariates
+#'@param trt.sel          a covariate index specifying the treatment code
+#'@param resp.sel         a covariate index specifying the response variable
+#'@param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.v          a vector specifying the vertical range of graphical display.
+#'@param adj.ann.subgrp   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+#' is, the larger the distance is.
+#'@param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
+#' labels near points; the fifth is for the unit labels on all the axes.
+#'@param title            a string specifying the main title.
+#'@param lab.xy           a list of two strings specifying the labels of the x and y axes.
+#' @param range.strip  a vector with two elements specifying the range of treatment effect size for display
+#' @param n.brk        a number specifying the number of the points dividing the range of the argument "range.strip".
+#' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
+#' @param strip        a string specifying the title of the colour strip.
+#' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
+#' @param palette          either "divergent" or "hcl"
+#' @param col.power        to be used when palette = "hcl". see colorspace package for reference
+#' @param equal.width  A logical indicating whether the sectors should have equal width or proportional to their sample sizes
+#' @param show.KM      A logical indicating whether to show the Kaplan-Meier curves for the subgroups
+#' @param show.effect  A logical indicating whether to show the treatment effect
+#' @param conf.int     A logical indicating whether to show confidence intervals for the treatment effect.
 
+# created by Nico, 12/03/18
 #' @export
 #' @import circlize
 #' @import grid
@@ -659,13 +699,13 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
@@ -674,7 +714,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -686,7 +726,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -770,13 +810,13 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
       plot.data[[n.subgrp.tol + 1]] = surv.fit
       if (length(which(dat$trt == 0)) == 0){
@@ -784,7 +824,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -796,7 +836,7 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
@@ -1023,6 +1063,36 @@ plot_circle_std <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 }
 
 
+#' Circular plot using circlize package
+#'
+#' This function produces a circular plot for subgroup analysis
+#'
+#'@param dat              a data set
+#'@param covari.sel       a vector of indices of the two covariates
+#'@param trt.sel          a covariate index specifying the treatment code
+#'@param resp.sel         a covariate index specifying the response variable
+#'@param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.v          a vector specifying the vertical range of graphical display.
+#'@param adj.ann.subgrp   a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
+#' is, the larger the distance is.
+#'@param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
+#' labels near points; the fifth is for the unit labels on all the axes.
+#'@param title            a string specifying the main title.
+#'@param lab.xy           a list of two strings specifying the labels of the x and y axes.
+#' @param range.strip  a vector with two elements specifying the range of treatment effect size for display
+#' @param n.brk        a number specifying the number of the points dividing the range of the argument "range.strip".
+#' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
+#' @param strip        a string specifying the title of the colour strip.
+#' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
+#' @param palette          either "divergent" or "hcl"
+#' @param col.power        to be used when palette = "hcl". see colorspace package for reference
+#' @param equal.width  A logical indicating whether the sectors should have equal width or proportional to their sample sizes
+#' @param show.KM      A logical indicating whether to show the Kaplan-Meier curves for the subgroups
+#' @param show.effect  A logical indicating whether to show the treatment effect
+#' @param conf.int     A logical indicating whether to show confidence intervals for the treatment effect.
+#
+# created by Nico, 12/03/18
 #' @export
 #' @import circlize
 #' @import grid
@@ -1186,13 +1256,13 @@ time = 50
 
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
@@ -1201,7 +1271,7 @@ time = 50
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -1213,7 +1283,7 @@ time = 50
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -1297,13 +1367,13 @@ time = 50
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
       plot.data[[n.subgrp.tol + 1]] = surv.fit
       if (length(which(dat$trt == 0)) == 0){
@@ -1311,7 +1381,7 @@ time = 50
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -1323,7 +1393,7 @@ time = 50
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]

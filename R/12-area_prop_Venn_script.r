@@ -18,20 +18,26 @@
 #' algorithms for displaying two or three set. In addition, the function uses log odd ratio and log hazard ratio for displaying
 #' subgroup effect sizes in binary and survival data, respectively.
 #'
-#'@param dat:          a data set
-#'@param covari.sel:   a vector of indices of covariates
-#'@param cat.sel:      a vector of indices of the categories for each covariate
-#'@param trt.sel:      a covariate index specifying the treatment code
-#'@param resp.sel:     a covariate index specifying the response variable
-#'@param outcome.type: a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.strip:  a vector with two elements specifying the range of treatment effect size for display
-#'@param n.brk:        a number specifying the number of the points dividing the range of the argument "range.strip".
-#'@param font.size:    a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
+#'@param dat        a data set
+#'@param covari.sel a vector of indices of covariates
+#'@param cat.sel    a vector of indices of the categories for each covariate
+#'@param trt.sel    a covariate index specifying the treatment code
+#'@param resp.sel   a covariate index specifying the response variable
+#'@param outcome.type a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#'@param range.strip a vector with two elements specifying the range of treatment effect size for display
+#'@param n.brk      a number specifying the number of the points dividing the range of the argument "range.strip".
+#' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
+#'@param font.size  a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
 #'               the third is for the sample size labels; the fourth is for the legend text; the fifth is for the y-axis label of the colour strip;
 #'               the sixth is for the unit label on the y axis.
-#'@param title:        a string specifying the main title.
-#'@param strip:        a string specifying the title of the colour strip.
-#
+#'@param title      a string specifying the main title.
+#'@param strip      a string specifying the title of the colour strip.
+#' @param fill A logical indicating whether to color the diagram to show treatment effect sizes.
+#' @param fill.background A logical indicating whether to show treatment effect in the complement of the union of sets
+#' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
+#' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
+#' @param palette          either "divergent" or "hcl"
+#' @param col.power        to be used when palette = "hcl". see colorspace package for reference
 # eg.1          main.title = paste("Treatment effect sizes across subgroups (N = 1000)", sep = "");
 #               strip.title = paste("Treatment effect size");
 #               vd(dat = dat, covari.sel = c(4, 5, 10), cat.sel = c(1, 2, 2), trt.sel = 2, resp.sel = 1, outcome.type = "continuous",
@@ -51,7 +57,7 @@
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
 plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
-                                   outcome.type, outside.area=FALSE,
+                                   outcome.type,
                                    range.strip=c(-6, 6), n.brk=13,n.brk.axis=NULL,
                                    font.size = c(1, 1.5, 1, 0.9, 1, 1),
                                    title = NULL, strip = NULL,
@@ -95,7 +101,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     overall.treatment.lower = 0
   }else if (outcome.type == "survival"){
     if (effect == "HR"){
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       overall.treatment.mean = model.sum$coef[1, 1]
       overall.treatment.upper = log(model.sum$conf.int[1, 4])
@@ -281,7 +287,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
           model.sum = summary(model.int)
           treatment.mean[i] = model.sum$coefficients[2, 1]
         }else if (outcome.type == "survival"){
-          model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+          model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
           model.sum = summary(model.int)
           treatment.mean[i] = model.sum$coef[1, 1]
         }

@@ -8,33 +8,24 @@
 #' log odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
 #'
-#'@param dat:          a data set
-#'@param covari.sel:   a vector of indices of the two covariates
-#'@param trt.sel:      a covariate index specifying the treatment code
-#'@param resp.sel:     a covariate index specifying the response variable
-#'@param outcome.type: a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param size.shape:   a vector specifying the height and width of the diamonds displaying sample sizes.
-#'@param font.size:    a vector specifying the size of labels and text; the first element is for the main titles, the second is for
+#' @param dat a data set
+#' @param covari.sel a vector of indices of the two covariates
+#' @param trt.sel a covariate index specifying the treatment code
+#' @param resp.sel a covariate index specifying the response variable
+#' @param outcome.type a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#' @param size.shape a vector specifying the height and width of the diamonds displaying sample sizes.
+#' @param font.size a vector specifying the size of labels and text; the first element is for the main titles, the second is for
 #'               for the x-axis labels; the thrid is for the text in the first sub-figure; the fourth is for the unit labels of
 #'               the x-axis.
-#'@param title:        a list of three strings specifying the main titles of the three sub-figures.
-#'@param lab.x:        a list of three strings specifying the x-axis labels of the three sub-figures.
-#
-# eg.1          main.title = list("", "Forestplot of subgroups", "Forestplot of subgroups (T | C)")
-#               label.x = list("", "Effect size", "Treatment effect")
-#               forestplt(dat = dat, covari.sel = c(4, 6), trt.sel = 2, resp.sel = 1, outcome.type = "continuous", title = main.title,
-#               lab.x = label.x)
-#
-# eg.2          main.title = list("", "Forestplot of subgroups", "Forestplot of subgroups (T | C)")
-#               label.x = list("", "Log odds ratio", "Log odds")
-#               forestplt(dat = dat2, covari.sel = c(2, 3), trt.sel = 4, resp.sel = 5, outcome.type = "binary", title = main.title,
-#               lab.x = label.x)
-#
-# eg.3          main.title = list("", "Forestplot of subgroups", "Forestplot of subgroups (T | C)")
-#               label.x = list("", "Log hazard ratio", "")
-#               forestplt(dat = dat3, covari.sel = c(6, 7), trt.sel = 1, resp.sel = c(4,3), outcome.type = "survival", title = main.title,
-#               lab.x = label.x, size.shape = c(0.18, 0.12))
-#
+#' @param title a list of three strings specifying the main titles of the three sub-figures.
+#' @param lab.x a list of three strings specifying the x-axis labels of the three sub-figures.
+#' @param time time for calculating the RMST
+#' @param pdf a logical indicating whether the plot is inside a pdf() device
+#' @param KM a logical indicating whether to show the Kaplan-Meier curves in the third panel
+#' @param show.km.axis a logical indicating whether to show the axes in the Kaplan-Meier curves
+#' @param widths a vector of length 3 indicating the widths of the panels
+#' @param max.time a numeric input indicating the maximum time for x-axis in the the Kaplan-Meier curves. If NULL, the maximum is taken from the dataset.
+#' @param n.brk number of breaks in the Kaplan-Meier curves
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
@@ -235,13 +226,13 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
       }else if (outcome.type == "survival"){
 
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+        surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         difference <- summary(surv.fit, time=time)
 
         plot.data[[i]] = surv.fit
@@ -250,7 +241,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.C.upper[i] = NA
           treatment.C.lower[i] = NA
         }else{
-          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
+          model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 0), ])
           model.sum = summary(model.int)
           treatment.C.mean[i] = difference$surv[1]
           treatment.C.upper[i] = difference$upper[1]
@@ -262,7 +253,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           treatment.T.upper[i] = NA
           treatment.T.lower[i] = NA
         }else{
-          model.int = survival::coxph(Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
+          model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = data.subgrp[[i]][which(data.subgrp[[i]]$trt == 1), ])
           model.sum = summary(model.int)
           treatment.T.mean[i] =  difference$surv[2]
           treatment.T.upper[i] = difference$upper[2]
@@ -346,13 +337,13 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     }else if (outcome.type == "survival"){
 
-      model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
       model.sum = summary(model.int)
       treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
       treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
       treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-      surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
+      surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = dat)
       difference <- summary(surv.fit, time=time)
       plot.data[[n.subgrp.tol + 1]] = surv.fit
       if (length(which(dat$trt == 0)) == 0){
@@ -360,7 +351,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.C.upper[n.subgrp.tol + 1] = NA
         treatment.C.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
+        model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = dat[which(dat$trt == 0), ])
         model.sum = summary(model.int)
         treatment.C.mean[n.subgrp.tol + 1]  = difference$surv[1]
         treatment.C.upper[n.subgrp.tol + 1] = difference$upper[1]
@@ -372,7 +363,7 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
         treatment.T.upper[n.subgrp.tol + 1] = NA
         treatment.T.lower[n.subgrp.tol + 1] = NA
       }else{
-        model.int = survival::coxph(Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
+        model.int = survival::coxph(survival::Surv(time, status) ~ 1, data = dat[which(dat$trt == 1), ])
         model.sum = summary(model.int)
         treatment.T.mean[n.subgrp.tol + 1]  = difference$surv[2]
         treatment.T.upper[n.subgrp.tol + 1] = difference$upper[2]
@@ -646,6 +637,5 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                gp = gpar(cex = font.size[3]),
                edits = gEdit(gPath="labels", rot=0))
     upViewport(3)
-
   }
 }

@@ -11,25 +11,39 @@ plot_forest2(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   max.time = NULL, n.brk = 10)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{size.shape:}{a vector specifying the height and width of the diamonds displaying sample sizes.}
+\item{size.shape}{a vector specifying the height and width of the diamonds displaying sample sizes.}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main titles, the second is for
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main titles, the second is for
 for the x-axis labels; the thrid is for the text in the first sub-figure; the fourth is for the unit labels of
 the x-axis.}
 
-\item{title:}{a list of three strings specifying the main titles of the three sub-figures.}
+\item{title}{a list of three strings specifying the main titles of the three sub-figures.}
 
-\item{lab.x:}{a list of three strings specifying the x-axis labels of the three sub-figures.}
+\item{lab.x}{a list of three strings specifying the x-axis labels of the three sub-figures.}
+
+\item{time}{time for calculating the RMST}
+
+\item{pdf}{a logical indicating whether the plot is inside a pdf() device}
+
+\item{KM}{a logical indicating whether to show the Kaplan-Meier curves in the third panel}
+
+\item{show.km.axis}{a logical indicating whether to show the axes in the Kaplan-Meier curves}
+
+\item{widths}{a vector of length 3 indicating the widths of the panels}
+
+\item{max.time}{a numeric input indicating the maximum time for x-axis in the the Kaplan-Meier curves. If NULL, the maximum is taken from the dataset.}
+
+\item{n.brk}{number of breaks in the Kaplan-Meier curves}
 }
 \description{
 This function produces a forest plot showing the treatment effect size of subgroups defined by the categories of covariates. The

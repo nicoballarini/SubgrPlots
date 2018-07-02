@@ -8,17 +8,17 @@ plot_overlap(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5,
   1), title = NULL)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of covariates}
+\item{covari.sel}{a vector of indices of covariates}
 
-\item{para:}{a vector with three elements specifying the parameters of plot display; the first element is for adjusting the curvature of curves;
+\item{para}{a vector with three elements specifying the parameters of plot display; the first element is for adjusting the curvature of curves;
 the second is for placing the relative position of arrowheads on the lines; the third is for specifying the adjustment of the arrowhead
 (there are three possible values, 0, 0.5 and 1)}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.}
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 }
 \description{
 this function produces a plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion is

@@ -1,6 +1,6 @@
-#' UpSetR Plot
+#' UpSetR Plot with treatment effects
 #'
-#' @description Visualization of set intersections using novel UpSet matrix design.
+#' @description Visualization of set intersections using novel UpSet matrix design, modified to show treatment effects and confidence intervals
 #' @param data Data set
 #' @param nsets Number of sets to look at
 #' @param nintersects Number of intersections to plot. If set to NA, all intersections will be plotted.
@@ -43,7 +43,7 @@
 #' @param color.pal Color palette for attribute plots
 #' @param boxplot.summary Boxplots representing the distribution of a selected attribute for each intersection. Select attributes by entering a character vector of attribute names (e.g. c("Name1", "Name2")).
 #'        The maximum number of attributes that can be entered is 2.
-#' @param effects.summary Forest plot. Select the response variable by entering a character attribute name (e.g. "y" or "survtime")
+#' @param effects.summary Forest plot. Select the response variable by entering a character attribute name (e.g. "y" or c("survtime", "cens")
 #' @param attribute.plots Create custom ggplot using intersection data represented in the main bar plot. Prior to adding custom plots, the UpSet plot is set up in a 100 by 100 grid.
 #'        The attribute.plots parameter takes a list that contains the number of rows that should be allocated for the custom plot, and a list of plots with specified positions.
 #'        nrows is the number of rows the custom plots should take up. There is already 100 allocated for the custom plot. plots takes a list that contains a function that returns
@@ -53,12 +53,14 @@
 #' @param text.scale Numeric, value to scale the text sizes, applies to all axis labels, tick labels, and numbers above bar plot. Can be a universal scale, or a vector containing individual scales
 #'        in the following format: c(intersection size title, intersection size tick labels, set size title, set size tick labels, set names, numbers above bars)
 #' @param set_size.angles Numeric, angle to rotate the set size plot x-axis text
+#' @param outcome.type One of "continuous", "binary", or "survival" to determine the model to implement
+#' @param treatment.var A character indicating the name of the treatment variable in the dataset
+#' @param min.n The minimum number of subjects in a subgroup to be included in the plot
+#' @param icon One of "dots", "pm", "pm.circle", or "value" which determines the icon to use in the matrix plot
+#' @param fill.trt A logical indicating whether the bar plot is coloured by treatment.
 #' @details Visualization of set data in the layout described by Lex and Gehlenborg in \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}.
-#' UpSet also allows for visualization of queries on intersections and elements, along with custom queries queries implemented using
-#' Hadley Wickhams apply function. To further analyze the data contained in the intersections, the user may select additional attribute plots
-#' to be displayed alongside the UpSet plot. The user also has the the ability to pass their own plots into the function to further analyze
-#' data belonging to queries of interest. Most aspects of the UpSet plot are customizable, allowing the user to select the plot that best suits their style.
-#' Depending on how the featuers are selected, UpSet can display between 25-65 sets and between 40-100 intersections.
+#' The plot is modified here to select a treatment variable, compute the treatment effects and display them along with their confidence
+#' intervals in a forest plot-like panel.
 #' @note Data set must be formatted as described on the orginal UpSet github page: \url{http://github.com/VCG/upset/wiki}.
 #' @references Lex et al. (2014). UpSet: Visualization of Intersecting Sets
 #' IEEE Transactions on Visualization and Computer Graphics (Proceedings of InfoVis 2014), vol 20, pp. 1983-1992, (2014). \url{http://people.seas.harvard.edu/~alex/papers/2014_infovis_upset.pdf}
@@ -157,11 +159,7 @@ subgroupset <- function(data, nsets = 5, nintersects = 40, sets = NULL, keep.ord
 
   BoxPlots <- NULL
   if(is.null(boxplot.summary) == F){
-    BoxData <- IntersectionBoxPlot(All_Freqs, New_data, first.col, Set_names)
-    BoxPlots <- list()
-    for(i in seq_along(boxplot.summary)){
-      BoxPlots[[i]] <- BoxPlotsPlot(BoxData, boxplot.summary[i], att.color)
-    }
+    warning("boxplot.summary is not available for subgroUpSet")
   }
 
   EffectPlots <- list()
@@ -178,56 +176,25 @@ subgroupset <- function(data, nsets = 5, nintersects = 40, sets = NULL, keep.ord
   legend <- NULL
   EBar_data <- NULL
   if(is.null(queries) == F){
-    custom.queries <- SeperateQueries(queries, 2, palette)
-    customDat <- customQueries(New_data, custom.queries, Set_names)
-    legend <- GuideGenerator(queries, palette)
-    legend <- Make_legend(legend)
-    if(is.null(att.x) == F && is.null(customDat) == F){
-      customAttDat <- CustomAttData(customDat, Set_names)
-    }
-    customQBar <- customQueriesBar(customDat, Set_names, All_Freqs, custom.queries)
-  }
-  if(is.null(queries) == F){
-    Intersection <- SeperateQueries(queries, 1, palette)
-    Matrix_col <- intersects(QuerieInterData, Intersection, New_data, first.col, Num_of_set,
-                             All_Freqs, expression, Set_names, palette)
-    Element <- SeperateQueries(queries, 1, palette)
-    EBar_data <-ElemBarDat(Element, New_data, first.col, expression, Set_names,palette, All_Freqs)
-  }
-  else{
+    warning("queries is not available for subgroUpSet")
+    Matrix_col <- NULL
+  } else{
     Matrix_col <- NULL
   }
 
   Matrix_layout <- Create_layout(Matrix_setup, matrix.color, Matrix_col, matrix.dot.alpha)
   Set_sizes <- FindSetFreqs(New_data, first.col, Num_of_set, Set_names, keep.order)
   Bar_Q <- NULL
-  if(is.null(queries) == F){
-    Bar_Q <- intersects(QuerieInterBar, Intersection, New_data, first.col, Num_of_set, All_Freqs, expression, Set_names, palette)
-  }
   QInter_att_data <- NULL
   QElem_att_data <- NULL
-  if((is.null(queries) == F) & (is.null(att.x) == F)){
-    QInter_att_data <- intersects(QuerieInterAtt, Intersection, New_data, first.col, Num_of_set, att.x, att.y,
-                                  expression, Set_names, palette)
-    QElem_att_data <- elements(QuerieElemAtt, Element, New_data, first.col, expression, Set_names, att.x, att.y,
-                               palette)
-  }
-  # AllQueryData <- combineQueriesData(QInter_att_data, QElem_att_data, customAttDat, att.x, att.y)
   AllQueryData <- NULL
   ShadingData <- NULL
-
+  set.metadata.plots <- NULL
   if(is.null(set.metadata) == F){
-    ShadingData <- get_shade_groups(set.metadata, Set_names, Matrix_layout, shade.alpha)
-    output <- Make_set_metadata_plot(set.metadata, Set_names)
-    set.metadata.plots <- output[[1]]
-    set.metadata <- output[[2]]
-
-    if(is.null(ShadingData) == FALSE){
-    shade.alpha <- unique(ShadingData$alpha)
-    }
+    warning("set.metadata is not available for subgroUpSet")
   }
   if(is.null(ShadingData) == TRUE){
-  ShadingData <- MakeShading(Matrix_layout, shade.color)
+    warning("ShadingData is not available for subgroUpSet")
   }
   All_Freqs_Trt = rbind(data.frame(Trt_Freqs, trt = unique(New_data[[treatment.var]])[2]),
                         data.frame(Ctl_Freqs, trt = unique(New_data[[treatment.var]])[1]))

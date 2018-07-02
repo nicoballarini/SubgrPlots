@@ -5,35 +5,49 @@
 \title{Venn diagram for subgroup effect size}
 \usage{
 plot_venn_proportional(dat, covari.sel, cat.sel, trt.sel, resp.sel,
-  outcome.type, outside.area = FALSE, range.strip = c(-6, 6), n.brk = 13,
-  n.brk.axis = NULL, font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL,
-  strip = NULL, fill = FALSE, fill.background = FALSE, effect = "HR",
+  outcome.type, range.strip = c(-6, 6), n.brk = 13, n.brk.axis = NULL,
+  font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL, strip = NULL,
+  fill = FALSE, fill.background = FALSE, effect = "HR",
   show.overall = TRUE, palette = "divergent", col.power = 0.5)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of covariates}
+\item{covari.sel}{a vector of indices of covariates}
 
-\item{cat.sel:}{a vector of indices of the categories for each covariate}
+\item{cat.sel}{a vector of indices of the categories for each covariate}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{range.strip:}{a vector with two elements specifying the range of treatment effect size for display}
+\item{range.strip}{a vector with two elements specifying the range of treatment effect size for display}
 
-\item{n.brk:}{a number specifying the number of the points dividing the range of the argument "range.strip".}
+\item{n.brk}{a number specifying the number of the points dividing the range of the argument "range.strip".}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
+\item{n.brk.axis}{a number specifying the number of breakpoints dividing the axis of the argument "range.strip".}
+
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
 the third is for the sample size labels; the fourth is for the legend text; the fifth is for the y-axis label of the colour strip;
 the sixth is for the unit label on the y axis.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{strip:}{a string specifying the title of the colour strip.}
+\item{strip}{a string specifying the title of the colour strip.}
+
+\item{fill}{A logical indicating whether to color the diagram to show treatment effect sizes.}
+
+\item{fill.background}{A logical indicating whether to show treatment effect in the complement of the union of sets}
+
+\item{effect}{either "HR" or "RMST". only when outcome.type = "survival"}
+
+\item{show.overall}{logical. whether to show or not the overall treatment effect in the strip}
+
+\item{palette}{either "divergent" or "hcl"}
+
+\item{col.power}{to be used when palette = "hcl". see colorspace package for reference}
 }
 \description{
 This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.

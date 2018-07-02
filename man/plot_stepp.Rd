@@ -9,28 +9,28 @@ plot_stepp(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, alpha,
   subtitle = NULL)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a variate index specifying the treatment code}
+\item{trt.sel}{a variate index specifying the treatment code}
 
-\item{resp.sel:}{a variate index specifying the response variable}
+\item{resp.sel}{a variate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{setup.ss:}{a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).}
+\item{setup.ss}{a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).}
 
-\item{alpha:}{the type I error rate}
+\item{alpha}{the type I error rate}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for main titles, the second is for
+\item{font.size}{a vector specifying the size of labels and text; the first element is for main titles, the second is for
 for x-axis and y-axis labels; the thrid is for the text in the legend; the fourth is for the subtitle.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{lab.y:}{a string specifying the labels of the y-axis.}
+\item{lab.y}{a string specifying the labels of the y-axis.}
 
-\item{subtitle:}{strings specifying the subtitle}
+\item{subtitle}{strings specifying the subtitle}
 }
 \description{
 this function produces a plot of using the approach "Subpopulation Treatment Effect Pattern Plot". It shows the treatment effect

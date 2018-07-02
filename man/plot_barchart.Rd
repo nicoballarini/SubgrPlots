@@ -6,25 +6,31 @@
 \usage{
 plot_barchart(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   font.size = c(15, 12, 10, 0.6), title = NULL, lab.y = NULL,
-  effect = "RMST", time = 50, sig.dig = 0)
+  effect = "RMST", time = NULL, decimals = 0)
 }
 \arguments{
-\item{dat:}{a data set}
+\item{dat}{a data set}
 
-\item{covari.sel:}{a vector of indices of the two covariates}
+\item{covari.sel}{a vector of indices of the two covariates}
 
-\item{trt.sel:}{a covariate index specifying the treatment code}
+\item{trt.sel}{a covariate index specifying the treatment code}
 
-\item{resp.sel:}{a covariate index specifying the response variable}
+\item{resp.sel}{a covariate index specifying the response variable}
 
-\item{outcome.type:}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
+\item{outcome.type}{a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".}
 
-\item{font.size:}{a vector specifying the size of labels and text; the first element is for the main title; the second element is for the covariates
+\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title; the second element is for the covariates
 labels and the y-axis label; the third is for the category labels; the forth is for the unit label of the y axis.}
 
-\item{title:}{a string specifying the main title.}
+\item{title}{a string specifying the main title.}
 
-\item{lab.y:}{a string specifying the y-axis label.}
+\item{lab.y}{a string specifying the y-axis label.}
+
+\item{effect}{either "HR" or "RMST". only when outcome.type = "survival"}
+
+\item{time}{time for calculating the RMST}
+
+\item{decimals}{decimal places for the axis}
 }
 \description{
 this function produces a bar chart showing the treatment effect size of pairwise subgroups defined by the categories of two

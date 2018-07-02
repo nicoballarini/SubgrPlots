@@ -10,40 +10,33 @@
 #' subgroup effect sizes in binary and survival data, respectively.
 #'
 #'
-#' @param dat:              a data set
-#' @param covari.sel:       a vector of indices of the two covariates
-#' @param trt.sel:          a covariate index specifying the treatment code
-#' @param resp.sel:         a covariate index specifying the response variable
-#' @param outcome.type:     a string specifying the type of the response variable, it can be "continuous", or "binary".
-#' @param adj.ann.subgrp:   a parameter controlling the distance between a square and its corresponding subgroup label; also, the line
+#' @param dat              a data set
+#' @param covari.sel       a vector of indices of the two covariates
+#' @param trt.sel          a covariate index specifying the treatment code
+#' @param resp.sel         a covariate index specifying the response variable
+#' @param outcome.type     a string specifying the type of the response variable, it can be "continuous", or "binary".
+#' @param adj.ann.subgrp   a parameter controlling the distance between a square and its corresponding subgroup label; also, the line
 #'  gap between the legend text for subgroups.
-#' @param size.shape:       a parameter controlling the height and width of the squares and the size is proportional to the ratio of subgroup sample sizes
+#' @param size.shape       a parameter controlling the height and width of the squares and the size is proportional to the ratio of subgroup sample sizes
 #'  over the full population size.
-#' @param font.size:        a vector specifying the size of labels and text; the first element is for the main title, the second is for
+#' @param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
 #'  for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
 #'  labels near the corresponding squares.
-#' @param title:            a string specifying the main title.
-#' @param lab.xy:           a list of two strings specifying the labels of the x and y axes.
+#' @param title            a string specifying the main title.
+#' @param lab.xy           a list of two strings specifying the labels of the x and y axes.
 #' @param time              time for calculating the survival in each subgroup
-#
-# eg.1              main.title = "L'Abbe Plot"
-#                   label.xy = list("Control Grp. Estimate x",  "Treatment Grp. Estimate y")
-#                   labbeplt(dat = dat, covari.sel = c(6, 10), trt.sel = 2, resp.sel = 1, outcome.type = "continuous", title = main.title,
-#                   lab.xy = label.xy, size.shape = 0.2)
-#
-# eg.2              main.title = "L'Abbe Plot (effect sizes (log odds ratio))"
-#                   label.xy = list("Control Grp. log-odds x",  "Treatment Grp. log-odds y")
-#                   labbeplt(dat = dat3, covari.sel = c(6, 7), trt.sel = 1, resp.sel = 3, outcome.type = "binary", title = main.title,
-#                   lab.xy = label.xy, size.shape = 0.1)
-#
+#' @param show.ci A logical indicating whether to show an additional line for confidence intervals
+#' @param effect Either "HR" of "RMST". Only when outcome.type = "survival"
 # created by Yi-Da Chiu, 01/08/17
 # revised by Yi-Da Chiu, 30/08/17
 #' @export
 #' @import grid
 #' @import graphics
 plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-                       effect = c("HR","RMST"), size.shape = 1/18, adj.ann.subgrp = 1/30, font.size = c(1, 1, 0.85, 0.85),
-                     title = NULL, lab.xy = NULL, time = mean(dat[,resp.sel[1]]), show.ci = TRUE)
+                       effect = c("HR","RMST"), size.shape = 1/18,
+                       adj.ann.subgrp = 1/30, font.size = c(1, 1, 0.85, 0.85),
+                       title = NULL, lab.xy = NULL,
+                       time = mean(dat[,resp.sel[1]]), show.ci = TRUE)
 {
 
   ################################################ 0. argument validity check  #################################################################
@@ -240,13 +233,13 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
           }
         }
         if (effect == "HR"){
-          model.int = survival::coxph(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+          model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
           model.sum = summary(model.int)
           treatment.mean[i] = model.sum$coef[1, 1]
           treatment.upper[i] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
           treatment.lower[i] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-          surv.fit = survival::survfit(Surv(time, status) ~ trt, data = data.subgrp[[i]])
+          surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
           difference <- summary(surv.fit, time=time)
           if (length(which(data.subgrp[[i]]$trt == 0)) == 0){
             treatment.C.mean[i] = NA
@@ -341,13 +334,13 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       }
 
       if (effect == "HR"){
-        model.int = survival::coxph(Surv(time, status) ~ trt, data = dat)
+        model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
         model.sum = summary(model.int)
         treatment.mean[n.subgrp.tol + 1] = model.sum$coef[1, 1]
         treatment.upper[n.subgrp.tol + 1] = model.sum$coef[1, 1] + 1.96 * model.sum$coef[1, 3]
         treatment.lower[n.subgrp.tol + 1] = model.sum$coef[1, 1] - 1.96 * model.sum$coef[1, 3]
 
-        surv.fit = survival::survfit(Surv(time, status) ~ trt, data = dat)
+        surv.fit = survival::survfit(survival::Surv(time, status) ~ trt, data = dat)
         difference <- summary(surv.fit, time=time)
 
         if (length(which(dat$trt == 0)) == 0){
