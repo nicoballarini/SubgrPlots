@@ -1,81 +1,3 @@
-#' UpSetR Plot with treatment effects
-#'
-#' @description Visualization of set intersections using novel UpSet matrix design, modified to show treatment effects and confidence intervals
-#' @param data Data set
-#' @param nsets Number of sets to look at
-#' @param nintersects Number of intersections to plot. If set to NA, all intersections will be plotted.
-#' @param sets Specific sets to look at (Include as combinations. Ex: c("Name1", "Name2"))
-#' @param keep.order Keep sets in the order entered using the sets parameter. The default is FALSE, which orders the sets by their sizes.
-#' @param set.metadata Metadata that offers insight to an attribute of the sets. Input should be a data frame where the first column is set names, and the
-#'        remaining columns are attributes of those sets. To learn how to use this parameter it is highly suggested to view the set metadata vignette. The link
-#'        can be found on the package's GitHub page.
-#' @param intersections Specific intersections to include in plot entered as a list of lists.
-#'        Ex: list(list("Set name1", "Set name2"), list("Set name1", "Set name3")). If data is entered into this parameter the only data shown on the UpSet plot
-#'        will be the specific intersections listed.
-#' @param matrix.color Color of the intersection points
-#' @param main.bar.color Color of the main bar plot
-#' @param mainbar.y.label The y-axis label of the intersection size bar plot
-#' @param mainbar.y.max The maximum y value of the intersection size bar plot scale. May be useful when aligning multiple UpSet plots horizontally.
-#' @param sets.bar.color Color of set size bar plot
-#' @param sets.x.label The x-axis label of the set size bar plot
-#' @param point.size Size of points in matrix plot
-#' @param line.size Width of lines in matrix plot
-#' @param mb.ratio Ratio between matrix plot and main bar plot (Keep in terms of hundreths)
-#' @param expression Expression to subset attributes of intersection or element query data. Enter as string (Ex: "ColName > 3")
-#' @param att.pos Position of attribute plot. If NULL or "bottom" the plot will be at below UpSet plot. If "top" it will be above UpSert plot
-#' @param att.color Color of attribute histogram bins or scatterplot points for unqueried data represented by main bars. Default set to color of main bars.
-#' @param order.by How the intersections in the matrix should be ordered by. Options include frequency (entered as "freq"), degree, or both in any order.
-#' @param decreasing How the variables in order.by should be ordered. "freq" is decreasing (greatest to least) and "degree" is increasing (least to greatest)
-#' @param show.numbers Show numbers of intersection sizes above bars
-#' @param number.angles The angle of the numbers atop the intersection size bars
-#' @param group.by How the data should be grouped ("degree" or "sets")
-#' @param cutoff The number of intersections from each set (to cut off at) when aggregating by sets
-#' @param queries Unified querie of intersections, elements, and custom row functions. Entered as a list that contains a list of
-#'        queries. query is the type of query being conducted. params are the parameters of the query (if any). color is the color of the points on the
-#'        plot that will represent the query. If no color is selected one will be provided automatically. active takes TRUE or FALSE, and if
-#'        TRUE, it will overlay the bars present  with the results from the query. If FALSE a tick mark will indicate the intersection size.
-#'        See examples section on how to do this.
-#' @param query.legend Position query legend on top or bottom of UpSet plot
-#' @param shade.color Color of row shading in matrix
-#' @param shade.alpha Transparency of shading in matrix
-#' @param matrix.dot.alpha Transparency of the empty intersections points in the matrix
-#' @param empty.intersections Additionally display empty sets up to nintersects
-#' @param color.pal Color palette for attribute plots
-#' @param boxplot.summary Boxplots representing the distribution of a selected attribute for each intersection. Select attributes by entering a character vector of attribute names (e.g. c("Name1", "Name2")).
-#'        The maximum number of attributes that can be entered is 2.
-#' @param effects.summary Forest plot. Select the response variable by entering a character attribute name (e.g. "y" or c("survtime", "cens")
-#' @param attribute.plots Create custom ggplot using intersection data represented in the main bar plot. Prior to adding custom plots, the UpSet plot is set up in a 100 by 100 grid.
-#'        The attribute.plots parameter takes a list that contains the number of rows that should be allocated for the custom plot, and a list of plots with specified positions.
-#'        nrows is the number of rows the custom plots should take up. There is already 100 allocated for the custom plot. plots takes a list that contains a function that returns
-#'        a custom ggplots and the x and y aesthetics for the function. ncols is the number of columns that your ggplots should take up. See examples for how to add custom ggplots.
-#' @param scale.intersections The scale to be used for the intersection sizes. Options: "identity", "log10", "log2"
-#' @param scale.sets The scale to be used for the set sizes. Options: "identity", "log10", "log2"
-#' @param text.scale Numeric, value to scale the text sizes, applies to all axis labels, tick labels, and numbers above bar plot. Can be a universal scale, or a vector containing individual scales
-#'        in the following format: c(intersection size title, intersection size tick labels, set size title, set size tick labels, set names, numbers above bars)
-#' @param set_size.angles Numeric, angle to rotate the set size plot x-axis text
-#' @param outcome.type One of "continuous", "binary", or "survival" to determine the model to implement
-#' @param treatment.var A character indicating the name of the treatment variable in the dataset
-#' @param min.n The minimum number of subjects in a subgroup to be included in the plot
-#' @param icon One of "dots", "pm", "pm.circle", or "value" which determines the icon to use in the matrix plot
-#' @param fill.trt A logical indicating whether the bar plot is coloured by treatment.
-#' @details Visualization of set data in the layout described by Lex and Gehlenborg in \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}.
-#' The plot is modified here to select a treatment variable, compute the treatment effects and display them along with their confidence
-#' intervals in a forest plot-like panel.
-#' @note Data set must be formatted as described on the orginal UpSet github page: \url{http://github.com/VCG/upset/wiki}.
-#' @references Lex et al. (2014). UpSet: Visualization of Intersecting Sets
-#' IEEE Transactions on Visualization and Computer Graphics (Proceedings of InfoVis 2014), vol 20, pp. 1983-1992, (2014). \url{http://people.seas.harvard.edu/~alex/papers/2014_infovis_upset.pdf}
-#' @references Lex and Gehlenborg (2014). Points of view: Sets and intersections. Nature Methods 11, 779 (2014). \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}
-#' @seealso Original UpSet Website: \url{http://vcg.github.io/upset/about/}
-#' @seealso UpSetR github for additional examples: \url{http://github.com/hms-dbmi/UpSetR}
-#'
-#' @import gridExtra
-#' @import ggplot2
-#' @import utils
-#' @import stats
-#' @import methods
-#' @import grDevices
-#' @import scales
-#' @export
 subgroupset_transposed <- function(data, nsets = 5, nintersects = 40, sets = NULL, keep.order = F, set.metadata = NULL, intersections = NULL,
                   matrix.color = "gray23", main.bar.color = "gray23", mainbar.y.label = "Intersection Size", mainbar.y.max = NULL,
                   sets.bar.color = "gray23", sets.x.label = "Set Size", point.size = 2.2, line.size = 0.7,
@@ -195,8 +117,9 @@ subgroupset_transposed <- function(data, nsets = 5, nintersects = 40, sets = NUL
     warning("set.metadata is not available for subgroUpSet")
   }
   if(is.null(ShadingData) == TRUE){
-    warning("ShadingData is not available for subgroUpSet")
+    ShadingData <- MakeShading(Matrix_layout, shade.color)
   }
+
   All_Freqs_Trt = rbind(data.frame(Trt_Freqs, trt = unique(New_data[[treatment.var]])[2]),
                         data.frame(Ctl_Freqs, trt = unique(New_data[[treatment.var]])[1]))
   Main_bar <- suppressMessages(Make_main_bar_t(All_Freqs_Trt, Bar_Q, show.numbers, mb.ratio, customQBar, number.angles, EBar_data, mainbar.y.label,
@@ -205,9 +128,11 @@ subgroupset_transposed <- function(data, nsets = 5, nintersects = 40, sets = NUL
                              text.scale, labels, ShadingData, shade.alpha, icon)
   Sizes <- Make_size_plot_t(Set_sizes, sets.bar.color, mb.ratio, sets.x.label, scale.sets, text.scale, set_size.angles,
                            total_size)
+  Main_bar_legend <- suppressMessages(Make_main_bar_legend_t(All_Freqs_Trt, Bar_Q, show.numbers, mb.ratio, customQBar, number.angles, EBar_data, mainbar.y.label,
+                                               mainbar.y.max, scale.intersections, text.scale, attribute.plots, treatment.var, fill.trt))
 
   Make_base_plot_t(Main_bar, Matrix, Sizes, labels, mb.ratio, att.x, att.y, New_data,
                  expression, att.pos, first.col, att.color, AllQueryData, attribute.plots,
-                 legend, query.legend, EffectPlots, Set_names, set.metadata, set.metadata.plots)
+                 legend, query.legend, EffectPlots, Set_names, set.metadata, set.metadata.plots, Main_bar_legend)
 
 }

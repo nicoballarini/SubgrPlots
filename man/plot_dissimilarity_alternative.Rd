@@ -33,4 +33,17 @@ that lines connected to all the points.  The colour of lines or points indicates
 covariate or not. The number of types shows how many categories (from the same covariate) are considered as subgroups. The
 range of dissimilarity distances can be adjusted.
 }
+\examples{
+data(prca)
+dat <- prca
+## 1. dissimilarity alternative plot ----------------------------------------
+plot_dissimilarity_alternative(dat = dat,
+                               covari.sel = c(4,5,6),
+                               mode = 2,
+                               range.ds = c(0,1),
+                               font.size = c(1, 1, 0.7),
+                               title = NULL,
+                               lab.y = "Similarity distance")
+
+}
 

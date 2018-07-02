@@ -26,7 +26,7 @@ vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
 
 ###############################################################################-
 ## 12. SubgroUpSet -----------------------------------------------------------
-prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Treatment", "Control")),
+prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Experimental", "Control")),
                         bm = 1*(prca$bm == 1),
                         pf = 1*(prca$pf == 1),
                         hx = 1*(prca$hx == 1),
@@ -36,15 +36,14 @@ prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Treatment", "Control"
                         survtime = prca$survtime,
                         cens = prca$cens==1)
 pdf("paper/figures/12-SubgroUpSetR-plot_t.pdf", width = 8, height = 8, onefile=FALSE)
-subgroupset_transposed(prca.upset,
+subgroupset(prca.upset,
             order.by = "freq",
             empty.intersections = "on",
             sets = c("bm", 'pf', "hx"),
-            # nintersects = 12,
             text.scale = 1.,
             mb.ratio = c(0.25, 0.50,0.20),
             treatment.var = "trt",
             outcome.type = "survival",
             effects.summary = c("survtime", "cens"),
-            query.legend = "top", icon = "pm")
+            query.legend = "top", icon = "pm", transpose = TRUE)
 dev.off()

@@ -8,7 +8,7 @@ data(prca)
 dat <- prca
 pdf("paper/figures/21-circle-plot-matrix.pdf", height = 5, width = 10)
 set.seed(12)
-SubgrPlots:::plot_circle_std_by(dat,
+plot_circle2(dat,
                                 covari.sel = c(4, 5, 6, 7),
                                 trt.sel = 3,
                                 resp.sel = c(1,2),
@@ -20,7 +20,7 @@ SubgrPlots:::plot_circle_std_by(dat,
                                 n.brk.axis = 7,
                                 font.size = c(1, 1, 0.85, 0.85, 1),
                                 title = NULL, lab.xy = NULL,
-                                strip = "Treatment effect size( log hazard ratio)",
+                                strip = "Treatment effect size (log hazard ratio)",
                                 effect = "HR",
                                 equal.width = FALSE,
                                 show.KM = FALSE,
@@ -32,7 +32,7 @@ dev.off()
 
 pdf("paper/figures/21-circle-plot-matrix-equal.pdf", height = 5, width = 10)
 set.seed(12)
-SubgrPlots:::plot_circle_std_by(dat,
+plot_circle2(dat,
                                 covari.sel = c(4, 5, 6, 7),
                                 trt.sel = 3,
                                 resp.sel = c(1,2),
@@ -43,7 +43,7 @@ SubgrPlots:::plot_circle_std_by(dat,
                                 n.brk.axis = 7,
                                 font.size = c(1, 1, 0.85, 0.85, 1),
                                 title = NULL, lab.xy = NULL,
-                                strip = "Treatment effect size( log hazard ratio)",
+                                strip = "Treatment effect size (log hazard ratio)",
                                 effect = "HR",
                                 equal.width = TRUE,
                                 show.KM = FALSE,

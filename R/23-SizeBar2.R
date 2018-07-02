@@ -33,16 +33,7 @@ log2_reverse_trans <- function(){
 
 ## Generate set size plot
 Make_size_plot2 <- function(Set_size_data, sbar_color, ratios, ylabel, scale_sets, text_scale, set_size_angle, total_size){
-#   if(ratios[1] < 0.4){
-#     m <- (-0.05)
-#   }
-#   else if((ratios[1] > 0.4) & (ratios[1] < 0.46)){
-#     m <- (-0.03)
-#   }
-#   else{
-#     m <- 0
-#   }
-  
+
   if(length(text_scale) > 1 && length(text_scale) <= 6){
     x_axis_title_scale <- text_scale[3]
     x_axis_tick_label_scale <- text_scale[4]
@@ -51,7 +42,7 @@ Make_size_plot2 <- function(Set_size_data, sbar_color, ratios, ylabel, scale_set
     x_axis_title_scale <- text_scale
     x_axis_tick_label_scale <- text_scale
   }
-  
+
   if(ylabel == "Set Size" && scale_sets != "identity"){
     ylabel <- paste("Set Size", paste0("( ", scale_sets, " )"))
     if(scale_sets == "log2"){
@@ -72,8 +63,6 @@ Make_size_plot2 <- function(Set_size_data, sbar_color, ratios, ylabel, scale_set
                 + scale_x_continuous(limits = c(0.5, (nrow(Set_size_data)+0.5)),
                                      breaks = c(0, max(Set_size_data)),
                                      expand = c(0,0))
-                + scale_y_continuous(limits = c(0, total_size),
-                                     expand = c(0,0))
                 + theme(panel.background = element_rect(fill = "white"),
                         plot.margin=unit(c(-0.11,-1.3,0.5,0.5), "lines"),
                         axis.title.x = element_text(size = 8.3*x_axis_title_scale),
@@ -88,17 +77,18 @@ Make_size_plot2 <- function(Set_size_data, sbar_color, ratios, ylabel, scale_set
                         panel.grid.major = element_blank())
                 + xlab(NULL) + ylab(ylabel)
                 + coord_flip())
-  
+
   if(scale_sets == "log10"){
-    Size_plot <- (Size_plot + scale_y_continuous(trans = log10_reverse_trans()))
+    Size_plot <- (Size_plot + scale_y_continuous(expand = c(0,0),
+                                                 trans = log10_reverse_trans()))
+  } else if (scale_sets == "log2"){
+    Size_plot <- (Size_plot + scale_y_continuous(expand = c(0,0),
+                                                 trans = log2_reverse_trans()))
+  } else{
+    Size_plot <- (Size_plot + scale_y_continuous(expand = c(0,0),
+                                                 trans = "reverse"))
   }
-  else if (scale_sets == "log2"){
-    Size_plot <- (Size_plot + scale_y_continuous(trans = log2_reverse_trans()))
-  }
-  else{
-    Size_plot <- (Size_plot + scale_y_continuous(trans = "reverse"))
-  }
-  
+
   Size_plot <- ggplot_gtable(ggplot_build(Size_plot))
   return(Size_plot)
 }
@@ -112,7 +102,7 @@ Make_size_plot_t <- function(Set_size_data, sbar_color, ratios, ylabel, scale_se
   #   else{
   #     m <- 0
   #   }
-  
+
   if(length(text_scale) > 1 && length(text_scale) <= 6){
     x_axis_title_scale <- text_scale[3]
     x_axis_tick_label_scale <- text_scale[4]
@@ -121,7 +111,7 @@ Make_size_plot_t <- function(Set_size_data, sbar_color, ratios, ylabel, scale_se
     x_axis_title_scale <- text_scale
     x_axis_tick_label_scale <- text_scale
   }
-  
+
   if(ylabel == "Set Size" && scale_sets != "identity"){
     ylabel <- paste("Set Size", paste0("( ", scale_sets, " )"))
     if(scale_sets == "log2"){
@@ -157,7 +147,7 @@ Make_size_plot_t <- function(Set_size_data, sbar_color, ratios, ylabel, scale_se
                         panel.grid.minor = element_blank(),
                         panel.grid.major = element_blank())
                 + xlab(NULL) + ylab(ylabel))
-  
+
   if(scale_sets == "log10"){
     Size_plot <- (Size_plot + scale_y_continuous(trans = log10_reverse_trans()))
   }
@@ -166,7 +156,7 @@ Make_size_plot_t <- function(Set_size_data, sbar_color, ratios, ylabel, scale_se
   } else{
     # Size_plot <- (Size_plot + scale_y_continuous(trans = "reverse"))
   }
-  
+
   Size_plot <- ggplot_gtable(ggplot_build(Size_plot))
   return(Size_plot)
 }

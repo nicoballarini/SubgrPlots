@@ -35,8 +35,9 @@ Make_base_plot <- function(Main_bar_plot, Matrix_plot, Size_plot, labels, hratio
   }
 
   size_plot_height <- (((hratios[1])+0.01)*100)
-  if((hratios[1] > 0.7 || hratios[1] < 0.3) ||
-     (hratios[2] > 0.7 || hratios[2] < 0.3)) warning("Plot might be out of range if ratio > 0.7 or < 0.3")
+  if((hratios[1] > 0.8 || hratios[1] < 0.2) ||
+     (hratios[2] > 0.8 || hratios[2] < 0.2) ||
+     (hratios[3] > 0.8 || hratios[3] < 0.2)) warning("Plot might be out of range if ratio > 0.8 or < 0.2")
   if(is.null(boxplot)==F && is.null(attribute_plots) == T){
     BaseBoxPlot(boxplot, position, size_plot_height, Main_bar_plot, Matrix_plot, Size_plot,
                 hratios, set_metadata, set_metadata_plots)

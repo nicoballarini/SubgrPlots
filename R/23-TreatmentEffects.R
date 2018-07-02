@@ -134,11 +134,11 @@ IntersectionEffectPlot <- function(data1, data2, start_col, names, att, outcome.
 #' @import ggplot2
 EffectPlotsPlot <- function(effdat, att, att_color, outcome.type){
   if (outcome.type == "continuous"){
-    yaxis <- "Treatment effect"
+    yaxis <- "Treatment Effect"
   } else if (outcome.type == "binary"){
-    yaxis <- "Treatment effect\n(log odds ratio)"
+    yaxis <- "Treatment Effect\n(log odds ratio)"
   } else if (outcome.type == "survival"){
-    yaxis <- "Treatment effect\n(log hazard ratio)"
+    yaxis <- "Treatment Effect\n(log hazard ratio)"
   }
 
   upper_xlim <- as.numeric((max(effdat$x) + 1))

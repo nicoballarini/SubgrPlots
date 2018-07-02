@@ -33,13 +33,44 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \item{lab.xy}{a list of two strings specifying the labels of the x and y axes.}
 }
 \description{
-This function produces a modified Galbraith's radial plot showing the treatment effect size of subgroups defined by the categories
-of covariates. The x-axis represents the reciprocal of the standard error of subgroup treatment effect estimates.The y-axis means
-standardized effect size difference (the difference between subgroup effect the full popultion effect is divided by the standard error
-of the estimator for the overall population effect. Points here are for subgroups. The grey region indicates whether subgroup effects
-are homogeneous to the full population effect or not. The two arcs on the right side show subgroup treatment effects in the original
-scale, where the red spots are the projection of points from the origin on the left side. Note that the vertical range of display can
-be changed by setting different values on the associated input argument. In addition, the function uses log odd ratio and log hazard
-ratio for displaying subgroup effect sizes in binary and survival data, respectively.
+This function produces a modified Galbraith's radial plot showing the
+treatment effect size of subgroups defined by the categories
+of covariates. The x-axis represents the reciprocal of the standard error
+ of subgroup treatment effect estimates.The y-axis means
+standardized effect size difference (the difference between subgroup effect
+the full popultion effect is divided by the standard error
+of the estimator for the overall population effect.
+Points here are for subgroups.
+The grey region indicates whether subgroup effects
+are homogeneous to the full population effect or not. The two arcs on the
+right side show subgroup treatment effects in the original
+scale, where the red spots are the projection of points from the origin on
+the left side. Note that the vertical range of display can
+be changed by setting different values on the associated input argument.
+In addition, the function uses log odd ratio and log hazard
+ratio for displaying subgroup effect sizes in binary and survival data,
+respectively.
+}
+\examples{
+library(dplyr)
+
+# Load the data to be used
+data(prca)
+dat <- prca
+dat \%>\%
+  mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
+         hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
+
+label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
+                expression((hat(delta)[i]-hat(delta)[F])/hat(sigma)[hat(delta)[i]]))
+plot_radial(dat,
+            covari.sel = c(4, 5, 6, 7),
+            trt.sel = 3,
+            resp.sel = c(1, 2),
+            outcome.type = "survival",
+            range.v = c(-7, 6),
+            adj.ann.subgrp = 4,
+            font.size = c(1, 1, 0.75, 0.8, 0.85),
+            lab.xy = label.xy)
 }
 

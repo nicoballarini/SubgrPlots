@@ -58,6 +58,7 @@
 #' @param min.n The minimum number of subjects in a subgroup to be included in the plot
 #' @param icon One of "dots", "pm", "pm.circle", or "value" which determines the icon to use in the matrix plot
 #' @param fill.trt A logical indicating whether the bar plot is coloured by treatment.
+#' @param transpose A logical indicating whether to draw the plot vertically.
 #' @details Visualization of set data in the layout described by Lex and Gehlenborg in \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}.
 #' The plot is modified here to select a treatment variable, compute the treatment effects and display them along with their confidence
 #' intervals in a forest plot-like panel.
@@ -67,6 +68,46 @@
 #' @references Lex and Gehlenborg (2014). Points of view: Sets and intersections. Nature Methods 11, 779 (2014). \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}
 #' @seealso Original UpSet Website: \url{http://vcg.github.io/upset/about/}
 #' @seealso UpSetR github for additional examples: \url{http://github.com/hms-dbmi/UpSetR}
+#'
+#'
+#' @examples
+#' \dontrun{
+#' data(prca)
+#' dat <- prca
+#' vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
+#'
+#' ## 12. SubgroUpSet -----------------------------------------------------------
+#' prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Experimental", "Control")),
+#'                         bm = 1*(prca$bm == 1),
+#'                         pf = 1*(prca$pf == 1),
+#'                         hx = 1*(prca$hx == 1),
+#'                         stage = 1*(prca$stage == 4),
+#'                         age = 1*(prca$age > 75),
+#'                         wt = 1*(prca$weight > 100),
+#'                         survtime = prca$survtime,
+#'                         cens = prca$cens==1)
+#' subgroupset(prca.upset,
+#'             order.by = "freq",
+#'             empty.intersections = "on",
+#'             sets = c("bm", 'pf', "hx"),
+#'             text.scale = 1.,
+#'             mb.ratio = c(0.25, 0.50,0.20),
+#'             treatment.var = "trt",
+#'             outcome.type = "survival",
+#'             effects.summary = c("survtime", "cens"),
+#'             query.legend = "top", icon = "pm")
+#'
+#' subgroupset(prca.upset,
+#'             order.by = "freq",
+#'             empty.intersections = "on",
+#'             sets = c("bm", 'pf', "hx"),
+#'             text.scale = 1.,
+#'             mb.ratio = c(0.25, 0.50,0.20),
+#'             treatment.var = "trt",
+#'             outcome.type = "survival",
+#'             effects.summary = c("survtime", "cens"),
+#'             query.legend = "top", icon = "pm", transpose = TRUE)
+#' }
 #'
 #' @import gridExtra
 #' @import ggplot2
@@ -86,7 +127,22 @@ subgroupset <- function(data, nsets = 5, nintersects = 40, sets = NULL, keep.ord
                   effects.summary = NULL, outcome.type = c("continuous", "binary",  "survival"),
                   attribute.plots = NULL, scale.intersections = "identity",
                   scale.sets = "identity", text.scale = 1, set_size.angles = 0,
-                  treatment.var = NULL, min.n = 20, icon = c("dots", "pm", "pm.circle", "value"), fill.trt = TRUE){
+                  treatment.var = NULL, min.n = 20, icon = c("dots", "pm", "pm.circle", "value"),
+                  fill.trt = TRUE, transpose = FALSE){
+
+  if (transpose){
+    subgroupset_transposed(data, nsets, nintersects, sets, keep.order, set.metadata, intersections,
+                           matrix.color, main.bar.color, mainbar.y.label, mainbar.y.max,
+                           sets.bar.color, sets.x.label, point.size, line.size,
+                           mb.ratio, expression, att.pos, att.color, order.by,
+                           decreasing, show.numbers, number.angles, group.by,cutoff,
+                           queries, query.legend, shade.color, shade.alpha, matrix.dot.alpha,
+                           empty.intersections, color.pal, boxplot.summary,
+                           effects.summary, outcome.type,
+                           attribute.plots, scale.intersections,
+                           scale.sets, text.scale, set_size.angles,
+                           treatment.var, min.n, icon, fill.trt)
+  } else {
   if(is.null(treatment.var)) stop("Please provide a treatment variable in treatment.var")
   outcome.type = match.arg(outcome.type)
   icon = match.arg(icon)
@@ -194,7 +250,7 @@ subgroupset <- function(data, nsets = 5, nintersects = 40, sets = NULL, keep.ord
     warning("set.metadata is not available for subgroUpSet")
   }
   if(is.null(ShadingData) == TRUE){
-    warning("ShadingData is not available for subgroUpSet")
+    ShadingData <- MakeShading(Matrix_layout, shade.color)
   }
   All_Freqs_Trt = rbind(data.frame(Trt_Freqs, trt = unique(New_data[[treatment.var]])[2]),
                         data.frame(Ctl_Freqs, trt = unique(New_data[[treatment.var]])[1]))
@@ -208,5 +264,5 @@ subgroupset <- function(data, nsets = 5, nintersects = 40, sets = NULL, keep.ord
   Make_base_plot(Main_bar, Matrix, Sizes, labels, mb.ratio, att.x, att.y, New_data,
                  expression, att.pos, first.col, att.color, AllQueryData, attribute.plots,
                  legend, query.legend, EffectPlots, Set_names, set.metadata, set.metadata.plots)
-
+  }
 }

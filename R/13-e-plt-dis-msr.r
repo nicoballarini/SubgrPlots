@@ -16,19 +16,26 @@
 #'  is for the labels of baseline subgroups; the fourth is for the remaining subgroup labels (except for the baseline subgroup).
 #' @param title        a string specifying the main titles.
 #' @param lab.x        a string specifying the x-axis label.
-#
-# e.g.          main.title = "Dissimilarity measure of pairwise subgroups";
-#               label.x = paste("Dissimilarity distance ");
-#               plt.dis.msr(dat = dat, covari.sel = c(4,6, 10), mode = 2, range.ds = c(0,1), font.size = c(1.3, 0.9, 1, 0.7), title = main.title,
-#               lab.x = label.x)
-#
-# created by Yi-Da Chiu, 01/08/17
-# created by Yi-Da Chiu, 28/08/17
+#'
+#' @examples
+#' data(prca)
+#' dat <- prca
+#'
+#' ## 1. dissimilarity plot ----------------------------------------------------
+#' plot_dissimilarity(dat = dat,
+#'                    covari.sel = c(4,5,6),
+#'                    mode = 3,
+#'                    range.ds = c(0,1),
+#'                    font.size = c(1, 0.9, 1, 0.7),
+#'                    title = NULL,
+#'                    lab.x = "Dissimilarity distance")
+#'
 #' @export
 #' @import grid
 #' @import graphics
 plot_dissimilarity <- function(dat, covari.sel, mode, range.ds = c(0,1), font.size = c(1, 0.9, 1, 0.7), title = NULL, lab.x = NULL)
 {
+  old.par <- par(no.readonly=T)
   ################################################ 0. argument validity check  #################################################################
 
   if (missing(dat)) stop("Data have not been inputed!")
@@ -213,5 +220,5 @@ plot_dissimilarity <- function(dat, covari.sel, mode, range.ds = c(0,1), font.si
         }
       }
   }
-  par(xpd=FALSE)
+  par(old.par)
 }

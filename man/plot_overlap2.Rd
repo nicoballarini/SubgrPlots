@@ -28,4 +28,16 @@ other. The arrowed lines have different colours, reflecting the level of overlap
 subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be
 changed by setting different values on the argument "para".
 }
+\examples{
+# Load the data to be used
+data(prca)
+dat <- prca
+
+plot_overlap2(dat = dat,
+              covari.sel = c(6,5,4,7),
+              para = c(0.05, 0.75, 1),
+              font.size = c(1.2, 1.2, 0.8),
+              title = NULL)
+
+}
 

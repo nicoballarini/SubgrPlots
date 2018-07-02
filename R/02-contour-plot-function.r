@@ -21,7 +21,7 @@
 #'                  are for overlap sizes and subgroup sample sizes over the first covariate; the third and thefourth are for further divided overlap sizes
 #'                  and subgroup sample sizes over the second covariate.
 #' @param n.grid         a vector specifying the numbers of the grid points on the x-axis and the y-axis respectively.
-#' @param brk.es         a vector specifying the break points on effect size, where each range partition is given with a different colour on points.
+#' @param brk.es        a vector specifying the break points on effect size, where each range partition is given with a different colour on points.
 #' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
 #' @param para.plot      a vector specifying the parameters of the contour plot; the first value is for controlling the degree of smoothing; the second
 #'                  is for controlling the degree of the polynomials fitting to be used (normally 1 or 2); the third is for controlling the number of
@@ -34,29 +34,59 @@
 #' @param point.size        size of points for raw data points
 #' @param filled            a logical indicator whether to show filled contour plot. If FALSE, contour lines are drawn
 #' @param strip             the title for the strip showing treatment effect size
-#' @param time             time for calculating the RMST
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param palette          either "divergent" or "hcl"
 #' @param col.power        to be used when palette = "hcl". see colorspace package for reference
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 18/08/17
+#' @param show.points      a logical indicator specifying whether to show the raw data points
+#'
+#' @examples
+#' library(dplyr)
+#'
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#' setup.ss =  c(10,60,15,30)
+#' sub.title = bquote(N[11] %~~% .(setup.ss[2]) ~", "~
+#'                      N[12] %~~% .(setup.ss[1]) ~", "~
+#'                      N[21] %~~% .(setup.ss[4]) ~", "~
+#'                      N[22] %~~% .(setup.ss[3]))
+#' dat %>%
+#'   rename(Weight = weight,
+#'          Age = age) -> dat
+#'
+#' plot_contour(dat,
+#'              covari.sel = c(8,9),
+#'              trt.sel = 3,
+#'              resp.sel = c(1,2),
+#'              outcome.type = "survival",
+#'              setup.ss =  setup.ss,
+#'              n.grid = c(100,100),
+#'              brk.es = seq(-4.5,4.5,length.out = 101),
+#'              n.brk.axis =  7,
+#'              para.plot = c(0.5, 2, 6),
+#'              font.size = c(1, 1, 1, 1, 1),
+#'              title = NULL,
+#'              subtitle = sub.title,
+#'              strip = paste("Treatment effect size (log hazard ratio)"),
+#'              show.overall = TRUE,show.points = TRUE,
+#'              filled = TRUE, palette = "hcl",col.power = 0.75)
+#'
 #' @export
-contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-                           setup.ss, n.grid = c(41, 41),
-                           brk.es = c(0, 1, 2, 3),
-                           n.brk.axis =  7,
-                           para.plot = c(0.35, 2, 20),
-                           font.size = c(1.5,1.2,1,0.85,0.8),
-                           title = NULL, subtitle = NULL,
-                           effect = "HR", point.size = 1.2,
-                           filled = FALSE,
-                           strip = NULL, time = NULL,
-                           show.overall = FALSE,
-                           palette = "divergent", col.power = 0.5)
-{
+plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
+                            setup.ss, n.grid = c(41, 41),
+                            brk.es = c(0, 1, 2, 3),
+                            n.brk.axis =  7,
+                            para.plot = c(0.35, 2, 20),
+                            font.size = c(1.5, 1.2, 1, 0.85, 0.8),
+                            title = NULL, subtitle = NULL,
+                            effect = "HR", point.size = 1.2, filled = FALSE,
+                            strip = NULL, show.overall = FALSE,
+                            palette = "divergent", col.power = 0.5,
+                            show.points = FALSE){
 
+  old.par <- par(no.readonly=T)
 
-################################################ 0. argument validity check  #################################################################
+  ## 0. argument validity check  ###############################################
 
   if (missing(dat)) stop("Data have not been inputed!")
   if (!(is.data.frame(dat))) stop("The data set is not with a data frame!")
@@ -98,7 +128,7 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (length(setup.ss) !=  4) stop("The setting for subgroup smaple size and overlap does not have four elements!")
   if ((setup.ss[1] > setup.ss[2]) || (setup.ss[3] > setup.ss[4]) || (setup.ss[4] > setup.ss[2])){
     stop("subgroup overlap sample sizes is larger than subgroup sample size! Or subgroup sample sizes over the first covariate are not
-          larger than their further divided subgroup sample sizes over the second covariate!")
+         larger than their further divided subgroup sample sizes over the second covariate!")
   }
 
   if (missing(n.grid)) stop("The vector specifying the numbers of the grid points has not been specified!")
@@ -113,15 +143,14 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (missing(para.plot)) stop("The vector specifying the parameters of the contour plot has not been specified!")
   if (!(length(para.plot) == 3)) stop("The vector specifying the parameters of the contour plot should have 3 components only!")
   if (!(is.numeric(para.plot)) || (sum(para.plot < 0) != 0 )) stop("The vector specifying the parameters of the contour plot is not numeric or has
-                                                             a negative element!")
+                                                                   a negative element!")
   if (!(para.plot[2] %in% c(0, 1, 2)) ) stop("The second plot parameter is given with a unallowable value!")
   if (!(para.plot[3]%%1==0) || (para.plot[3] < 0)  ) stop("The third plot parameter should be a positive integer!")
 
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
   if (!(length(font.size) == 5)) stop("The length of the font size settings is not 5!!")
 
-  ################################################ 1. create subgroup data  #################################################################
-
+  ## 1. create subgroup data  ##################################################
 
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -132,7 +161,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
   }
-
 
   # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
   if (outcome.type == "continuous"){
@@ -188,7 +216,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   ## searching the index set of subgroups over the first covariate
-
   idx.covar1 = list()                              # the index set of subgroups over the first covariate
   n.subgrp.covar1 = length(cutpoint.covar1[[1]])   # the number of subgroups over the first covariate
   ss.subgrp.covar1 = vector()
@@ -196,12 +223,9 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     idx.covar1[[i]] = which((dat[, covari.sel[1]] >= cutpoint.covar1[[1]][i] &
                                dat[, covari.sel[1]] <= cutpoint.covar1[[2]][i] ) == T  )
     ss.subgrp.covar1[i] = length(idx.covar1[[i]])
-
   }
 
   ## decide the cutting point over the second covariate
-
-
   N3 = setup.ss[3]; N4 = setup.ss[4]
   cutpoint.covar2 = list()
   for (i in 1 : n.subgrp.covar1){
@@ -229,7 +253,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   ## searching the index set of subgroups over the second covariate
-
   idx.covar2 = list()
   n.subgrp.covar2 = vector()
   ss.subgrp.covar2 = list()
@@ -242,15 +265,15 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       idx.replace= which((dat[idx.covar1[[i]], covari.sel[2]] >= cutpoint.covar2[[i]][[1]][j] &
                             dat[idx.covar1[[i]], covari.sel[2]] <= cutpoint.covar2[[i]][[2]][j] ) == T  )
       idx.covar2[[i]][[j]] = idx.covar1[[i]][idx.replace]
-
       ss.subgrp.covar2[[i]][[j]] = length(idx.covar2[[i]][[j]])
     }
     n.subgrp.covar2[i] = length(idx.covar2[[i]])
   }
 
   ## create the data set for subgroups over the first and second covariates
-
-
+  x.raw = dat[covari.sel[1]]
+  y.raw = dat[covari.sel[2]]
+  all.dat = NULL
   treatment.mean = vector()
   ss.subgrp = vector()
   x = vector()
@@ -259,85 +282,58 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   for (i in 1 : n.subgrp.covar1 ){
     for (j in 1 :  length(cutpoint.covar2[[i]][[1]])){
       k =  k + 1
-
       cond1 = sum(dat[idx.covar2[[i]][[j]],]$trt == "0") == 0
       cond2 = sum(dat[idx.covar2[[i]][[j]],]$trt == "1") == 0
-
       if (cond1 | cond2 ){
         treatment.mean[i] = NA
       }else{
-
         if (outcome.type == "continuous"){
-
           model.int = lm(resp ~ trt,  data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coefficients[2, 1]
-
         }else if (outcome.type == "binary"){
-
           model.int = glm(resp ~ trt,  family = "binomial", data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coefficients[2, 1]
-
         }else if (outcome.type == "survival"){
-
           model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat[idx.covar2[[i]][[j]],])
           model.sum = summary(model.int)
           treatment.mean[k] = model.sum$coef[1, 1]
-
         }
       }
-
+      all.dat = rbind(all.dat, cbind(dat[idx.covar2[[i]][[j]], covari.sel], treatment.mean[k]))
       x[k] = (cutpoint.covar1[[2]][i] + cutpoint.covar1[[1]][i])/2
       y[k] = (cutpoint.covar2[[i]][[2]][j] + cutpoint.covar2[[i]][[1]][j])/2
       ss.subgrp[k] = dim(dat[idx.covar2[[i]][[j]],] )[1]
     }
   }
-
+  colnames(all.dat) = c("x", "y", "treatment.mean")
     cat("The number of subgroups over the first covariate is", n.subgrp.covar1, "\n")
     cat("The subgroup sample sizes over the first covariate are actually", ss.subgrp.covar1, "\n")
     cat("The number of further divided subgroups over the second covariate is", n.subgrp.covar2, "\n")
 
-
-  ################################################ 2. produce a graph  #################################################################
-
-  # grid::grid.newpage()
-
+  ## 2. produce a graph  #######################################################
   treatment.df = data.frame(x, y, treatment.mean)
   treatment.df.model = loess(treatment.mean ~ x*y, data = treatment.df,
                              span = para.plot[1], degree = para.plot[2])
-
+  head(all.dat)
+  treatment.df.model = loess(treatment.mean ~ x*y, data = all.dat,
+                             span = para.plot[1], degree = para.plot[2])
 
   min.x = min(dat[,covari.sel[1]]);max.x = max(dat[,covari.sel[1]])
   min.y = min(dat[,covari.sel[2]]);max.y = max(dat[,covari.sel[2]])
-  min.x = min(x);max.x = max(x)
-  min.y = min(y);max.y = max(y)
-
 
   xy.fit.pt = expand.grid(list(x = seq(min.x, max.x, len = n.grid[1]),
                                y = seq(min.y, max.y, len = n.grid[2])))
   treatment.df.model.fit = predict(treatment.df.model, newdata = xy.fit.pt)
 
-  # image(seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1]),
-  #       seq(min(y) + 0.01, max(y) - 0.01, len = n.grid[2]),
-  #       treatment.df.model.fit)
-  #
-  #
-  # image(xy.fit.pt[,1],
-  #       xy.fit.pt[,2],
-  #       treatment.df.model.fit)
-
-
-
-  # x.range = seq(min(x) + 0.01, max(x) - 0.01, len = n.grid[1])
-  # y.range = seq(min(y) + 0.01, max(y) - 0.01, len = n.grid[2])
   x.range = seq(min.x, max.x, len = n.grid[1])
   y.range = seq(min.y, max.y, len = n.grid[2])
 
   if(!filled){ # Contour lines --------------
-    layout(matrix(c(1,2), ncol = 1), heights = c(9,1))
-    par(mar=c(4, 4, 3, 2) + 0.1)
-    plot(x, y, #type = "n",
+    graphics::layout(matrix(c(1,2), ncol = 1), heights = c(9,1))
+    graphics::par(mar=c(4, 4, 3, 2) + 0.1)
+    graphics::plot(x, y, #type = "n",
          xlim = range(x.range), ylim = range(y.range),
          xlab = lab.vars[1], ylab = lab.vars[2],
          main = title, #sub = subtitle,
@@ -346,15 +342,12 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
          cex.lab  = font.size[2],
          cex.axis = font.size[2],
          cex.sub  = font.size[3])
-    mtext(subtitle)
+    graphics::mtext(subtitle)
     cutoff.es = rev(c(-Inf, brk.es, Inf))
-    # col.point = c("red", "blue", "orange", "darkgreen", "violet")
-
     if (palette == "divergent"){
       pal.2 = colorRampPalette(c("#91bfdb", "#ffffbf", "#fc8d59"), space = "rgb")
       pal.YlRd = colorRampPalette(c("#fee090", "#d73027"),  space = "rgb")
       pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
-      # breaks = seq(min(range.strip) - 1e-8, max(range.strip) + 1e-8, length.out = length(brk.es)+1)
       col.vec.div.pos = pal.WhBl((length(brk.es)+1)/2)
       col.vec.div.neg = pal.YlRd((length(brk.es)+1)/2)
       col.vec = c(rev(col.vec.div.neg), col.vec.div.pos)
@@ -364,32 +357,18 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     if (palette == "continuous"){
       colors = c('#9e0142','#d53e4f','#f46d43','#fdae61','#fee08b','#ffffbf','#e6f598','#abdda4','#66c2a5','#3288bd','#5e4fa2')
       pal.all = colorRampPalette(colors,  space = "rgb")
-      # breaks = seq(min(range.strip) - 1e-8, max(range.strip) + 1e-8, length.out = length(brk.es)+1)
       col.vec = pal.all((length(brk.es)+1))
       if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
       col.point = col.vec
     }
-    if (palette == "hcl"){
-      col.vec = rev(colorspace::diverge_hcl(n = length(brk.es)-1,
-                                            # h = c(218, 0),
-                                            c = 100, l = c(50,90),
-                                            power = col.power))
-      if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
-      col.point = col.vec
-    }
 
-
-
-    for (i in 1 : (length(cutoff.es) - 1) ){
-      points(x[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
+    for (i in 1:(length(cutoff.es) - 1)){
+      graphics::points(x[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
              y[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
              col = col.point[i], pch = 16, cex = point.size)
     }
     breaks = pretty(c(-3,3), length(col.vec))
-    contour(x.range, y.range, treatment.df.model.fit,
-            # levels = round(seq(min(treatment.mean, na.rm = T),
-            #                    max(treatment.mean, na.rm = T),
-            #                    len = para.plot[3]), 2),
+    graphics::contour(x.range, y.range, treatment.df.model.fit,
             levels = breaks,
             vfont = c("sans serif", "plain"),
             labcex = font.size[5],
@@ -406,10 +385,9 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     lab2.es =paste("ES <", brk.es[1])
 
     lab.es = c(lab0.es, lab1.es, lab2.es)
-    # par(fig=c(0, 1, 0, 1), oma=c(0, 0, 0, 0), mar=c(0, 0, 0, 0), new=TRUE)
-    par(mar=c(0,0,0,0))
-    plot(0,0, xaxt = "n", yaxt = "n", type ="n", frame.plot = FALSE)
-    legend("bottom",
+    graphics::par(mar=c(0,0,0,0))
+    graphics::plot(0,0, xaxt = "n", yaxt = "n", type ="n", frame.plot = FALSE)
+    graphics::legend("bottom",
            rev(lab.es),
            horiz = T,
            cex = font.size[4],
@@ -417,13 +395,11 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
            pch = 16,
            bg = "white")
   }
-  if(filled){ # Filled contour plot --------------
-
+  if(filled){ # Filled contour plot --------------------------------------------
     if (palette == "divergent"){
       cols = c('#d53e4f','#f46d43','#fdae61','#fee08b','#e6f598','#abdda4','#66c2a5','#3288bd')
       pal.YlRd = colorRampPalette(c("#fee090", "#d73027"),  space = "rgb")
       pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
-      # breaks = seq(min(range.strip) - 1e-8, max(range.strip) + 1e-8, length.out = length(brk.es)+1)
       col.vec.div.pos = pal.WhBl((length(brk.es)-1)/2)
       col.vec.div.neg = pal.YlRd((length(brk.es)-1)/2)
       col.vec = c(rev(col.vec.div.neg), col.vec.div.pos)
@@ -433,7 +409,6 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     if (palette == "continuous"){
       cols = c('#d53e4f','#f46d43','#fdae61','#fee08b','#e6f598','#abdda4','#66c2a5','#3288bd')
       pal.all = colorRampPalette(cols,  space = "rgb")
-      # breaks = seq(min(range.strip) - 1e-8, max(range.strip) + 1e-8, length.out = length(brk.es)+1)
       col.vec = pal.all((length(brk.es)-1))
       if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
       cols = col.vec
@@ -447,49 +422,53 @@ contourplt_new <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       cols = col.vec
     }
 
-    layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
-    par(mar=c(5,4,4,2))
-    plot(x.range, y.range, type = "n",
-         yaxs="i",xaxs="i",
-         xlim = c(min.x, max.x),
-         ylim = c(min.y, max.y),
+    graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+    if (is.null(title)){
+      graphics::par(mar=c(4,4,2,1))
+    } else{
+      graphics::par(mar=c(4,4,4,1))
+    }
+    axis.sep = 0
+    graphics::plot(x.range, y.range, type = "n",
+         xlim = c(min.x-axis.sep, max.x+axis.sep),
+         ylim = c(min.y-axis.sep, max.y+axis.sep),
          xlab = lab.vars[1], ylab = lab.vars[2],
-         main = title, #sub = subtitle,
+         main = title,
          col  = "gray80",
          cex.main = font.size[1],
          cex.lab  = font.size[2],
          cex.axis = font.size[2],
          cex.sub  = font.size[3])
-    mtext(subtitle)
-    breaks = seq(-3,3, length.out = length(cols)+1)
-    breaks.axis = seq(-3,3, length.out = n.brk.axis)
-    .filled.contour(x.range, y.range, treatment.df.model.fit,
-                   levels = breaks,
-                   col = rev(cols))
-    box()
-    par(mar=c(5,2, 4, 2))
+    graphics::mtext(subtitle)
+    breaks = seq(min(brk.es),max(brk.es),      length.out = length(cols)+1)
+    breaks.axis = seq(min(brk.es),max(brk.es), length.out = n.brk.axis)
+    graphics::.filled.contour(x.range, y.range, treatment.df.model.fit,
+                    levels = breaks,
+                    col = rev(cols))
+    if(show.points) graphics::points(dat[, covari.sel], cex = 0.5, lwd = 0.1)
+    if (is.null(title)){
+      par(mar=c(4,2,2,2.5))
+    } else{
+      par(mar=c(4,2,4,2.5))
+    }
     image.scale(brk.es,
                 col= rev(cols),
                 breaks = breaks,
                 axis.pos = 4, add.axis = FALSE)
-    axis(2, at = breaks.axis, labels = round(breaks.axis, 3), las = 0, cex.axis = font.size[5])
-
-    # abline(h=breaks)
-    mtext(strip, side=4, line=1, cex.lab = font.size[5])
-
+    graphics::axis(2, at = breaks.axis, labels = round(breaks.axis, 3), las = 0, cex.axis = font.size[5])
+    graphics::mtext(strip, side=4, line=1, cex.lab = font.size[5])
     if(show.overall){
       cat("Overall Treatment effect is:",
           overall.treatment.mean, ", with confidence interval: (",
-          overall.treatment.lower,";",overall.treatment.upper,")")
-      points(x = 0.5,
+          overall.treatment.lower,";",overall.treatment.upper,")\n")
+      graphics::points(x = 0.5,
              (overall.treatment.mean), pch = 20)
-      points(x = 0.5, overall.treatment.lower, pch = "-")
-      points(x = 0.5, overall.treatment.upper, pch = "-")
-      segments(x0 = 0.5, x1 = 0.5,
-                    y0 = overall.treatment.lower,
-                    y1 = overall.treatment.upper)
+      graphics::points(x = 0.5, overall.treatment.lower, pch = "-")
+      graphics::points(x = 0.5, overall.treatment.upper, pch = "-")
+      graphics::segments(x0 = 0.5, x1 = 0.5,
+               y0 = overall.treatment.lower,
+               y1 = overall.treatment.upper)
     }
-
-    par(mfrow=c(1,1))
+    graphics::par(mfrow=c(1,1))
   }
 }

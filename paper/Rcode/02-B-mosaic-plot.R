@@ -17,9 +17,9 @@ dat <- prca
 dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
          hx = factor(ifelse(hx == 0 , "No", "Yes")),
-         # pf = factor(ifelse(pf == 0 , "No", "Yes")),
          Treatment = factor(ifelse(rx == 0 , "Control", "Treatment")),
-         Survival = factor(ifelse(survtime > 24 , "Yes", "No"), levels = c("Yes", "No")))-> dat
+         Survival  = factor(ifelse(survtime > 24 , "Yes", "No"),
+                            levels = c("Yes", "No"))) -> dat
 levels(dat$age_group) = c("Young","Middle-aged","Old")
 levels(dat$weight_group)  = c("Low","Mid","High")
 vars = data.frame(variable = names(dat), index = 1:length(names(dat)))

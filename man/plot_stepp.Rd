@@ -44,4 +44,28 @@ by controlling Type I error rate in one of the function arguments. Note that the
 for displaying subgroup effect sizes in binary and survival data, respectively. The actual subgroup sample sizes over the covariate
 are shown on the console window as well.
 }
+\examples{
+# Load the data to be used
+data(prca)
+dat <- prca
+
+## 9. stepp Plot -----------------------------------------------------------
+lab.y.title = paste("Treatment effect size (log-hazard ratio)");
+setup.ss = c(30,40)
+sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2],
+                   "; overlap sizes are set to ", setup.ss[1], ")" )
+plot_stepp(dat,
+           covari.sel = 8,
+           trt.sel = 3,
+           resp.sel = c(1, 2),
+           outcome.type = "survival",
+           setup.ss = c(30,40),
+           alpha = 0.05,
+           font.size = c(0.9, 1, 1, 1),
+           title = NULL,
+           lab.y = lab.y.title,
+           subtitle = sub.title)
+
+
+}
 

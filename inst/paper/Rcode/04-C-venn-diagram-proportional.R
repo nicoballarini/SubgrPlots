@@ -19,20 +19,27 @@ library(dplyr)
 # # Load the data to be used
 data(prca)
 dat <- prca
+dat$age1 = factor(dat$age1)
+dat %>%
+  rename(Stage = stage,
+         Performance = pf,
+         `Bone\nmetastasis` = bm,
+         `History of\ncardiovascular\nevents` = hx) -> dat
 
 ###############################################################################-
 ## 3. Venn Diagram -------------------------------------------------------------
 pdf("paper/figures/04-C-venn-diagram-proportional.pdf", width = 6, height = 5,  onefile = FALSE)
-plot_venn_proportional(dat,
+plot_venn(dat,
           covari.sel = c(5,7,4),
           cat.sel = c(2,2,2),
           trt.sel = 3,
           resp.sel = c(1,2),
           outcome.type = "survival",
-          outside.area = FALSE,
+          fill = TRUE,
           range.strip = c(-3, 3),
           n.brk = 31, n.brk.axis = 7,
           font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6),
           strip = paste("Treatment effect size (log hazard ratio)"),
-          fill = T, fill.background = T, palette = "hcl")
+          palette = "hcl", prop_area = TRUE)
 dev.off()
+

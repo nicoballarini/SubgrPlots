@@ -25,9 +25,9 @@ dat %>%
 
 
 pdf("paper/figures/08-galbraith-plot-naive.pdf", width = 5, height = 5)
-lab.xy = label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
+label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
                          expression((hat(delta)[i]-hat(delta)[F])/hat(sigma)[hat(delta)[i]]))
-plot_radial3(dat,
+plot_radial(dat,
             covari.sel = c(4, 5, 6, 7),
             trt.sel = 3,
             resp.sel = c(1, 2),
@@ -40,7 +40,7 @@ dev.off()
 
 
 pdf("paper/figures/08-galbraith-plot.pdf", width = 5, height = 5)
-lab.xy = label.xy = list(expression(1/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))),
+label.xy = list(expression(1/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))),
                          expression((hat(delta)[i]-hat(delta)[F])/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))))
 plot_radial2(dat,
             covari.sel = c(4, 5, 6, 7),

@@ -21,9 +21,9 @@ library(dplyr)
 # # Load the data to be used
 data(prca)
 dat <- prca
-vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
+
 ###############################################################################-
-## 1. Level plot ---------------------------------------------------------------
+## 1. Network plot ---------------------------------------------------------------
 pdf("paper/figures/19-alt-c-plot.pdf", width = 4, height = 4)
 plot_network(dat = dat,
              covari.sel = c(6,5,4,7),

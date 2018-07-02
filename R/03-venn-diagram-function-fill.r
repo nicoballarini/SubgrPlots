@@ -1,36 +1,13 @@
-#' Venn diagram for subgroup effect size
-#'
-#' This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.
-#' Also, it prints out the minimum and maximum of the treatment effect size on the console so as to set an approapriate range for effect
-#' size on the colour strip . Note that there are two options of graphical display; whether show the subgroup effect size of the complement
-#' of the union of all the considered subgroups or not. In addition, this function only works up to 5 sets and does not run an area-proportional
-#' algorithms for displaying two or three set. In addition, the function uses log odd ratio and log hazard ratio for displaying
-#' subgroup effect sizes in binary and survival data, respectively.
-#'
-#'@param dat          a data set
-#'@param covari.sel   a vector of indices of covariates
-#'@param cat.sel      a vector of indices of the categories for each covariate
-#'@param trt.sel      a covariate index specifying the treatment code
-#'@param resp.sel     a covariate index specifying the response variable
-#'@param outcome.type a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.strip  a vector with two elements specifying the range of treatment effect size for display
-#'@param n.brk        a number specifying the number of the points dividing the range of the argument "range.strip".
-#'@param font.size    a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
-#'               the third is for the sample size labels; the fourth is for the legend text; the fifth is for the y-axis label of the colour strip;
-#'               the sixth is for the unit label on the y axis.
-#'@param title        a string specifying the main title.
-#'@param strip        a string specifying the title of the colour strip.
-#'@param cat.dist  	A vector (length same as covari.sel) giving the distances (in npc units) of the category names from the edges of the circles (can be negative)
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
-#' @export
-plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
-                      range.strip=c(-6, 6), n.brk=13,
+plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
+                           range.strip=c(-6, 6), n.brk=13,
+                           n.brk.axis=7,
                font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL, strip = NULL,
-               cat.dist = rep(0.04, 3)){
+               effect = "HR", show.overall = TRUE,
+               palette = "divergent", col.power = 0.5){
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
-
+  effect = match.arg(effect)
   if (missing(dat)) stop("Data have not been inputed!")
   if (!(is.data.frame(dat))) stop("The data set is not with a data frame!")
 
@@ -87,7 +64,7 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
 
   ################################################ 1. create subgroup data  #################################################################
 
-  grid::grid.newpage()
+  # grid::grid.newpage()
   lab.vars = names(dat)[covari.sel]              # set the names of the covariates which relates to the defined subgroup; if a covariate
                                                  # are considered for multiple times, we make their name identical. (otherwise, the resulsting
                                                  # names are like var.1, var.2 and so on.)
@@ -100,6 +77,37 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
     names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
+  }
+
+  # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
+  if (outcome.type == "continuous"){
+    model.int = lm(resp ~ trt,  data = dat)
+    model.sum = summary(model.int)
+    overall.treatment.mean = model.sum$coefficients[2, 1]
+    overall.treatment.upper = 0
+    overall.treatment.lower = 0
+  }else if (outcome.type == "binary"){
+    model.int = glm(resp ~ trt, family = "binomial", data = dat)
+    model.sum = summary(model.int)
+    overall.treatment.mean = model.sum$coefficients[2, 1]
+    overall.treatment.upper = 0
+    overall.treatment.lower = 0
+  }else if (outcome.type == "survival"){
+    if (effect == "HR"){
+      model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = dat)
+      model.sum = summary(model.int)
+      overall.treatment.mean = model.sum$coef[1, 1]
+      overall.treatment.upper = log(model.sum$conf.int[1, 4])
+      overall.treatment.lower = log(model.sum$conf.int[1, 3])
+    }
+    if (effect == "RMST"){
+      dat.subgr.i = dat
+      rmst = survRM2::rmst2(time = dat.subgr.i$time, status = dat.subgr.i$status,
+                            arm = dat.subgr.i$trt, tau = time)
+      overall.treatment.mean = rmst$unadjusted.result[1,1]
+      overall.treatment.upper = 0
+      overall.treatment.lower = 0
+    }
   }
 
   for (i in 1: length(covari.sel)){
@@ -116,43 +124,43 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
 
   if (n.subgrp == 1){
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
-
     cond = list()
     cond[[1]] = which( A  == T  );  n.1 = length(which( A == T  ))
     cond[[2]] = which( A  != T  );  n.compl = length(which( A != T  ))
     cat("Only one subgroup defining variable. Try with two or more.")
-
-    VennDiagram::draw.single.venn(area = sum(A),
+    vp = VennDiagram::draw.single.venn(area = sum(A),
                                   category = names(dat)[covari.sel],
-                                  lty = 1,
-                                  fill = "white", title = title) -> vp
-    grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                  lty = 1, ind = F,
+                                  fill = "white", title = title)
   }else if (n.subgrp == 2){
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
     B = dat[, covari.sel[2]] == cats.var.all[[2]][cat.sel[2]]
-
     cond = list()
     cond[[1]] = which( A & !B == T  );  n.1 = length(which( A & !B == T  ))
     cond[[2]] = which( !A & B == T  );  n.2 = length(which( !A & B == T  ))
     cond[[3]] = which(A & B == T  );    n.12 = length(which(A & B == T  ))
     cond[[4]] = which(!A & !B == T  );  n.compl = length(which(!A & !B == T  ))
 
-    VennDiagram::draw.pairwise.venn(area1 = sum(A),
-                                  area2 = sum(B),
-                                  n12 = sum(A&B),
-                                  category = names(dat)[covari.sel],
-                                  lty = 1,
-                                  fill = "white", title = title) -> vp
-    grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+    vp = VennDiagram::draw.pairwise.venn(area1 = sum(A),
+                                        area2 = sum(B),
+                                        cross.area = sum(A&B),
+                                        # scaled = F,
+                                        ext.pos = c(90,90),
+                                        # inverted = sum(A)<sum(B),
+                                        category = names(dat)[covari.sel],
+                                        lty = 1,
+                                        fill = "white", ind = F,
+                                        title = title)
+
   }else if (n.subgrp == 3){
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
     B = dat[, covari.sel[2]] == cats.var.all[[2]][cat.sel[2]]
     C = dat[, covari.sel[3]] == cats.var.all[[3]][cat.sel[3]]
-
+    sum(A)
+    sum(B)
+    sum(C)
     cond = list()
     cond[[1]] = which( A & !B & !C == T  );  n.1 = length(which( A & !B & !C == T  ))
     cond[[2]] = which( !A & B & !C == T  );  n.2 = length(which( !A & B & !C == T  ))
@@ -162,31 +170,23 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     cond[[6]] = which( !A & B & C == T  );   n.23 = length(which(!A & B & C == T  ))
     cond[[7]] = which( A & B & C == T  );    n.123 = length(which(A & B & C == T  ))
     cond[[8]] = which( !A & !B & !C == T  ); n.compl = length(which(!A & !B & !C == T  ))
-    # test
-    # print(n.1 + n.2 + n.3 + n.12 + n.13 + n.23 + n.123 + n.compl)
-    # print(nrow(dat))
-    # grid::grid.newpage()
-    VennDiagram::draw.triple.venn(area1 = sum(A),
+
+    vp = VennDiagram::draw.triple.venn(area1 = sum(A),
                                   area2 = sum(B),
                                   area3 = sum(C),
                                   n12 = sum(A&B),
-                                  n23 = sum(B&C),
                                   n13 = sum(A&C),
+                                  n23 = sum(B&C),
                                   n123 = sum(A&B&C),
                                   rotation.degree = 60,
-                                  category = names(dat)[covari.sel],
                                   cat.pos  = c(225, 0, 140),
-                                  cat.dist = cat.dist,
-                                  lty = 1, cex = 1, cat.cex = 1,
+                                  cat.dist = rep(0.04, 3),
+                                  euler.d = F, scaled = F,
+                                  category = names(dat)[covari.sel],
                                   fontfamily = rep("sans", 7),
                                   cat.fontfamily = rep("sans", 3),ind = FALSE,
-                                  fill = "white", title = title) -> vp
-
-    grid::pushViewport(grid::viewport(width = 0.8, height = 0.8))
-    grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.9, y=0.9 ,n.compl, hjust = 0, just = 0)))
-    grid::upViewport()
-    grid::grid.rect(width = 0.97, height = 0.97, gp = grid::gpar(fill=NA))
+                                  lty = 1, cex = 1, cat.cex = 1,
+                                  fill = "white", title = title)
   }else if(n.subgrp == 4){
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
     B = dat[, covari.sel[2]] == cats.var.all[[2]][cat.sel[2]]
@@ -211,7 +211,7 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     cond[[15]] = which( A & B & C & D == T  );     n.1234 = length(which(A & B & C & D == T  ))
     cond[[16]] = which( !A & !B & !C & !D == T  ); n.compl = length(which(!A & !B & !C & !D == T  ))
 
-    VennDiagram::draw.quad.venn(area1 = sum(A),
+    vp = VennDiagram::draw.quad.venn(area1 = sum(A),
                                 area2 = sum(B),
                                 area3 = sum(C),
                                 area4 = sum(D),
@@ -227,10 +227,8 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                                 n234 = sum(B&C&D),
                                 n1234 = sum(A&B&C&D),
                                 category = names(dat)[covari.sel],
-                                lty = 1,
-                                fill = "white", title = title) -> vp
-    grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                lty = 1, ind = F,
+                                fill = "white", title = title)
 
   }else if(n.subgrp == 5){
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
@@ -273,7 +271,7 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     cond[[31]] = which( A & B & C & D & E == T  );      n.12345 = length(which( A & B & C & D & E == T  ))
     cond[[32]] = which( !A & !B & !C & !D & !E == T  ); n.compl = length(which( !A & !B & !C & !D & !E == T  ))
 
-    VennDiagram::draw.quintuple.venn(area1 = sum(A),
+    vp = VennDiagram::draw.quintuple.venn(area1 = sum(A),
                                      area2 = sum(B),
                                      area3 = sum(C),
                                      area4 = sum(D),
@@ -304,26 +302,26 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                                      n1345 = sum(A&C&D&E),
                                      n2345 = sum(B&C&D&E),
                                      n12345 = sum(A&B&C&D&E),
-                                     category = names(dat)[covari.sel],
-                                     lty = 1, fill = "white", title = title) -> vp
-    grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                     category = names(dat)[covari.sel], ind = F,
+                                     lty = 1, fill = "white", title = title)
   }
 
   data.subgrp = list()
   for (i in 1 : n.subgrp.tol )  data.subgrp[[i]] =  dat[cond[[i]], ]
 
   # create matrices for treatment size and standard error of MLE
-
   treatment.mean = vector()
-  for (i in 1 : n.subgrp.tol ){
-    cond1 = sum(data.subgrp[[i]]$trt == "0") == 0
-    cond2 = sum(data.subgrp[[i]]$trt == "1") == 0
-
+  for (i in 1 : n.subgrp.tol){
+    if (outcome.type == "survival"){
+      cond1 = sum(data.subgrp[[i]]$trt == "0" & data.subgrp[[i]]$status == 1) <= 2
+      cond2 = sum(data.subgrp[[i]]$trt == "1" & data.subgrp[[i]]$status == 1) <= 2
+    } else {
+      cond1 = sum(data.subgrp[[i]]$trt == "0") <= 2
+      cond2 = sum(data.subgrp[[i]]$trt == "1") <= 2
+    }
     if (cond1 | cond2 ){
       treatment.mean[i] = NA
     }else{
-
       if (outcome.type == "continuous"){
         model.int = lm(resp ~ trt,  data = data.subgrp[[i]])
         model.sum = summary(model.int)
@@ -342,4 +340,245 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
 
   cat("The minimum of treatment effect sizes is", c(min(treatment.mean, na.rm = T)), "\n")
   cat("The maximum of treatment effect sizes is", c(max(treatment.mean, na.rm = T)), "\n")
+
+  ################################################ 2. produce a graph  #################################################################
+  colors = numeric(n.subgrp.tol)
+  pal.2 = colorRampPalette(c("#fc8d59", "#ffffbf", "#91bfdb"), space = "rgb")
+  breaks <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk)
+  breaks.axis <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk.axis)
+  col.vec = pal.2((length(breaks)-1))
+  levs = breaks
+
+  pal.YlRd = colorRampPalette(c("#fee090", "#d73027"),  space = "rgb")
+  pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
+
+  breaks = seq(min(range.strip) - 1e-8, max(range.strip) + 1e-8, length.out = n.brk)
+  col.vec.div.pos = pal.WhBl((length(breaks)-1)/2)
+  col.vec.div.neg = pal.YlRd((length(breaks)-1)/2)
+  col.vec = c(rev(col.vec.div.neg), col.vec.div.pos)
+  if (outcome.type == "survival" & effect == "HR") col.vec = rev(col.vec)
+  if (palette == "hcl"){
+    col.vec = colorspace::diverge_hcl(n = length(breaks)-1,
+                                      c = 100, l = c(50,90),
+                                      power = col.power)
+    if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
+  }
+  for (i in 1 : (n.subgrp.tol)){
+    if (is.na(treatment.mean[i])){
+      colors[i] = "white"
+    }else{
+      col.idx = which(treatment.mean[i] < breaks)
+      if(length(col.idx)==0) warning("Check range of strip")
+      col.idx = col.idx[1] - 1
+      ### color an area corresponding to the corresponding subgroup
+      colors[i]=col.vec[col.idx]
+    }
+  }
+  if (n.subgrp == 1){
+    A <- list(list(x = as.vector(vp[[2]][[1]]), y = as.vector(vp[[2]][[2]])))
+    ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
+    labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    # Plot it!
+    vpf <- function(){
+      plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
+      rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
+           col =  colors[n.subgrp.tol])
+      polygon(A[[1]], col = colors[1])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      box()
+    }
+
+  }else if (n.subgrp == 2){
+    A <- list(list(x = as.vector(vp[[3]][[1]]), y = as.vector(vp[[3]][[2]])))
+    B <- list(list(x = as.vector(vp[[4]][[1]]), y = as.vector(vp[[4]][[2]])))
+    AintB <- polyclip::polyclip(A, B)
+    ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
+    labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    # Plot it!
+    vpf <- function(){
+      plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
+      rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
+           col =  colors[n.subgrp.tol])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      polygon(A[[1]], col = colors[1])
+      polygon(B[[1]], col = colors[2])
+      polygon(AintB[[1]], col = colors[3])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      box()
+    }
+
+  }else if (n.subgrp == 3){
+    A <- list(list(x = as.vector(vp[[1]][[1]]), y = as.vector(vp[[1]][[2]])))
+    B <- list(list(x = as.vector(vp[[2]][[1]]), y = as.vector(vp[[2]][[2]])))
+    C <- list(list(x = as.vector(vp[[3]][[1]]), y = as.vector(vp[[3]][[2]])))
+    AintB <- polyclip::polyclip(A, B)
+    AintC <- polyclip::polyclip(A, C)
+    BintC <- polyclip::polyclip(B, C)
+    AiBiC <- polyclip::polyclip(polyclip::polyclip(A, B), C)
+    ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
+    labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    # Plot it!
+    vpf <- function(){
+      plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
+      rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
+           col =  colors[n.subgrp.tol])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      polygon(A[[1]], col = colors[1])
+      polygon(B[[1]], col = colors[2])
+      polygon(C[[1]], col = colors[3])
+      polygon(AintB[[1]], col = colors[4])
+      polygon(AintC[[1]], col = colors[5])
+      polygon(BintC[[1]], col = colors[6])
+      polygon(AiBiC[[1]], col = colors[7])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      text(x=0.9, y=0.9 , labels = n.compl)
+      box()
+    }
+  }else if (n.subgrp == 4){
+    A <- list(list(x = as.vector(vp[[2]][[1]]), y = as.vector(vp[[2]][[2]])))
+    B <- list(list(x = as.vector(vp[[1]][[1]]), y = as.vector(vp[[1]][[2]])))
+    C <- list(list(x = as.vector(vp[[4]][[1]]), y = as.vector(vp[[4]][[2]])))
+    D <- list(list(x = as.vector(vp[[3]][[1]]), y = as.vector(vp[[3]][[2]])))
+    AintB <- polyclip::polyclip(A, B)
+    AintC <- polyclip::polyclip(A, C)
+    AintD <- polyclip::polyclip(A, D)
+    BintC <- polyclip::polyclip(B, C)
+    BintD <- polyclip::polyclip(B, D)
+    CintD <- polyclip::polyclip(C, D)
+    AiBiC <- polyclip::polyclip(polyclip::polyclip(A, B), C)
+    AiBiD <- polyclip::polyclip(polyclip::polyclip(A, B), D)
+    AiCiD <- polyclip::polyclip(polyclip::polyclip(A, C), D)
+    BiCiD <- polyclip::polyclip(polyclip::polyclip(B, C), D)
+    AiBiCiD <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(A, B), C), D)
+
+    ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
+    labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    # Plot it!
+    vpf <- function(){
+      plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
+      rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
+           col =  colors[n.subgrp.tol])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      polygon(A[[1]], col = colors[1])
+      polygon(B[[1]], col = colors[2])
+      polygon(C[[1]], col = colors[3])
+      polygon(D[[1]], col = colors[4])
+      polygon(AintB[[1]], col = colors[5])
+      polygon(AintC[[1]], col = colors[6])
+      polygon(AintD[[1]], col = colors[7])
+      polygon(BintC[[1]], col = colors[8])
+      polygon(BintD[[1]], col = colors[9])
+      polygon(CintD[[1]], col = colors[10])
+      polygon(AiBiC[[1]], col = colors[11])
+      polygon(AiBiD[[1]], col = colors[12])
+      polygon(AiCiD[[1]], col = colors[13])
+      polygon(BiCiD[[1]], col = colors[14])
+      polygon(AiBiCiD[[1]], col = colors[15])
+      text(x=0.1, y=0.1 , labels = n.compl)
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      box()
+    }
+  }else if (n.subgrp == 5){
+    A <- list(list(x = as.vector(vp[[1]][[1]]), y = as.vector(vp[[1]][[2]])))
+    B <- list(list(x = as.vector(vp[[2]][[1]]), y = as.vector(vp[[2]][[2]])))
+    C <- list(list(x = as.vector(vp[[3]][[1]]), y = as.vector(vp[[3]][[2]])))
+    D <- list(list(x = as.vector(vp[[4]][[1]]), y = as.vector(vp[[4]][[2]])))
+    E <- list(list(x = as.vector(vp[[5]][[1]]), y = as.vector(vp[[5]][[2]])))
+    AintB <- polyclip::polyclip(A, B)
+    AintC <- polyclip::polyclip(A, C)
+    AintD <- polyclip::polyclip(A, D)
+    AintE <- polyclip::polyclip(A, E)
+    BintC <- polyclip::polyclip(B, C)
+    BintD <- polyclip::polyclip(B, D)
+    BintE <- polyclip::polyclip(B, E)
+    CintD <- polyclip::polyclip(C, D)
+    CintE <- polyclip::polyclip(C, E)
+    DintE <- polyclip::polyclip(D, E)
+    AiBiC <- polyclip::polyclip(polyclip::polyclip(A, B), C)
+    AiBiD <- polyclip::polyclip(polyclip::polyclip(A, B), D)
+    AiBiE <- polyclip::polyclip(polyclip::polyclip(A, B), E)
+    AiCiD <- polyclip::polyclip(polyclip::polyclip(A, C), D)
+    AiCiE <- polyclip::polyclip(polyclip::polyclip(A, C), E)
+    AiDiE <- polyclip::polyclip(polyclip::polyclip(A, D), E)
+    BiCiD <- polyclip::polyclip(polyclip::polyclip(B, C), D)
+    BiCiE <- polyclip::polyclip(polyclip::polyclip(B, C), E)
+    BiDiE <- polyclip::polyclip(polyclip::polyclip(B, D), E)
+    CiDiE <- polyclip::polyclip(polyclip::polyclip(C, D), E)
+    AiBiCiD <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(A, B), C), D)
+    AiBiCiE <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(A, B), C), E)
+    AiBiDiE <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(A, B), D), E)
+    AiCiDiE <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(A, C), D), E)
+    BiCiDiE <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(B, C), D), E)
+    AiBiCiDiE <- polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(polyclip::polyclip(A, B), C), D), E)
+
+    ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
+    labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    # Plot it!
+
+    vpf <- function(){
+      plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
+      rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
+           col =  colors[n.subgrp.tol])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      polygon(A[[1]], col = colors[1])
+      polygon(B[[1]], col = colors[2])
+      polygon(C[[1]], col = colors[3])
+      polygon(D[[1]], col = colors[4])
+      polygon(E[[1]], col = colors[5])
+      polygon(AintB[[1]], col = colors[6])
+      polygon(AintC[[1]], col = colors[7])
+      polygon(AintD[[1]], col = colors[8])
+      polygon(AintE[[1]], col = colors[9])
+      polygon(BintC[[1]], col = colors[10])
+      polygon(BintD[[1]], col = colors[11])
+      polygon(BintE[[1]], col = colors[12])
+      polygon(CintD[[1]], col = colors[13])
+      polygon(CintE[[1]], col = colors[14])
+      polygon(DintE[[1]], col = colors[15])
+      polygon(AiBiC[[1]], col = colors[16])
+      polygon(AiBiD[[1]], col = colors[17])
+      polygon(AiBiE[[1]], col = colors[18])
+      polygon(AiCiD[[1]], col = colors[19])
+      polygon(AiCiE[[1]], col = colors[20])
+      polygon(AiDiE[[1]], col = colors[21])
+      polygon(BiCiD[[1]], col = colors[22])
+      polygon(BiCiE[[1]], col = colors[23])
+      polygon(BiDiE[[1]], col = colors[24])
+      polygon(CiDiE[[1]], col = colors[25])
+      polygon(AiBiCiD[[1]], col = colors[26])
+      polygon(AiBiCiE[[1]], col = colors[27])
+      polygon(AiBiDiE[[1]], col = colors[28])
+      polygon(AiCiDiE[[1]], col = colors[29])
+      polygon(BiCiDiE[[1]], col = colors[30])
+      polygon(AiBiCiDiE[[1]], col = colors[31])
+      text(x = labs$x, y = labs$y, labels = labs$label)
+      box()
+    }
+  }
+
+  layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+  par(mar=c(1,1,1,1))
+  vpf()
+  par(mar=c(1,2, 1, 2))
+  image.scale(treatment.mean, col=col.vec,
+              breaks = breaks-1e-8, axis.pos = 4, add.axis = FALSE)
+  if(show.overall){
+    cat("Overall Treatment effect is:",
+        overall.treatment.mean, ", with confidence interval: (",
+        overall.treatment.lower,";",overall.treatment.upper,")\n")
+    points(x = 0.5,
+           (overall.treatment.mean), pch = 20)
+    points(x = 0.5, overall.treatment.lower, pch = "-")
+    points(x = 0.5, overall.treatment.upper, pch = "-")
+    segments(x0 = 0.5, x1 = 0.5,
+             y0 = overall.treatment.lower,
+             y1 = overall.treatment.upper)
+  }
+  axis(2,
+       at = breaks.axis,
+       labels = round(breaks.axis, 3),
+       las = 0, cex.axis = font.size[6])
+  mtext(strip, side=4, line=1, cex.lab = font.size[5])
+  par(mfrow=c(1,1))
+  par(old.par)
 }

@@ -32,57 +32,67 @@
 #' }
 #' @source \url{http://portal.uni-freiburg.de/imbi/Royston-Sauerbrei-book/index.html}
 #' @source \url{https://onlinelibrary.wiley.com/doi/full/10.1002/bimj.201500147}
+#'
+#' @examples
+#' \dontrun{
+#' # Code used to download the dataset and create variables
+#' library(haven)
+#' l1 <- "https://onlinelibrary.wiley.com/action/"
+#' l2 <- "downloadSupplement?doi=10.1002%2Fbimj.201500147&attachmentId=2173117089"
+#' data_url <- paste0(l1,l2)
+#' temp <- tempfile()
+#' download.file(data_url,temp)
+#' prca0 <- read_sas(unz(temp, "adv_prostate_ca.sas7bdat"))
+#' # Select the variables that we use for the analysis
+#' prca <- prca0[,c("SURVTIME","CENS","RX","BM","HX","STAGE","PF", "AGE", "WT")]
+#'
+#' # Change names of variables to lower case
+#' names(prca)<- c("survtime","cens","rx","bm",
+#'                 "hx","stage","pf","age", "wt")
+#'
+#' # Create subgroups for Age and Weight and Stage
+#' prca$age1 <- 1 * (prca$age > 65 & prca$age <= 75)
+#' prca$age2 <- 1 * (prca$age > 75)
+#' prca$wt1  <- 1 * (prca$wt > 90 & prca$wt <= 110)
+#' prca$wt2  <- 1 * (prca$wt > 110)
+#'
+#' # Create subgroups for Age and Weight and Stage with (-1,1) coding
+#' prca$agegroup <- 1 + (1 * (prca$age > 65) + 1 * (prca$age > 75))
+#' prca$wtgroup  <- 1 + (1 * (prca$wt > 90) + 1 * (prca$wt > 110))
+#' dat = prca
+#' dat$agegroup = factor(dat$agegroup)
+#' dat$wtgroup = factor(dat$wtgroup)
+#' range(dat$age)
+#' range(dat$wt)
+#' levels(dat$agegroup) = c("[48,65]","(65,75]","(75,89]")
+#' levels(dat$wtgroup)  = c("[69,90]","(90,110]","(110,152]")
+#' ## We need variables as factors
+#' dat$bm    = factor(dat$bm)
+#' dat$hx    = factor(dat$hx)
+#' dat$stage = factor(dat$stage)
+#' dat$pf    = factor(dat$pf)
+#' dat$rx    = factor(dat$rx) # Treatment
+#'
+#' # Put labels to the variables so that they appear in the plot
+#' names(dat)<- c("survtime",
+#'                "cens",
+#'                "rx",
+#'                "bm",
+#'                "hx",
+#'                "stage",
+#'                "pf",
+#'                "age",
+#'                "weight",
+#'                "age1",
+#'                "age2",
+#'                "wt1",
+#'                "wt2",
+#'                "age_group",
+#'                "weight_group")
+#' prca <- dat
+#' ## devtools::use_data(prca, overwrite = T) ## Use it as dataset for the package
+#' }
+
 "prca"
 
-# head(prca0)
-# library(haven)
-# data_url = "https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fbimj.201500147&attachmentId=2173117089"
-# temp <- tempfile()
-# download.file(data_url,temp)
-# prca0 <- read_sas(unz(temp, "adv_prostate_ca.sas7bdat"))
-# # Select the variables that we use for the analysis
-# prca <- prca0[,c("SURVTIME","CENS","RX","BM","HX","STAGE","PF", "AGE", "WT")]
-# head(prca) # Preview dataset
-# names(prca)<- c("survtime","cens","rx","bm",
-#                 "hx","stage","pf","age", "wt")  # Change names of variables to lower case
-#
-# # Create subgroups for Age and Weight and Stage
-# prca$age1 <- 1 * (prca$age > 65 & prca$age <= 75)
-# prca$age2 <- 1 * (prca$age > 75)
-# prca$wt1  <- 1 * (prca$wt > 90 & prca$wt <= 110)
-# prca$wt2  <- 1 * (prca$wt > 110)
-# # Create subgroups for Age and Weight and Stage with (-1,1) coding
-# prca$agegroup <- 1 + (1 * (prca$age > 65) + 1 * (prca$age > 75))
-# prca$wtgroup  <- 1 + (1 * (prca$wt > 90) + 1 * (prca$wt > 110))
-# dat = prca
-# dat$agegroup = factor(dat$agegroup)
-# dat$wtgroup = factor(dat$wtgroup)
-# range(dat$age)
-# range(dat$wt)
-# levels(dat$agegroup) = c("[48,65]","(65,75]","(75,89]")
-# levels(dat$wtgroup)  = c("[69,90]","(90,110]","(110,152]")
-# ## We need variables as factors
-# dat$bm    = factor(dat$bm)
-# dat$hx    = factor(dat$hx)
-# dat$stage = factor(dat$stage)
-# dat$pf    = factor(dat$pf)
-# dat$rx    = factor(dat$rx) # Treatment
-#
-# # Put labels to the variables so that they appear in the plot
-# names(dat)<- c("survtime",
-#                "cens",
-#                "rx",
-#                "bm",
-#                "hx",
-#                "stage",
-#                "pf",
-#                "age",
-#                "weight",
-#                "age1",
-#                "age2",
-#                "wt1",
-#                "wt2",
-#                "age_group",
-#                "weight_group")
-# prca <- dat
-# devtools::use_data(prca, overwrite = T)
+

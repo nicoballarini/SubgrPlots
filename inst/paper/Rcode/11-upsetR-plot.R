@@ -21,7 +21,7 @@ data(prca)
 dat <- prca
 ###############################################################################-
 ## 11. UpSet -----------------------------------------------------------
-prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Treatment", "Control")),
+prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Experimental", "Control")),
                         bm = 1*(prca$bm == 1),
                         pf = 1*(prca$pf == 1),
                         hx = 1*(prca$hx == 1),

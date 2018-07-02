@@ -40,4 +40,39 @@ subgroups by categories of the covariate on the lower level. The horizontal line
 each level so as to check homogeneity across subgroup effects with repective to the overall effect. In addition, the function uses log
 odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 }
+\examples{
+library(dplyr)
+
+# Load the data to be used
+data(prca)
+dat <- prca
+dat \%>\%
+  mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
+         hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
+
+## Tree plot with fixed y-axis
+plot_tree(dat,
+          covari.sel = c(4, 5, 7),
+          trt.sel = 3,
+          resp.sel = c(1, 2),
+          outcome.type = "survival",
+          add.aux.line = TRUE,
+          font.size = c(12, 8, 0.55),
+          title = NULL,
+          lab.y = "Effect size (log hazard ratio)",
+          keep.y.axis = TRUE)
+
+## Tree plot with free y-axes
+plot_tree(dat,
+          covari.sel = c(4, 5, 7),
+          trt.sel = 3,
+          resp.sel = c(1, 2),
+          outcome.type = "survival",
+          add.aux.line = TRUE,
+          font.size = c(12, 8, 0.55),
+          title = NULL,
+          lab.y = "Effect size (log hazard ratio)",
+          keep.y.axis = FALSE)
+
+}
 

@@ -11,51 +11,49 @@
 #' for displaying subgroup effect sizes in binary and survival data, respectively. The actual subgroup sample sizes over the covariate
 #' are shown on the console window as well.
 #'
-#'@param dat            a data set
-#'@param covari.sel     a vector of indices of the two covariates
-#'@param trt.sel        a variate index specifying the treatment code
-#'@param resp.sel       a variate index specifying the response variable
-#'@param outcome.type   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param setup.ss       a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).
-#'@param alpha          the type I error rate
-#'@param font.size      a vector specifying the size of labels and text; the first element is for main titles, the second is for
+#' @param dat            a data set
+#' @param covari.sel     a vector of indices of the two covariates
+#' @param trt.sel        a variate index specifying the treatment code
+#' @param resp.sel       a variate index specifying the response variable
+#' @param outcome.type   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
+#' @param setup.ss       a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).
+#' @param alpha          the type I error rate
+#' @param font.size      a vector specifying the size of labels and text; the first element is for main titles, the second is for
 #'               for x-axis and y-axis labels; the thrid is for the text in the legend; the fourth is for the subtitle.
-#'@param title          a string specifying the main title.
-#'@param lab.y          a string specifying the labels of the y-axis.
-#'@param subtitle       strings specifying the subtitle
+#' @param title          a string specifying the main title.
+#' @param lab.y          a string specifying the labels of the y-axis.
+#' @param subtitle       strings specifying the subtitle
 #'
-# eg.1            var.sel = 3;
-#                 main.title = paste("STEPP for treatment effect size of overlapping subgroups defined by", names(dat)[var.sel]);
-#                 lab.y.title = paste("Treatment effect diffence");
-#                 setup.ss = c(35, 40);
-#                 sub.title = paste("(Subgroup sample sizes are set to", setup.ss[2], "; overlap sizes are set to", setup.ss[1], ")" )
-#                 stepp.plt(dat, covari.sel = 3, trt.sel = 2, resp.sel = 1, outcome.type = "continuous", setup.ss = c(35,40), alpha = 0.05,
-#                 title = main.title, lab.y = lab.y.title, subtitle = sub.title)
-#
-# eg.2            var.sel = 2;
-#                 main.title = paste("STEPP for overlapping subgroups defined by", names(dat3)[var.sel]);
-#                 lab.y.title = paste("Treatment effect diffence (log odds ratio)");
-#                 setup.ss = c(120, 130);
-#                 sub.title = paste("(Subgroup sample sizes are set to", setup.ss[2], "; overlap sizes are set to", setup.ss[1], ")" )
-#                 stepp.plt(dat3, covari.sel = 2, trt.sel = 1, resp.sel = 3, outcome.type = "binary", setup.ss = c(120, 130), alpha = 0.05,
-#                 title = main.title, lab.y = lab.y.title, subtitle = sub.title)
-#
-#                 var.sel = 2;
-#                 main.title = paste("STEPP for overlapping subgroups defined by", names(dat3)[var.sel]);
-#                 lab.y.title = paste("Treatment effect diffence (log hazard ratio)");
-#                 setup.ss = c(120, 130);
-#                 sub.title = paste("(Subgroup sample sizes are set to", setup.ss[2], "; overlap sizes are set to", setup.ss[1], ")" )
-#                 stepp.plt(dat3, covari.sel = 2, trt.sel = 1, resp.sel = c(4,3), outcome.type = "survival", setup.ss = c(120, 130), alpha = 0.05,
-#                 title = main.title, lab.y = lab.y.title, subtitle = sub.title)
-#
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
+#' @examples
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#'
+#' ## 9. stepp Plot -----------------------------------------------------------
+#' lab.y.title = paste("Treatment effect size (log-hazard ratio)");
+#' setup.ss = c(30,40)
+#' sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2],
+#'                    "; overlap sizes are set to ", setup.ss[1], ")" )
+#' plot_stepp(dat,
+#'            covari.sel = 8,
+#'            trt.sel = 3,
+#'            resp.sel = c(1, 2),
+#'            outcome.type = "survival",
+#'            setup.ss = c(30,40),
+#'            alpha = 0.05,
+#'            font.size = c(0.9, 1, 1, 1),
+#'            title = NULL,
+#'            lab.y = lab.y.title,
+#'            subtitle = sub.title)
+#'
+#'
 #' @export
 #' @import grid
 #' @import graphics
 plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, alpha, font.size = c(1.2,1,1,0.85), title = NULL, lab.y = NULL,
                       subtitle = NULL)
 {
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -288,4 +286,5 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   legend(xy.current.pos[1], xy.current.pos[4], c("Overlapping Subgroup Mean", "Overall Mean ", lab.bd.sic, lab.bd.ic), lty = c(1, 1, 2, 2),
          col = c("red", "green", "blue", "orange" ), bty = "n",
          cex = font.size[4])
+  par(old.par)
 }

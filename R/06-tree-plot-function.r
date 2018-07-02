@@ -20,9 +20,40 @@
 #' @param text.shift a numeric indicating the separation of the text in the branches
 #' @param keep.y.axis a logical indicating whether to keep the y axis fixed across the levels
 #'
+#' @examples
+#' library(dplyr)
 #'
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#' dat %>%
+#'   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
+#'          hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
+#'
+#' ## Tree plot with fixed y-axis
+#' plot_tree(dat,
+#'           covari.sel = c(4, 5, 7),
+#'           trt.sel = 3,
+#'           resp.sel = c(1, 2),
+#'           outcome.type = "survival",
+#'           add.aux.line = TRUE,
+#'           font.size = c(12, 8, 0.55),
+#'           title = NULL,
+#'           lab.y = "Effect size (log hazard ratio)",
+#'           keep.y.axis = TRUE)
+#'
+#' ## Tree plot with free y-axes
+#' plot_tree(dat,
+#'           covari.sel = c(4, 5, 7),
+#'           trt.sel = 3,
+#'           resp.sel = c(1, 2),
+#'           outcome.type = "survival",
+#'           add.aux.line = TRUE,
+#'           font.size = c(12, 8, 0.55),
+#'           title = NULL,
+#'           lab.y = "Effect size (log hazard ratio)",
+#'           keep.y.axis = FALSE)
+#'
 #' @export
 #' @import grid
 #' @import graphics
@@ -31,6 +62,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       title = NULL, lab.y = NULL, text.shift = 0.005,
                       keep.y.axis = FALSE)
 {
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -512,4 +544,5 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     upViewport(2)
   }
   upViewport()
+  par(old.par)
 }

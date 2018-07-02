@@ -31,4 +31,16 @@ unidirectional arrowed lines to the other. In addition, there are two modes of d
 different colours, reflecting the level of overlap proportions; the other is that lines have five thickness and types,
 indicating five levels of overlap proportions.
 }
+\examples{
+data(prca)
+dat <- prca
+## 1. Overlap alternative plot -------------------------------------------------
+plot_overlap_alternative(dat = dat,
+                         covari.sel = c(6,5,4,7),
+                         mode = 1,
+                         para = c(0, 0.6, 1),
+                         font.size = c(1.2, 1.2, 0.8),
+                         title = NULL)
+
+}
 

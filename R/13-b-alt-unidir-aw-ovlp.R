@@ -16,17 +16,24 @@
 #' @param mode         a value specifying the type of display; either 1 or 2.
 #' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
 #' @param title        a string specifying the main title.
-#
-# e.g.          main.title = "Relative overlapping proportions of pairwise subgroups";
-#               alt.unidir.aw.ovlp(dat = dat, covari.sel = c(4, 6, 10), mode = 1, para = c(0.5, 0.15, 1), font.size = c(1.5, 1.5), title = main.title)
-#
-# created by Yi-Da Chiu, 01/08/17
-# created by Yi-Da Chiu, 29/08/17
+#'
+#' @examples
+#' data(prca)
+#' dat <- prca
+#' ## 1. Overlap alternative plot -------------------------------------------------
+#' plot_overlap_alternative(dat = dat,
+#'                          covari.sel = c(6,5,4,7),
+#'                          mode = 1,
+#'                          para = c(0, 0.6, 1),
+#'                          font.size = c(1.2, 1.2, 0.8),
+#'                          title = NULL)
+#'
 #' @export
 #' @import grid
 #' @import graphics
 plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mode,  font.size = c(1.5, 1.5, 0.8), title = NULL)
 {
+  old.par <- par(no.readonly=T)
   ################################################ 0. argument validity check  #################################################################
 
   if (missing(dat)) stop("Data have not been inputed!")
@@ -233,4 +240,6 @@ plot_overlap_alternative <- function(dat, covari.sel, para = c(0.5, 0.15, 1), mo
     lab.lines = c("0 <= p. < 0.2", "0.2 <= p. < 0.4", "0.4 <= p. < 0.6", "0.6 <= p. < 0.8", "0.8 <= p. <= 1" )
     legend("center", lab.lines, lty = c(2, 3, 1, 1, 1), lwd = c(1, 1, 1, 2, 3), col = "royalblue", ncol =2)
   }
+  par(old.par)
+
 }

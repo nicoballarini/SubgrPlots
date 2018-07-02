@@ -11,7 +11,7 @@
 Make_base_plot_t <- function(Main_bar_plot, Matrix_plot, Size_plot, labels, hratios, att_x, att_y,
                            Set_data, exp, position, start_col, att_color, QueryData,
                            attribute_plots, legend, query_legend, boxplot, names, set_metadata,
-                           set_metadata_plots){
+                           set_metadata_plots, bar_legend){
 
   end_col <- ((start_col + as.integer(length(labels))) - 1)
   Set_data <- Set_data[which(rowSums(Set_data[ ,start_col:end_col]) != 0), ]
@@ -41,7 +41,7 @@ Make_base_plot_t <- function(Main_bar_plot, Matrix_plot, Size_plot, labels, hrat
   if(is.null(boxplot)==F && is.null(attribute_plots) == T){
     BaseBoxPlot_t(boxplot, position, size_plot_height, Main_bar_plot,
                   Matrix_plot, Size_plot,
-                hratios, set_metadata, set_metadata_plots)
+                hratios, set_metadata, set_metadata_plots, bar_legend)
   }
 }
 
@@ -52,7 +52,7 @@ vplayout <- function(x,y){
 
 ## Generates UpSet plot with boxplots representing distributions of attributes
 BaseBoxPlot_t <- function(box_plot, position, size_plot_height, Main_bar_plot, Matrix_plot,
-                          Size_plot, hratios, set_metadata, set_metadata_plots){
+                          Size_plot, hratios, set_metadata, set_metadata_plots, bar_legend){
   if(length(box_plot) > 2){
     return(warning("UpSet can only show 2 box plots at a time"))
   }
@@ -109,6 +109,12 @@ BaseBoxPlot_t <- function(box_plot, position, size_plot_height, Main_bar_plot, M
   pushViewport(vp)
   grid.draw(Size_plot)
   popViewport()
+
+  vp = vplayout((size_bar_right/2):(size_bar_right-2), (matrix_bottom *(1 - hratios[3])):matrix_bottom)
+  pushViewport(vp)
+  grid.draw(bar_legend)
+  popViewport()
+
   if(is.null(set_metadata) == F){
     for(i in 1:length(set_metadata_plots)){
       if(i != 1){

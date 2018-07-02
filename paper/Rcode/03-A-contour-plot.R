@@ -14,11 +14,9 @@
 # devtools::install()
 
 library(SubgrPlots) # Loads this package. Install it first
-library(survival)
-library(ggplot2)
 library(dplyr)
 
-# # Load the data to be used
+# Load the data to be used
 data(prca)
 dat <- prca
 setup.ss =  c(10,60,15,30)
@@ -31,7 +29,7 @@ dat %>%
          Age = age) -> dat
 
 pdf("paper/figures/03-A-contour-plot.pdf", width = 6, height = 5)
-contourplt_new2(dat,
+plot_contour(dat,
                 covari.sel = c(8,9),
                 trt.sel = 3,
                 resp.sel = c(1,2),

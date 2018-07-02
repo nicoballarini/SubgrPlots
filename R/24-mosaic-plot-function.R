@@ -1,6 +1,6 @@
-#' Circular plot using circlize package
+#' Mosaic plot
 #'
-#' This function produces a circular plot for subgroup analysis
+#' This function produces a mosaic plot for subgroup analysis
 #'
 #' @param dat              a data set
 #' @param covari.sel       a vector of indices of the two covariates
@@ -31,7 +31,56 @@
 #' @param show.marginal    logical indicating whether to show the marginal subgroups. only when 2 covariates are used
 #' @param show.effect      logical indicating whether to show effect size using color or not. only when 3 covariates are used
 #'
-# created by Nico, 12/03/18
+#' @examples
+#' library(dplyr)
+#' data(prca)
+#' dat <- prca
+#' dat %>%
+#'   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
+#'          hx = factor(ifelse(hx == 0 , "No", "Yes")),
+#'          Treatment = factor(ifelse(rx == 0 , "Control", "Treatment")),
+#'          Survival = factor(ifelse(survtime > 24 , "Yes", "No"),
+#'          levels = c("Yes", "No")))-> dat
+#' levels(dat$age_group) = c("Young","Middle-aged","Old")
+#' levels(dat$weight_group)  = c("Low","Mid","High")
+#' # Change variable names
+#' dat %>%
+#'   rename(`Bone Metastasis` = bm,
+#'          `Performance rating` = pf,
+#'          `History of cardiovascular events` = hx,
+#'          `2-year survival` = Survival,
+#'          Weight = weight_group,
+#'          Age = age_group) -> dat
+#' ## 2.a Mosaic plot with 2 variables -----------------------------------------
+#' plot_mosaic(dat = dat,
+#'             covari.sel = c(14, 15),
+#'             trt.sel = 3,
+#'             resp.sel = c(1, 2),
+#'             outcome.type =  "survival",
+#'             range.v = NULL,
+#'             adj.ann.subgrp = 4,
+#'             range.strip=c(-3, 3),
+#'             n.brk = 31,
+#'             n.brk.axis = 7, sep. = 0.034,
+#'             font.size = c(10, 10, 10, 10, 0.7),
+#'             title = NULL, lab.xy = NULL,
+#'             strip = "Treatment effect size (log-hazard ratio)",
+#'             col.line = "white", lwd. = 2,
+#'             effect = "HR", print.ss = FALSE, palette = "hcl")
+#'
+#' ## 2.b Mosaic plot with 3 variables -----------------------------------------
+#' plot_mosaic(dat = dat,
+#'             covari.sel = c(15, 7, 4),
+#'             trt.sel = 3,
+#'             resp.sel = c(1, 2),
+#'             outcome.type =  "survival",
+#'             range.v = NULL, adj.ann.subgrp = 4,
+#'             range.strip=c(-3, 3),
+#'             n.brk = 31, n.brk.axis = 7,
+#'             font.size = c(10, 10, 10, 10, 0.7),
+#'             title = NULL, lab.xy = NULL,
+#'             strip = "Treatment effect size (log-hazard ratio)",
+#'             effect = "HR", palette = "hcl")
 #' @export
 #' @import grid
 plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
@@ -106,7 +155,7 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                              print.ss = print.ss, col.line = col.line)
     }
   } else {
-    break("Only 2 or 3 covariates are allowed in 'covari.sel'")
+    stop("Only 2 or 3 covariates are allowed in 'covari.sel'")
   }
 }
 
@@ -126,6 +175,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white",
                           time = NULL){
+  old.par <- par(no.readonly=T)
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -377,6 +427,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   grid.text(strip, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
   upViewport()
+  par(old.par)
 }
 
 
@@ -395,6 +446,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
                                    palette = "divergent", col.power = 0.5,
                                    print.ss = FALSE, col.line = "white",
                                    time = NULL){
+  old.par <- par(no.readonly=T)
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -838,6 +890,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
   grid.text(strip, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
   upViewport()
+  par(old.par)
 }
 
 
@@ -857,6 +910,7 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
                           effect = "HR", lwd. = 2, sep. = 0.05,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white"){
+  old.par <- par(no.readonly=T)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -1000,6 +1054,7 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
   grid.text(labels[3], vjust = 1,  hjust = 0.5, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
 
+  par(old.par)
 
 }
 
@@ -1018,6 +1073,7 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white",
                           time = NULL){
+  old.par <- par(no.readonly=T)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -1301,4 +1357,5 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   grid.text(strip, gp = gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   upViewport()
   upViewport()
+  par(old.par)
 }

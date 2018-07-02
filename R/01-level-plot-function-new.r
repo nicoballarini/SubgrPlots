@@ -1,8 +1,8 @@
-#' level plot for subgroup effect size
+#' Level plot for subgroup effect size
 #'
-#' this function produces a level plot showing the treatment effect size of pairwise subgroups and marginal subgroups defined by the
+#' This function produces a level plot showing the treatment effect size of pairwise subgroups and marginal subgroups defined by the
 #' categories of two covariates. Also, it prints out the minimum and maximum of the treatment effect size on the console so as to set
-#' an approapriate range for effect size on the colour strip . Note that there are two types of graphical display; whether show subgroup
+#' an approapriate range for effect size on the colour strip. Note that there are two types of graphical display; whether show subgroup
 #' sample size by rectangles with different sizes (proportional to the ratio of sample size to the full size) or not. In addition, the
 #' function uses log odd ratio and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
 #'
@@ -25,9 +25,45 @@
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param palette          either "divergent" or "hcl"
 #' @param col.power        to be used when palette = "hcl". see colorspace package for reference
-#
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
+#'
+#' @examples
+#' # Load the data to be used
+#' data(prca)
+#' dat  <- prca
+#' levels(dat$age_group)    <- c("Young", "Middle-aged", "Old")
+#' levels(dat$weight_group) <- c("Low", "Mid", "High")
+#' names(dat)[c(14,15)]     <- c("age", "weight")
+#'
+#' ## 1.a Level plot -----------------------------------------------------------
+#' plot_level(dat,
+#'            covari.sel = c(14,15),
+#'            trt.sel = 3,
+#'            resp.sel = c(1, 2),
+#'            outcome.type = "survival",
+#'            ss.rect = FALSE,
+#'            range.strip=c(-3, 3),
+#'            n.brk = 31,
+#'            n.brk.axis =  7,
+#'            font.size = c(14, 12, .8, 14, 0.7),
+#'            title = "Total sample size = 475",
+#'            strip = "Treatment effect size (log hazard ratio)",
+#'            effect = "HR",
+#'            show.overall = TRUE, palette = "hcl")
+#'
+#' ## 1.b Modified Level plot --------------------------------------------------
+#' plot_level(dat,
+#'            covari.sel = c(14,15),
+#'            trt.sel = 3,
+#'            resp.sel = c(1, 2),
+#'            outcome.type = "survival",
+#'            ss.rect = TRUE,
+#'            range.strip=c(-3, 3),
+#'            n.brk = 31,
+#'            n.brk.axis =  7,
+#'            font.size = c(14, 12, .8, 14, 0.7),
+#'            title = paste0("Total sample size = ", nrow(dat)),
+#'            strip = "Treatment effect size (log hazard ratio)",
+#'            show.overall = TRUE, palette = "hcl")
 #' @export
 #' @import grid
 plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
@@ -38,7 +74,8 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        effect = c("HR","RMST"), time = NULL,
                        show.overall = FALSE,
                        palette = "divergent", col.power = 0.5){
-  ################################################ 0. argument validity check  #################################################################
+  old.par <- par(no.readonly=T)
+  ## 0. argument validity check  ###############################################
   effect = match.arg(effect)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
@@ -92,22 +129,22 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
   if (!(length(font.size) == 5)) stop("The font size setups for labels or text should have five components only!")
 
-  ################################################ 1. create subgroup data  #################################################################
+  ## 1. create subgroup data  ##################################################
   lab.vars = names(dat)[covari.sel]                 # set the names of the covariates which relates to the defined subgroup; if a covariate
                                                     # are considered for multiple times, we make their name identical. (otherwise, the resulsting
                                                     # names are like var.1, var.2 and so on.)
-  names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
+  names(dat)[trt.sel] = "trt"                 # rename the variable for treatment code
   if (outcome.type == "continuous"){
-    names(dat)[resp.sel] = "resp"                        # rename the response variable
+    names(dat)[resp.sel] = "resp"             # rename the response variable
   }else if (outcome.type == "binary"){
-    names(dat)[resp.sel] = "resp"                        # rename the response variable
+    names(dat)[resp.sel] = "resp"             # rename the response variable
   }else if (outcome.type == "survival"){
-    names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
-    names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
+    names(dat)[resp.sel[1]] = "time"          # rename the response variable for survival time
+    names(dat)[resp.sel[2]] = "status"        # rename the response variable for survival right censoring status
   }
 
 
-  # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
+  ## Calculate overall Treatment effect ----------------------------------------
   if (outcome.type == "continuous"){
     model.int = lm(resp ~ trt,  data = dat)
     model.sum = summary(model.int)
@@ -268,11 +305,10 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   cat("The minimum of treatment effect sizes is", c(min(treatment.mean, treatment.mean.mar)), "\n")
   cat("The maximum of treatment effect sizes is", c(max(treatment.mean, treatment.mean.mar)), "\n")
 
-  ################################################ 2. produce a graph  #################################################################
+  ## 2. produce a graph  #######################################################
 
   grid::grid.newpage()
   ##########  middle cell
-
   #####   middle-bottom gap
   vp <- grid::viewport(x = 0.15 + 0.0375, y = 0.15 + 0.04, width = 0.675, height = 0.0375, just = c("left", "bottom"))
   grid::pushViewport(vp)
@@ -309,8 +345,6 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   ##########   middle-middle cell
-
-  # pal.2 = colorRampPalette(c("black", "red", "yellow"), space = "rgb")
   pal.YlRd = colorRampPalette(c("#fee090", "#d73027"), space = "rgb")
   pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
 
@@ -490,6 +524,5 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   #col.bar.title = strip #"Treatment effect size"
   grid::grid.text(strip, gp = grid::gpar(fontsize= font.size[2], fontface = 1), rot = 90)
   grid::upViewport()
-
-
+  par(old.par)
 }

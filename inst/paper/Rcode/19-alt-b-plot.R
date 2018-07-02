@@ -18,7 +18,7 @@ library(SubgrPlots) # Loads this package. Install it first
 data(prca)
 dat <- prca
 ###############################################################################-
-## 1. Level plot ---------------------------------------------------------------
+## 1. Overlap alternative plot -------------------------------------------------
 pdf("paper/figures/19-alt-b-plot.pdf", width = 4, height = 4)
 plot_overlap_alternative(dat = dat,
                          covari.sel = c(6,5,4,7),
@@ -27,3 +27,4 @@ plot_overlap_alternative(dat = dat,
                          font.size = c(1.2, 1.2, 0.8),
                          title = NULL)
 dev.off()
+

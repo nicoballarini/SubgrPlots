@@ -1,20 +1,6 @@
-#########################################################################################################################################################
-#                                                                                                                                                       #
-#                               a graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional               #
-#                               arrowed curved lines around a circle                                                                                    #
-#                                                                                                                                                       #
-# unidir.aw.ovlp  this function produces a plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion is     #
-#                  defined by |intersect(A, B)|/|A|, for any sets A and B and A is the baseline set. The letters represent subgroups defined by the     #
-#                  categories of the selected covariates. Subgroup letters located around a circle have two directional arrowed curved lines to the     #
-#                  other. The arrowed lines have different colours, reflecting the level of overlap proportions. Note that if a subgroup is a baseline  #
-#                  subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be#
-#                  changed by setting different values on the argument "para".                                                                          #
-#                                                                                                                                                       #
-#########################################################################################################################################################
-
-#' a graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional arrowed curved lines around a circle
+#' A graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional arrowed curved lines around a circle
 #'
-#' this function produces a plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion is
+#' This function produces a plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion is
 #' defined by |intersect(A, B)|/|A|, for any sets A and B and A is the baseline set. The letters represent subgroups defined by the
 #' categories of the selected covariates. Subgroup letters located around a circle have two directional arrowed curved lines to the
 #' other. The arrowed lines have different colours, reflecting the level of overlap proportions. Note that if a subgroup is a baseline
@@ -28,17 +14,26 @@
 #'  (there are three possible values, 0, 0.5 and 1)
 #' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
 #' @param title        a string specifying the main title.
-#
-# e.g.          main.title = "Relative overlapping proportions of pairwise subgroups";
-#               unidir.aw.ovlp(dat = dat, covari.sel = c(4, 6, 10), para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5), title = main.title)
-#
-# created by Yi-Da Chiu, 01/08/17
-# created by Yi-Da Chiu, 29/08/17
+#'
+#' @examples
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#'
+#' ## Overlap plot -------------------------------------------------------------
+#' plot_overlap(dat = dat,
+#'              covari.sel = c(6,5,4,7),
+#'              para = c(0.1, 0.5, 1),
+#'              font.size = c(1.2, 1.2, 0.8),
+#'              title = NULL)
 #' @export
 #' @import grid
 #' @import graphics
-plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5, 1.5, 1), title = NULL)
+plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1),
+                         font.size = c(1.5, 1.5, 1), title = NULL)
 {
+  old.par <- par(no.readonly=T)
+
   ################################################ 0. argument validity check  #################################################################
 
   if (missing(dat)) stop("Data have not been inputed!")
@@ -178,4 +173,5 @@ plot_overlap <- function(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1
   image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
   mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
   box()
+  par(old.par)
 }

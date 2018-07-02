@@ -14,23 +14,23 @@
 # devtools::install()
 library(SubgrPlots) # Loads this package. Install it first
 library(dplyr)
-# # Load the data to be used
+# Load the data to be used
 data(prca)
 dat <- prca
 dat %>%
   rename(Performance = pf,
-         `Bone\nMetastasis` = bm,
+         `Bone\nmetastasis` = bm,
          `History of\ncardiovascular\nevents` = hx) -> dat
-vars
 ###############################################################################-
 ## 3. Venn Diagram -----------------------------------------------------------
 pdf("paper/figures/04-A-venn-diagram.pdf", width = 5, height = 5)
 plot_venn(dat,
-       covari.sel = c(5, 7, 4),#vars,
+       covari.sel = c(5, 7, 4),
        cat.sel = c(2,2,2),
        trt.sel = 3,
        resp.sel = c(1,2),
        outcome.type = "survival",
-       n.brk = 13, cat.dist = c(0.04,0.04,0.07),
+       fill = FALSE,
+       cat.dist = c(0.04,0.04,0.07),
        font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6))
 dev.off()

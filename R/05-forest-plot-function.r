@@ -26,17 +26,44 @@
 #' @param widths a vector of length 3 indicating the widths of the panels
 #' @param max.time a numeric input indicating the maximum time for x-axis in the the Kaplan-Meier curves. If NULL, the maximum is taken from the dataset.
 #' @param n.brk number of breaks in the Kaplan-Meier curves
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
+#'
+#' @examples
+#' # Load the data to be used
+#' library(dplyr)
+#' data(prca)
+#' dat <- prca
+#' dat %>%
+#'   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
+#'          hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
+#'
+#' ## 5. Forest Plot -----------------------------------------------------------
+#' main.title = list("", "Forest plot of subgroups",
+#'                   "Kaplan-Meier curves\n by treatment group")
+#' label.x = list("", "Log hazard ratio",
+#'                "Time (days)")
+#' plot_forest(dat,
+#'             covari.sel = c(4,5,6,7),#vars
+#'             trt.sel = 3,
+#'             resp.sel = c(1, 2),
+#'             outcome.type = "survival",
+#'             size.shape = c(0.3, 6.5/4),
+#'             font.size = c(0.6, 0.5, 0.4, 0.6),
+#'             title = main.title,
+#'             lab.x = label.x, time = 50, KM = TRUE, pdf = TRUE,
+#'             show.km.axis = 2, n.brk = 12, max.time = 77,
+#'             widths = c(1,1,0.6))
+#'
+#'
 #' @export
 #' @import grid
 #' @import graphics
-plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
+plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
                       title = NULL, lab.x = NULL, time = mean(dat[,resp.sel[1]]),
                       pdf = FALSE, KM = FALSE, show.km.axis = TRUE,
                       widths = c(1,1,1), max.time = NULL, n.brk = 10)
 {
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -638,4 +665,5 @@ plot_forest2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                edits = gEdit(gPath="labels", rot=0))
     upViewport(3)
   }
+  par(old.par)
 }

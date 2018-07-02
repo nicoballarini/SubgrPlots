@@ -32,7 +32,6 @@ Imports:
     gridBase,
     gridExtra,
     methods,
-    pacman,
     plyr,
     polyclip,
     scales,

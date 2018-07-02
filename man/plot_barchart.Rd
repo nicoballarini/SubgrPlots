@@ -2,7 +2,7 @@
 % Please edit documentation in R/04-bar-chart-function-new.r
 \name{plot_barchart}
 \alias{plot_barchart}
-\title{barchart for subgroup effect size}
+\title{Barchart for subgroup effect size}
 \usage{
 plot_barchart(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   font.size = c(15, 12, 10, 0.6), title = NULL, lab.y = NULL,
@@ -33,9 +33,27 @@ labels and the y-axis label; the third is for the category labels; the forth is 
 \item{decimals}{decimal places for the axis}
 }
 \description{
-this function produces a bar chart showing the treatment effect size of pairwise subgroups defined by the categories of two
+This function produces a bar chart showing the treatment effect size of pairwise subgroups defined by the categories of two
 covariates. Also, it prints out the minimum and maximum of the treatment effect size on the console. Note that each bar has a width
 which is proportional to the ratio of the corresponding sample size to the full size. In addition, the function uses log odd ratio
 and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
+}
+\examples{
+# # Load the data to be used
+data(prca)
+dat <- prca
+levels(dat$age_group) = c("Young","Middle-aged","Old")
+levels(dat$weight_group) = c("Low","Mid","High")
+names(dat)[c(14,15)] = c("Age", "Weight")
+
+## 4. Bar chart -----------------------------------------------------------
+plot_barchart(dat,
+              covari.sel = c(14,15),
+              trt.sel = 3,
+              resp.sel = c(1, 2),
+              outcome.type = "survival",
+              font.size = c(14, 12, 14, 0.75),
+              lab.y = "Treatment effect size (RMST difference)")
+
 }
 

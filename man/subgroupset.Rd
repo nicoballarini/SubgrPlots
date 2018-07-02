@@ -20,7 +20,7 @@ subgroupset(data, nsets = 5, nintersects = 40, sets = NULL,
   attribute.plots = NULL, scale.intersections = "identity",
   scale.sets = "identity", text.scale = 1, set_size.angles = 0,
   treatment.var = NULL, min.n = 20, icon = c("dots", "pm", "pm.circle",
-  "value"), fill.trt = TRUE)
+  "value"), fill.trt = TRUE, transpose = FALSE)
 }
 \arguments{
 \item{data}{Data set}
@@ -123,6 +123,8 @@ in the following format: c(intersection size title, intersection size tick label
 \item{icon}{One of "dots", "pm", "pm.circle", or "value" which determines the icon to use in the matrix plot}
 
 \item{fill.trt}{A logical indicating whether the bar plot is coloured by treatment.}
+
+\item{transpose}{A logical indicating whether to draw the plot vertically.}
 }
 \description{
 Visualization of set intersections using novel UpSet matrix design, modified to show treatment effects and confidence intervals
@@ -134,6 +136,46 @@ intervals in a forest plot-like panel.
 }
 \note{
 Data set must be formatted as described on the orginal UpSet github page: \url{http://github.com/VCG/upset/wiki}.
+}
+\examples{
+\dontrun{
+data(prca)
+dat <- prca
+vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
+
+## 12. SubgroUpSet -----------------------------------------------------------
+prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Experimental", "Control")),
+                        bm = 1*(prca$bm == 1),
+                        pf = 1*(prca$pf == 1),
+                        hx = 1*(prca$hx == 1),
+                        stage = 1*(prca$stage == 4),
+                        age = 1*(prca$age > 75),
+                        wt = 1*(prca$weight > 100),
+                        survtime = prca$survtime,
+                        cens = prca$cens==1)
+subgroupset(prca.upset,
+            order.by = "freq",
+            empty.intersections = "on",
+            sets = c("bm", 'pf', "hx"),
+            text.scale = 1.,
+            mb.ratio = c(0.25, 0.50,0.20),
+            treatment.var = "trt",
+            outcome.type = "survival",
+            effects.summary = c("survtime", "cens"),
+            query.legend = "top", icon = "pm")
+
+subgroupset(prca.upset,
+            order.by = "freq",
+            empty.intersections = "on",
+            sets = c("bm", 'pf', "hx"),
+            text.scale = 1.,
+            mb.ratio = c(0.25, 0.50,0.20),
+            treatment.var = "trt",
+            outcome.type = "survival",
+            effects.summary = c("survtime", "cens"),
+            query.legend = "top", icon = "pm", transpose = TRUE)
+}
+
 }
 \references{
 Lex et al. (2014). UpSet: Visualization of Intersecting Sets

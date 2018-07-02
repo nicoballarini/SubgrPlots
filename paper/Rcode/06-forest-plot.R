@@ -33,7 +33,7 @@ main.title = list("", "Forest plot of subgroups",
                   "Kaplan-Meier curves\n by treatment group")
 label.x = list("", "Log hazard ratio",
                "Time (days)")
-plot_forest2(dat,
+plot_forest(dat,
              covari.sel = c(4,5,6,7),#vars
              trt.sel = 3,
              resp.sel = c(1, 2),
@@ -42,6 +42,6 @@ plot_forest2(dat,
              font.size = c(0.6, 0.5, 0.4, 0.6),
              title = main.title,
              lab.x = label.x, time = 50, KM = TRUE, pdf = TRUE,
-             show.km.axis = 2,
+             show.km.axis = 2, n.brk = 12, max.time = 77,
              widths = c(1,1,0.6))
 dev.off()

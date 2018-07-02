@@ -27,8 +27,30 @@
 #' @param time              time for calculating the survival in each subgroup
 #' @param show.ci A logical indicating whether to show an additional line for confidence intervals
 #' @param effect Either "HR" of "RMST". Only when outcome.type = "survival"
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
+#'
+#' @examples
+#' library(dplyr)
+#'
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#' dat %>%
+#'   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
+#'          hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
+#'
+#' ## 8. Labbe Plot -----------------------------------------------------------
+#' lab.xy = list("Control Group Estimate", "Treatment Group Estimate")
+#' plot_labbe(dat = dat,
+#'            covari.sel = c(4,5,6,7),
+#'            trt.sel = 3,
+#'            resp.sel = c(1,2),
+#'            outcome.type = "survival",
+#'            effect = "RMST",
+#'            lab.xy = lab.xy,
+#'            size.shape = 0.2,
+#'            adj.ann.subgrp = 1/30,
+#'            time=50, show.ci = FALSE)
+#'
 #' @export
 #' @import grid
 #' @import graphics
@@ -38,6 +60,7 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        title = NULL, lab.xy = NULL,
                        time = mean(dat[,resp.sel[1]]), show.ci = TRUE)
 {
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -383,7 +406,7 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   par(mar = c(4,4,2,0.5))
   x.lim.min = min(min(treatment.T.mean, na.rm = TRUE),  min(treatment.C.mean, na.rm = TRUE)) - 0.2
   x.lim.max = max(max(treatment.T.mean, na.rm = TRUE),  max(treatment.C.mean, na.rm = TRUE)) + 0.2
-  eff.col = c("#91bfdb","#fc8d59")
+  eff.col = c("#2c75c9","#fb4b4b")
   if (treatment.mean[n.subgrp.tol + 1] > 0 ){
     CI.bar.y.pos = treatment.C.mean + abs(treatment.upper)
   }else{
@@ -461,5 +484,6 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
        labels = "Effect size",
        adj = c(1, 1),
        cex = font.size[3], font=4)
+  par(old.par)
 
 }

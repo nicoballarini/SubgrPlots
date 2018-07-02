@@ -32,4 +32,18 @@ display - one is that subgroup letters are located at the exact dissimilarity di
 at the middle of the category of dissimilarity distances. Note that some dissimilarity distances are known (such as 0 and 1) and
 therefore they are not shown in the graphical display. Also, the range of dissimilarity distances can be adjusted.
 }
+\examples{
+data(prca)
+dat <- prca
+
+## 1. dissimilarity plot ----------------------------------------------------
+plot_dissimilarity(dat = dat,
+                   covari.sel = c(4,5,6),
+                   mode = 3,
+                   range.ds = c(0,1),
+                   font.size = c(1, 0.9, 1, 0.7),
+                   title = NULL,
+                   lab.x = "Dissimilarity distance")
+
+}
 

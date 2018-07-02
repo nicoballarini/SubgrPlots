@@ -14,18 +14,26 @@
 #' @param mode         a value specifying the type of display; either 1 or 2,
 #' @param font.size    a vector specifying the size of labels and text; the first element is for the title; the second is for the covariates labels.
 #' @param title        a string specifying the main title.
-#
-# e.g.          main.title = "Relative overlapping proportions of pairwise subgroups";
-#               mat.subgrp.op(dat, c(4,6, 10), mode = 1, font.size = c(2, 1), title = main.title)
-#
-# created by Yi-Da Chiu, 01/08/17
-# created by Yi-Da Chiu, 29/08/17
+#'
+#' @examples
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#'
+#' ## 1. Matrix Overlap plot ---------------------------------------------------
+#' plot_matrix_overlap(dat,
+#'                     covari.sel = c(6,5,4,7),
+#'                     mode = 1,
+#'                     font.size = c(1.5, 1.25, 0.8),
+#'                     title = NULL)
+#'
 #' @export
 #' @import grid
 #' @import graphics
 plot_matrix_overlap <- function(dat, covari.sel, mode,
                                 font.size = c(2, 1, 0.8), title = NULL)
 {
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -236,4 +244,5 @@ plot_matrix_overlap <- function(dat, covari.sel, mode,
   image.scale(r.prop.tol, col=pal.2(length(breaks)-1), breaks=breaks-1e-8, axis.pos=1)
   mtext(side = 1, line = 2, "Overlap proportion", cex = font.size[3])
   box()
+  par(old.par)
 }

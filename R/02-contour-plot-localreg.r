@@ -44,8 +44,27 @@
 #' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param strip        a string specifying the title of the colour strip.
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 18/08/17
+#' @examples
+#' library(dplyr)
+#'
+#' # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#' dat %>%
+#'   rename(Weight = weight,
+#'          Age = age) -> dat
+#'
+#' plot_contour_localreg(dat,
+#'                       covari.sel = c(8,9),
+#'                       trt.sel = 3,
+#'                       resp.sel = c(1,2),
+#'                       n.grid = c(100,100),
+#'                       font.size = c(1, 1, 1, 1, 1),
+#'                       brk.es = seq(-4.5,4.5,length.out = 101),
+#'                       n.brk.axis =  7,
+#'                       strip = "Treatment effect size (log hazard ratio)",
+#'                       outcome.type = "survival")
+#'
 #' @export
 plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                                   setup.ss, n.grid = c(41, 41),
@@ -57,73 +76,9 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
                                   unit.x = 1, unit.y = 1,
                                   effect = "HR", show.overall = TRUE,
                                   strip = "Effect Size") {
-  ################################################ 0. argument validity check  #################################################################
+  old.par <- par(no.readonly=T)
 
-  # if (missing(dat)) stop("Data have not been inputed!")
-  # if (!(is.data.frame(dat))) stop("The data set is not with a data frame!")
-  #
-  # if (missing(covari.sel)) stop("The variables for defining subgroups have not been specified!")
-  # if (!(is.numeric(covari.sel))) stop("The variables for defining subgroups are not numeric!")
-  # if (length(covari.sel) > 2) stop("This function only considers 2 covariates at most for defining subgroups!")
-  #
-  # if (missing(trt.sel)) stop("The variable specifying the treatment code (for treatment / control groups) has not been specified!")
-  # if (!(length(trt.sel) == 1)) stop("The variable specifying the treatment code can not have more than one component!")
-  # if (!(is.factor(dat[, trt.sel]))) stop("The variable specifying the treatment code is not categorical!")
-  # if (length(names(table(dat[, trt.sel]))) > 2) stop("The variable specifying the treatment code is not binary!")
-  # if (sum(is.element(names(table(dat[, trt.sel])), c("0","1"))) != 2) stop("The treatment code is not 0 or 1!")
-  #
-  # type.all = c("continuous", "binary",  "survival")
-  # if (is.null(outcome.type)) stop("The type of the response variable has not been specified!")
-  # if (!(is.element(outcome.type, type.all)) == TRUE) stop("A unrecognized type has been inputed!")
-  # if (outcome.type == "continuous"){
-  #   stop("Only survival implemented for now")
-  #   if (missing(resp.sel)) stop("The response variable has not been specified!")
-  #   if (!(length(resp.sel) == 1)) stop("The response variable has more than one component!")
-  #   if (!(is.numeric(dat[, resp.sel]))) stop("The response variable is not numeric!")
-  # }else if (outcome.type == "binary"){
-  #   stop("Only survival implemented for now")
-  #   if (missing(resp.sel)) stop("The response variable has not been specified!")
-  #   if (!(length(resp.sel) == 1)) stop("The response variable has more than one component!")
-  #   if (!(is.factor(dat[, resp.sel]) || is.numeric(dat[, resp.sel])  )) stop("The response variable is not categorical or numerical!")
-  #   if (length(names(table(dat[, resp.sel]))) > 2) stop("The response variable is not binary!")
-  #   if (sum(is.element(names(table(dat[, resp.sel])), c("0","1"))) != 2) stop(" The response variable is not coded as 0 and 1!")
-  # }else if (outcome.type == "survival"){
-  #   if (missing(resp.sel)) stop("The response variablehas not been specified!")
-  #   if (!(length(resp.sel) == 2)) stop("The response variable for analysing survival data should have two components!")
-  #   if (!(is.numeric(dat[, resp.sel[1]]))) stop("The response variable specifying survival time is not numeric!")
-  #   if (!(is.numeric(dat[, resp.sel[2]]) || is.logical(dat[, resp.sel[2]]) ) ) stop("The response variable specifying indicators of right censoring should be numerical or logical!")
-  #   if (length(names(table(dat[, resp.sel[2]]))) > 2) stop("The response variable specifying indicators of right censoring is not binary!")
-  #   if (sum(is.element(names(table(dat[, resp.sel[2]])), c("0","1"))) != 2) stop("The response variable specifying indicators of right censoring is not coded as 0 and 1!")
-  # }
-  #
-  # if (missing(setup.ss)) stop("The setting for subgroup sample size and overlap have not been specified!")
-  # if (!(is.numeric(setup.ss))) stop("The setting for subgroup sample size and overlap are not numeric!")
-  # if (length(setup.ss) !=  4) stop("The setting for subgroup smaple size and overlap does not have four elements!")
-  # if ((setup.ss[1] > setup.ss[2]) || (setup.ss[3] > setup.ss[4]) || (setup.ss[4] > setup.ss[2])){
-  #   stop("subgroup overlap sample sizes is larger than subgroup sample size! Or subgroup sample sizes over the first covariate are not
-  #        larger than their further divided subgroup sample sizes over the second covariate!")
-  # }
-  #
-  # if (missing(n.grid)) stop("The vector specifying the numbers of the grid points has not been specified!")
-  # if (!(length(n.grid) == 2)) stop("The vector specifying the numbers of the grid points does not have two components only!")
-  # if (!(is.numeric(n.grid)) || (sum(n.grid < 2) != 0 )) stop("The vector specifying the numbers of the grid points is not numeric or has
-  #                                                            a value less than 2!")
-  #
-  # if (missing(brk.es)) stop("The vector specifying the numbers of break points for effect sizes has not been specified!")
-  # if (length(brk.es) > 5) stop("The vector specifying the numbers of break points for effect sizes should have five components only!")
-  # if (!(is.numeric(brk.es))) stop("The vector specifying the numbers of break points for effect sizes is not numeric!")
-  #
-  # if (missing(para.plot)) stop("The vector specifying the parameters of the contour plot has not been specified!")
-  # if (!(length(para.plot) == 3)) stop("The vector specifying the parameters of the contour plot should have 3 components only!")
-  # if (!(is.numeric(para.plot)) || (sum(para.plot < 0) != 0 )) stop("The vector specifying the parameters of the contour plot is not numeric or has
-  #                                                                  a negative element!")
-  # if (!(para.plot[2] %in% c(0, 1, 2)) ) stop("The second plot parameter is given with a unallowable value!")
-  # if (!(para.plot[3]%%1==0) || (para.plot[3] < 0)  ) stop("The third plot parameter should be a positive integer!")
-  #
-  # if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
-  # if (!(length(font.size) == 5)) stop("The length of the font size settings is not 5!!")
-
-  ################################################ 1. create subgroup data  #################################################################
+  ## 1. create subgroup data  ##################################################
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
     names(dat)[resp.sel] = "resp"                        # rename the response variable
@@ -131,7 +86,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
     names(dat)[resp.sel] = "resp"                        # rename the response variable
   }else if (outcome.type == "survival"){
     names(dat)[resp.sel[1]] = "time"                     # rename the response variable for survival time
-    names(dat)[resp.sel[2]] = "status"                     # rename the response variable for survival right censoring status
+    names(dat)[resp.sel[2]] = "status"                   # rename the response variable for survival right censoring status
   }
 
   x.lim = range(dat[covari.sel[1]])
@@ -140,21 +95,19 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
   grid.pts.y = seq(y.lim[1], y.lim[2], unit.y)
   grid.xy = expand.grid(grid.pts.x, grid.pts.y)
   alpha = 0.8
-  # var = 1/(1-alpha)^2
-  # sqrt(var)
   n.cutoff = 20
 
   # Now do a bivariate local regression ####
   results.xy = do.call(rbind, lapply(1:nrow(grid.xy), FUN = function(i){
     center.x = grid.xy[i, 1]
     center.y = grid.xy[i, 2]
-    # cat(center.x, center.y)
     var = 1/(1-alpha)^2
     x.conf.up = center.x + 2 * sqrt(var)
     weight.up = exp(-mahalanobis(x = data.frame(x.conf.up, center.y),
                                  center = c(center.x, center.y),
                                  cov    = matrix(c(var,0,0,var), nrow = 2))/2)
-    weight. = exp(-mahalanobis(x = data.frame(dat[covari.sel[1]], dat[covari.sel[2]]),
+    weight. = exp(-mahalanobis(x = data.frame(dat[covari.sel[1]],
+                                              dat[covari.sel[2]]),
                                center = c(center.x, center.y),
                                cov    = matrix(c(var,0,0,var), nrow = 2))/2)
 
@@ -193,7 +146,6 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
     par(mar=c(4,4,4,1))
   }
   plot(grid.xy[,1], grid.xy[,2], type = "n",
-       # yaxs="i", xaxs="i",
        xlim = range(grid.pts.x),
        ylim = range(grid.pts.y),
        xlab = lab.vars[1], ylab = lab.vars[2],
@@ -218,10 +170,11 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
               col= rev(cols),
               breaks = breaks,
               axis.pos = 4, add.axis = FALSE)
-  axis(2, at = breaks.axis, labels = round(breaks.axis, 3), las = 0, cex.axis = font.size[5])
+  axis(2, at = breaks.axis, labels = round(breaks.axis, 3),
+       las = 0, cex.axis = font.size[5])
   mtext(strip, side=4, line=1, cex.lab = font.size[5])
 
-  # Calculate overall Treatment effect ### TODO Look for confidence intervals ----------
+  # Calculate overall Treatment effect -----------------------------------------
   if (outcome.type == "continuous"){
     model.int = lm(resp ~ trt,  data = dat)
     model.sum = summary(model.int)
@@ -263,6 +216,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
              y0 = overall.treatment.lower,
              y1 = overall.treatment.upper)
   }
+  par(old.par)
 
 }
 

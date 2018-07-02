@@ -17,9 +17,9 @@ library(SubgrPlots) # Loads this package. Install it first
 # # Load the data to be used
 data(prca)
 dat <- prca
-## 1. Level plot ---------------------------------------------------------------
+## 1. dissimilarity alternative plot ---------------------------------------------------------------
 pdf("paper/figures/19-alt-f-plot.pdf", width = 5, height = 4)
-plot_dissimilarity_alternative_new(dat = dat,
+plot_dissimilarity_alternative(dat = dat,
                                covari.sel = c(4,5,6),
                                mode = 2,
                                range.ds = c(0,1),

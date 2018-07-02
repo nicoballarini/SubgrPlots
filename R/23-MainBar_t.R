@@ -140,16 +140,16 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
                                          expand = c(0,0),
                                          breaks = NULL)
                     + xlab(NULL) + ylab(ylabel)
-                    + labs(title = NULL, fill = "Treatment")
-                    + theme(
-                        axis.line.x = element_line(),
-                        panel.background = element_rect(fill = "white"),
-                        legend.position = "none",
-                        axis.title.x.top = element_text(vjust =  0, size = 8.3*y_axis_title_scale),
-                        axis.text.x.top  = element_text(vjust =  0.3, size = 7*y_axis_tick_label_scale, color = "gray0"),
-                        # plot.margin = unit(c(0.5,bottom_margin,0.5,0.5), "lines"),
-                        plot.margin = unit(c(0.5,0.5,0.5,0.5), "lines"),
-                        panel.border = element_blank()))
+                    + labs(title = NULL, fill = "Treatment"))
+  legend <- g_legend(Main_bar_plot)
+  Main_bar_plot <- (Main_bar_plot
+                    + theme(axis.line.x = element_line(),
+                            panel.background = element_rect(fill = "white"),
+                            legend.position = "none",
+                            axis.title.x.top = element_text(vjust =  0, size = 8.3*y_axis_title_scale),
+                            axis.text.x.top  = element_text(vjust =  0.3, size = 7*y_axis_tick_label_scale, color = "gray0"),
+                            plot.margin = unit(c(0.5,0.5,0.5,0.5), "lines"),
+                            panel.border = element_blank()))
 
   if((show_num == "yes") || (show_num == "Yes")){
     Main_bar_plot <- (Main_bar_plot + geom_text(data = Main_bar_data_all,
@@ -210,9 +210,6 @@ Make_main_bar_t <- function(Main_bar_data, Q, show_num, ratios, customQ, number_
                                                  colour = pElemDat$color, size = 2, shape = 17))
   }
 
-  # Main_bar_plot <- (Main_bar_plot
-  #                   + geom_hline(yintercept = 0, color = "gray0")
-  #                   + geom_vline(xintercept = 0, color = "gray0"))
 
   Main_bar_plot <- ggplotGrob(Main_bar_plot)
   return(Main_bar_plot)

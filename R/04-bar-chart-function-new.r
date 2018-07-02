@@ -1,6 +1,6 @@
-#' barchart for subgroup effect size
+#' Barchart for subgroup effect size
 #'
-#' this function produces a bar chart showing the treatment effect size of pairwise subgroups defined by the categories of two
+#' This function produces a bar chart showing the treatment effect size of pairwise subgroups defined by the categories of two
 #' covariates. Also, it prints out the minimum and maximum of the treatment effect size on the console. Note that each bar has a width
 #' which is proportional to the ratio of the corresponding sample size to the full size. In addition, the function uses log odd ratio
 #' and log hazard ratio for displaying subgroup effect sizes in binary and survival data, respectively.
@@ -16,10 +16,25 @@
 #' @param lab.y        a string specifying the y-axis label.
 #' @param effect       either "HR" or "RMST". only when outcome.type = "survival"
 #' @param time         time for calculating the RMST
-#' @param decimals      decimal places for the axis
-#
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
+#' @param decimals     decimal places for the axis
+#'
+#' @examples
+#' # # Load the data to be used
+#' data(prca)
+#' dat <- prca
+#' levels(dat$age_group) = c("Young","Middle-aged","Old")
+#' levels(dat$weight_group) = c("Low","Mid","High")
+#' names(dat)[c(14,15)] = c("Age", "Weight")
+#'
+#' ## 4. Bar chart -----------------------------------------------------------
+#' plot_barchart(dat,
+#'               covari.sel = c(14,15),
+#'               trt.sel = 3,
+#'               resp.sel = c(1, 2),
+#'               outcome.type = "survival",
+#'               font.size = c(14, 12, 14, 0.75),
+#'               lab.y = "Treatment effect size (RMST difference)")
+#'
 #' @export
 #' @import grid
 #' @import graphics
@@ -28,6 +43,7 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
                           title = NULL, lab.y = NULL,
                           effect = "RMST", time = NULL, decimals = 0)
 {
+  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -381,4 +397,5 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
     upViewport()
   }
   upViewport()
+  par(old.par)
 }

@@ -1,61 +1,3 @@
-#################################################################################################################################################-
-#                                                                                                                                                #
-#                                                    Area-proportional Venn diagram for subgroup effect sizes                                    #
-#                                                                                                                                                #
-#  This script only creates two-set or three-set area-proportional Venn diagram. The sample size of the sets should be descreasing otherwise     #
-#  it produces a wronge display. Note that the labels of subgroup sample sizes have to be placed in an appropriate position manually. So far, this#
-#  works for a continuous response only.                                                                                                         #
-#                                                                                                                                                #
-#  created by Yi-Da Chiu 22/07/17                                                                                                                #
-#                                                                                                                                                #
-#################################################################################################################################################-
-#' Venn diagram for subgroup effect size
-#'
-#' This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.
-#' Also, it prints out the minimum and maximum of the treatment effect size on the console so as to set an approapriate range for effect
-#' size on the colour strip . Note that there are two options of graphical display; whether show the subgroup effect size of the complement
-#' of the union of all the considered subgroups or not. In addition, this function only works up to 5 sets and does not run an area-proportional
-#' algorithms for displaying two or three set. In addition, the function uses log odd ratio and log hazard ratio for displaying
-#' subgroup effect sizes in binary and survival data, respectively.
-#'
-#'@param dat        a data set
-#'@param covari.sel a vector of indices of covariates
-#'@param cat.sel    a vector of indices of the categories for each covariate
-#'@param trt.sel    a covariate index specifying the treatment code
-#'@param resp.sel   a covariate index specifying the response variable
-#'@param outcome.type a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
-#'@param range.strip a vector with two elements specifying the range of treatment effect size for display
-#'@param n.brk      a number specifying the number of the points dividing the range of the argument "range.strip".
-#' @param n.brk.axis   a number specifying the number of breakpoints dividing the axis of the argument "range.strip".
-#'@param font.size  a vector specifying the size of labels and text; the first element is for the main title; the second is for the category labels;
-#'               the third is for the sample size labels; the fourth is for the legend text; the fifth is for the y-axis label of the colour strip;
-#'               the sixth is for the unit label on the y axis.
-#'@param title      a string specifying the main title.
-#'@param strip      a string specifying the title of the colour strip.
-#' @param fill A logical indicating whether to color the diagram to show treatment effect sizes.
-#' @param fill.background A logical indicating whether to show treatment effect in the complement of the union of sets
-#' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
-#' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
-#' @param palette          either "divergent" or "hcl"
-#' @param col.power        to be used when palette = "hcl". see colorspace package for reference
-# eg.1          main.title = paste("Treatment effect sizes across subgroups (N = 1000)", sep = "");
-#               strip.title = paste("Treatment effect size");
-#               vd(dat = dat, covari.sel = c(4, 5, 10), cat.sel = c(1, 2, 2), trt.sel = 2, resp.sel = 1, outcome.type = "continuous",
-#               title = main.title, strip = strip.title)
-#
-# eg.2          main.title = paste("Treatment effect sizes across subgroups (N = 2985)", sep = "");
-#               strip.title = paste("Treatment effect size (log odd ratio)");
-#               vd(dat = dat2, covari.sel = c(2, 2, 3), cat.sel = c(1, 2, 1), trt.sel = 4, resp.sel = 5, outcome.type = "binary",
-#               title = main.title, strip = strip.title)
-#
-# eg.3          main.title = paste("Treatment effect sizes across subgroups (N = 686)", sep = "");
-#               strip.title = paste("Treatment effect size (log hazard ratio)");
-#               vd(dat = dat3, covari.sel = c(6, 6, 7), cat.sel = c(1, 2, 1), trt.sel = 1, resp.sel = c(4,3), outcome.type = "survival",
-#               title = main.title, strip = strip.title)
-#
-# created by Yi-Da Chiu, 01/08/17
-# revised by Yi-Da Chiu, 30/08/17
-#' @export
 plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                                    outcome.type,
                                    range.strip=c(-6, 6), n.brk=13,n.brk.axis=NULL,
@@ -64,13 +6,10 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                                    fill = FALSE, fill.background = FALSE,
                                    effect = "HR", show.overall = TRUE,
                                    palette = "divergent", col.power = 0.5){
+  old.par <- par(no.readonly=T)
   ####################################################### 1. create subgroup data  #################################################################
   if (!requireNamespace("rgeos", quietly = TRUE)) {
     stop("Package \"rgeos\" needed for this function to work. Please install it.",
-         call. = FALSE)
-  }
-  if (!requireNamespace("pacman", quietly = TRUE)) {
-    stop("Package \"pacman\" needed for this function to work. Please install it.",
          call. = FALSE)
   }
   data.size = dim(dat)[1]
@@ -302,7 +241,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
 
 
   ################################################ 2. produce a graph  #################################################################
-  grid::grid.newpage()
+  # grid::grid.newpage()
   breaks <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk)
   breaks.axis <- seq(min(range.strip) - 0.0000001, max(range.strip) + 0.0000001, length.out= n.brk.axis)
   levs=breaks
@@ -463,7 +402,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       }
       # border.color = "lightblue"
       border.color = "black"
-      plot(picture[[i]], add=TRUE, #xlim=c(-0.5,0.5), ylim=c(-0.5,1),
+      rgeos::plot(picture[[i]], add=TRUE,
            col=colors[i],
            lty = 1, lwd = 2, border = border.color)
     }
@@ -500,7 +439,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     if(show.overall){
       cat("Overall Treatment effect is:",
           overall.treatment.mean, ", with confidence interval: (",
-          overall.treatment.lower,";",overall.treatment.upper,")")
+          overall.treatment.lower,";",overall.treatment.upper,")\n")
       points(x = 0.5,
              (overall.treatment.mean), pch = 20)
       points(x = 0.5, overall.treatment.lower, pch = "-")
@@ -512,4 +451,5 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     mtext(strip, side=4, line=1, cex.lab = font.size[5])
     par(mfrow=c(1,1))
   }
+  par(old.par)
 }

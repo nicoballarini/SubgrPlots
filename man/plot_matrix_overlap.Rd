@@ -26,4 +26,17 @@ subgroups for calculating  relative overlap proportions. There are two modes of 
 placed in the cells, where the size and the colour reflect how large the proportion is; the other with colours filled in the
 cells, where the colour indicate the level of overlap proportions.
 }
+\examples{
+# Load the data to be used
+data(prca)
+dat <- prca
+
+## 1. Matrix Overlap plot ---------------------------------------------------
+plot_matrix_overlap(dat,
+                    covari.sel = c(6,5,4,7),
+                    mode = 1,
+                    font.size = c(1.5, 1.25, 0.8),
+                    title = NULL)
+
+}
 
