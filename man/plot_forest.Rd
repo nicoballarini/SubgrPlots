@@ -7,8 +7,8 @@
 plot_forest(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
   title = NULL, lab.x = NULL, time = mean(dat[, resp.sel[1]]),
-  pdf = FALSE, KM = FALSE, show.km.axis = TRUE, widths = c(1, 1, 1),
-  max.time = NULL, n.brk = 10)
+  KM = FALSE, show.km.axis = TRUE, widths = c(1, 1, 1), max.time = NULL,
+  n.brk = 10)
 }
 \arguments{
 \item{dat}{a data set}
@@ -32,8 +32,6 @@ the x-axis.}
 \item{lab.x}{a list of three strings specifying the x-axis labels of the three sub-figures.}
 
 \item{time}{time for calculating the RMST}
-
-\item{pdf}{a logical indicating whether the plot is inside a pdf() device}
 
 \item{KM}{a logical indicating whether to show the Kaplan-Meier curves in the third panel}
 
@@ -67,6 +65,7 @@ main.title = list("", "Forest plot of subgroups",
                   "Kaplan-Meier curves\\n by treatment group")
 label.x = list("", "Log hazard ratio",
                "Time (days)")
+
 plot_forest(dat,
             covari.sel = c(4,5,6,7),#vars
             trt.sel = 3,
@@ -75,10 +74,9 @@ plot_forest(dat,
             size.shape = c(0.3, 6.5/4),
             font.size = c(0.6, 0.5, 0.4, 0.6),
             title = main.title,
-            lab.x = label.x, time = 50, KM = TRUE, pdf = TRUE,
+            lab.x = label.x, time = 50, KM = TRUE,
             show.km.axis = 2, n.brk = 12, max.time = 77,
             widths = c(1,1,0.6))
-
 
 }
 

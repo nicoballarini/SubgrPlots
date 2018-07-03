@@ -39,9 +39,9 @@ plot_forest(dat,
              resp.sel = c(1, 2),
              outcome.type = "survival",
              size.shape = c(0.3, 6.5/4),
-             font.size = c(0.6, 0.5, 0.4, 0.6),
+             font.size = c(0.6, 0.4, 0.4, 0.6),
              title = main.title,
-             lab.x = label.x, time = 50, KM = TRUE, pdf = TRUE,
-             show.km.axis = 2, n.brk = 12, max.time = 77,
+             lab.x = label.x, time = 50, KM = TRUE,
+             show.km.axis = TRUE, n.brk = 12, max.time = 77,
              widths = c(1,1,0.6))
 dev.off()

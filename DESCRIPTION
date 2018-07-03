@@ -11,7 +11,7 @@ Authors@R: c(
     person("Nils", "Gehlenborg", role = "ctb"),
     person("Michal", "Bojanowski", role = "ctb"),
     person("Robin", "Edwards", role = "ctb"))
-Description: This package provides functions for obtaining the a variety of 
+Description: This package provides functions for obtaining a variety of 
     graphical displays that may be useful in the subgroup analysis setting. 
     An example with a prostate cancer dataset is provided.
 License: MIT + file LICENSE
@@ -26,7 +26,7 @@ Imports:
     colorspace,
     diagram,
     dplyr,
-    ggplot2,
+    ggplot2 (>= 2.1.1),
     geoR,
     grid,
     gridBase,
@@ -37,7 +37,6 @@ Imports:
     scales,
     shape,
     sp,
-    spatstat,
     survRM2,
     survival,
     UpSetR,

@@ -20,7 +20,6 @@
 #' @param title a list of three strings specifying the main titles of the three sub-figures.
 #' @param lab.x a list of three strings specifying the x-axis labels of the three sub-figures.
 #' @param time time for calculating the RMST
-#' @param pdf a logical indicating whether the plot is inside a pdf() device
 #' @param KM a logical indicating whether to show the Kaplan-Meier curves in the third panel
 #' @param show.km.axis a logical indicating whether to show the axes in the Kaplan-Meier curves
 #' @param widths a vector of length 3 indicating the widths of the panels
@@ -41,6 +40,7 @@
 #'                   "Kaplan-Meier curves\n by treatment group")
 #' label.x = list("", "Log hazard ratio",
 #'                "Time (days)")
+#'
 #' plot_forest(dat,
 #'             covari.sel = c(4,5,6,7),#vars
 #'             trt.sel = 3,
@@ -49,10 +49,9 @@
 #'             size.shape = c(0.3, 6.5/4),
 #'             font.size = c(0.6, 0.5, 0.4, 0.6),
 #'             title = main.title,
-#'             lab.x = label.x, time = 50, KM = TRUE, pdf = TRUE,
+#'             lab.x = label.x, time = 50, KM = TRUE,
 #'             show.km.axis = 2, n.brk = 12, max.time = 77,
 #'             widths = c(1,1,0.6))
-#'
 #'
 #' @export
 #' @import grid
@@ -60,7 +59,7 @@
 plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
                       title = NULL, lab.x = NULL, time = mean(dat[,resp.sel[1]]),
-                      pdf = FALSE, KM = FALSE, show.km.axis = TRUE,
+                      KM = FALSE, show.km.axis = TRUE,
                       widths = c(1,1,1), max.time = NULL, n.brk = 10)
 {
   old.par <- par(no.readonly=T)
@@ -416,8 +415,6 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   dimnames(est.range) = list(c(lab.subgrp), c("mean", "lower","upper") )
 
   ################################################ 2. create plots #################################################################
-
-  if (pdf) plot.new() # Needed for par(new=TRUE) when outputting pdfs
   grid.newpage()
   col.line = c("blue", "red", "forestgreen", "orange", "darkorchid1", "darkgoldenrod3", "darkseagreen3", "chartreuse3", "cyan1", "deeppink1")
 
@@ -607,7 +604,7 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   upViewport()
   upViewport()
   }
-  ### Kaplan-Meier curves
+  ### Kaplan-Meier curves --------------------------
   if (KM==TRUE){
     vp <- viewport(x = widhts[1]+widhts[2], y = 0.10, width=widhts[3], height=0.83, just = c("left", "bottom"))
     pushViewport(vp)
@@ -627,43 +624,66 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       pushViewport(vp)
       vp <- viewport(x = 0, y = 0.1, width=1, height = 0.8, just = c("left", "bottom"))
       pushViewport(vp)
-      par(plt = gridBase::gridPLT(), mgp = c(0,0,0), new = TRUE)
-      plot(plot.data[[i]], col = col.line, cex = 0, yaxs="i",
-           xaxt = "n", yaxt = "n", bty="n", xlim = c(0, max.time))
-      if (show.km.axis==1){
-      axis(side=1, at = c(0,max.time), labels = NA, tcl=-0.1, lwd = 0.2, las = 1, cex.axis = font.size[2]/2, mgp=c(0,-0.25,0))
-      axis(side=2, at = c(0,1),                     tcl=-0.1, lwd = 0.2, las = 1, cex.axis = font.size[2]/2, mgp=c(0,0.125,0))
-
-      }
-
-      if (show.km.axis == 2){
-        axis(side=1, at = c(0,max.time), labels = NA, col="gray",tcl=-0.1, lwd = 0.1, las = 1,  cex.axis = font.size[2], mgp=c(0,-0.25,0))
-        axis(side=2, at = c(0,1),        labels = NA, col="gray",tcl=-0.1, lwd = 0.1, las = 1, cex.axis = font.size[2]/2, mgp=c(0,0.125,0))
-      }
+      grid.draw(mini_km(plot.data[[i]], col.line, max.time, show.km.axis))
       upViewport(2)
     }
-    vp <- viewport(x = 0, y = 1 - vertical_width/2 - vertical_width, width=1, height = vertical_width, just = c("left", "bottom"))
+    vp <- viewport(x = 0, y = 1 - vertical_width/2 - vertical_width,
+                   width=1, height = vertical_width, just = c("left", "bottom"))
     pushViewport(vp)
     vp <- viewport(x = 0, y = 0.1, width=1, height = 0.8, just = c("left", "bottom"))
     pushViewport(vp)
-    par(plt = gridBase::gridPLT(), mgp = c(0,0,0), new = TRUE)
-    plot(plot.data[[n.subgrp.tol+1]], col = col.line, yaxs="i",
-         cex=0, xaxt = "n", yaxt = "n", bty="n", xlim = c(0, max.time))
-    if (show.km.axis == 1){
-      axis(side=1, at = c(0,max.time), labels = NA, tcl=-0.1, lwd = 0.2, las = 1, cex.axis = font.size[2]/2, mgp=c(0,-0.25,0))
-      axis(side=2, at = c(0,1),                     tcl=-0.1, lwd = 0.2, las = 1, cex.axis = font.size[2]/2, mgp=c(0,0.125,0))
-    }
-    if (show.km.axis == 2){
-      axis(side=1, at = c(0,max.time), labels = NA, col="gray",tcl=-0.1, lwd = 0.1, las = 1,  cex.axis = font.size[2], mgp=c(0,-0.25,0))
-      axis(side=2, at = c(0,1),        labels = NA, col="gray",tcl=-0.1, lwd = 0.1, las = 1, cex.axis = font.size[2]/2, mgp=c(0,0.125,0))
-    }
+    grid.draw(mini_km(plot.data[[n.subgrp.tol+1]], col.line, max.time, show.km.axis))
     upViewport(2)
-
-    grid.xaxis(at = seq(0, 1, len = n.brk),
+    vp <- viewport(x = 1, y = 0, width = 0.99, height = 1, just = c("right", "bottom"))
+    pushViewport(vp)
+    grid.xaxis(at = seq(0.03, 1, len = n.brk),
                label = seq(0, max.time, len = n.brk),
                gp = gpar(cex = font.size[3]),
                edits = gEdit(gPath="labels", rot=0))
+    upViewport(1)
     upViewport(3)
   }
   par(old.par)
+}
+
+#' @import grid
+#' @import gridExtra
+#' @import survival
+#' @import ggplot2
+mini_km <- function(sfit, col.line, max.time, axis) {
+  ystratalabs <- as.character(levels(summary(sfit)$strata))
+  m <- max(nchar(ystratalabs))
+  .df <- data.frame(time = sfit$time,
+                    n.risk = sfit$n.risk,
+                    n.event = sfit$n.event,
+                    surv = sfit$surv,
+                    strata = summary(sfit, censored = T)$strata,
+                    upper = sfit$upper, lower = sfit$lower)
+  levels(.df$strata) <- ystratalabs
+  zeros <- data.frame(time = 0,
+                      surv = 1,
+                      strata = factor(ystratalabs, levels=levels(.df$strata)),
+                      upper = 1, lower = 1)
+  .df <- plyr::rbind.fill(zeros, .df)
+  d <- length(levels(.df$strata))
+  p <- ggplot(.df, aes_string("time", "surv", color = "strata")) +
+    geom_step(size = 0.5) +
+    theme_void() +
+    theme(legend.position = "none") +
+    scale_color_manual(values = col.line)
+
+  if(axis){
+  p <- p +
+    theme(plot.margin = unit(c(0,0,0,0), "cm"),
+          axis.line = element_line(colour = "gray"),
+          axis.ticks.x = element_line(color = "gray")) +
+    scale_x_continuous(limits = c(0, max.time), breaks = c(0, max.time), expand = c(0,0))+
+    scale_y_continuous(limits = c(0,1), breaks = c(0, 1), expand = c(0,0))
+  } else{
+    p <- p +
+      theme(plot.margin = unit(c(0,0,0,0), "cm")) +
+      scale_x_continuous(limits = c(0, max.time), expand = c(0,0))+
+      scale_y_continuous(limits = c(0,1), expand = c(0,0))
+  }
+  ggplotGrob(p)
 }
