@@ -38,7 +38,7 @@ plot_venn(dat,
           fill = TRUE,
           range.strip = c(-3, 3),
           n.brk = 31, n.brk.axis = 7,
-          font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6),
+          font.size = c(0.5, 0.5, 0.7, 0.75, 0.6, 0.8),
           strip = paste("Treatment effect size (log hazard ratio)"),
           palette = "hcl", prop_area = TRUE)
 dev.off()

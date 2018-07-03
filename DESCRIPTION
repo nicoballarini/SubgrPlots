@@ -11,7 +11,7 @@ Authors@R: c(
     person("Nils", "Gehlenborg", role = "ctb"),
     person("Michal", "Bojanowski", role = "ctb"),
     person("Robin", "Edwards", role = "ctb"))
-Description: This package provides functions for obtaining a variety of 
+Description: Provides functions for obtaining a variety of 
     graphical displays that may be useful in the subgroup analysis setting. 
     An example with a prostate cancer dataset is provided.
 License: MIT + file LICENSE

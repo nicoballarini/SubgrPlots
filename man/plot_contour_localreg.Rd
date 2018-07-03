@@ -75,6 +75,7 @@ hazard ratio for displaying subgroup effect sizes in binary and survival data, r
 sizes over the covariates are shown on the console window.
 }
 \examples{
+\dontrun{
 library(dplyr)
 
 # Load the data to be used
@@ -94,6 +95,6 @@ plot_contour_localreg(dat,
                       n.brk.axis =  7,
                       strip = "Treatment effect size (log hazard ratio)",
                       outcome.type = "survival")
-
+}
 }
 

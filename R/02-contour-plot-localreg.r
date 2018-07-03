@@ -45,6 +45,7 @@
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param strip        a string specifying the title of the colour strip.
 #' @examples
+#' \dontrun{
 #' library(dplyr)
 #'
 #' # Load the data to be used
@@ -64,7 +65,7 @@
 #'                       n.brk.axis =  7,
 #'                       strip = "Treatment effect size (log hazard ratio)",
 #'                       outcome.type = "survival")
-#'
+#'}
 #' @export
 plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                                   setup.ss, n.grid = c(41, 41),
