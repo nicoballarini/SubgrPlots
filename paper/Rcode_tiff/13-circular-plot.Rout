@@ -1,0 +1,79 @@
+
+R version 3.4.2 (2017-09-28) -- "Short Summer"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgroot = rprojroot::find_package_root_file()
+> 
+> library(SubgrPlots) # Loads this package. Install it first
+> library(survival)
+> library(ggplot2)
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> 
+> # # Load the data to be used
+> data(prca)
+> dat <- prca
+> vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
+> levels(dat$age_group) = c("Young","Middle-aged","Old")
+> levels(dat$weight_group)  = c("Low","Mid","High")
+> dat %>%
++   rename(Age= age_group,
++          Weight = weight_group)-> dat
+> 
+> filename = "13-circle-plot"
+> width    = 5
+> height   = 6
+> res = 600
+> tiff(paste0(rprojroot::find_package_root_file(),"/paper/figures_tiff/", filename, ".tiff"),
++      width = width, height = height, units = "in", res = res)
+> # pdf("paper/figures/13-circle-plot.pdf", height = 5, width = 6)
+> set.seed(55643)
+> plot_circle(dat,
++             covari.sel = c(14, 15),
++             trt.sel = 3,
++             resp.sel = c(1, 2),
++             outcome.type = "survival",
++             range.v = NULL, adj.ann.subgrp = 4,
++             range.strip=c(-3, 3),
++             n.brk = 31,
++             n.brk.axis = 7,
++             font.size = c(1, 1, 0.85, 0.85, 1),
++             title = NULL, lab.xy = NULL,
++             strip = "Treatment effect size (log hazard ratio)",
++             effect = "HR",
++             equal.width = FALSE,
++             show.KM = FALSE,
++             show.effect = TRUE,
++             conf.int = FALSE, palette = "hcl")
+Overall Treatment effect is: -0.1773594 , with confidence interval: ( -0.3911691 ; 0.03645026 )> dev.off()
+null device 
+          1 
+> 
+> proc.time()
+   user  system elapsed 
+  2.657   0.152   3.350 

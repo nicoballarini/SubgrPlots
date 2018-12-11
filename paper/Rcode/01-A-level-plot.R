@@ -35,7 +35,7 @@ plot_level(dat,
            range.strip=c(-3, 3),
            n.brk = 31,
            n.brk.axis =  7,
-           font.size = c(14, 12, .8, 14, 0.7),
+           font.size = c(14, 12, 1, 14, 1),
            title = "Total sample size = 475",
            strip = strip.title, effect = "HR",
            show.overall = TRUE, palette = "hcl")

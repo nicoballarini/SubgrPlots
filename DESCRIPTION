@@ -14,6 +14,10 @@ Authors@R: c(
 Description: Provides functions for obtaining a variety of 
     graphical displays that may be useful in the subgroup analysis setting. 
     An example with a prostate cancer dataset is provided.
+    The graphical techniques considered include level plots, mosaic plots,
+    contour plots, bar charts, Venn diagrams, tree plots, forest plots, 
+    Galbraith plots, L'Abbé plots, the subpopulation treatment effect pattern 
+    plot, alluvial plots, circle plots and UpSet plots.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

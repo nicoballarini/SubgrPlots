@@ -1,0 +1,83 @@
+
+R version 3.4.2 (2017-09-28) -- "Short Summer"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ###############################################################################-
+> ##
+> ## This program creates the figures for the manuscript using the
+> ## prca data that is included in this package
+> ##
+> ##
+> ## Instead of using rm(list = ls()), make sure you start with a fresh R
+> ## by restarting R -> Control+Shift+F10
+> # cat("\014") # Cleans the console
+> ## Load needed libraries
+> ## If SubgrPlots package is not installed, then open project and use following lines or
+> ## in the build window, click Install and Restart
+> # devtools::build()
+> # devtools::install()
+> pkgroot = rprojroot::find_package_root_file()
+> 
+> 
+> library(SubgrPlots) # Loads this package. Install it first
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> # Load the data to be used
+> data(prca)
+> dat <- prca
+> dat %>%
++   rename(Performance = pf,
++          `Bone\nmetastasis` = bm,
++          `History of\ncardiovascular\nevents` = hx) -> dat
+> ###############################################################################-
+> ## 3. Venn Diagram -----------------------------------------------------------
+> 
+> filename = "04-A-venn-diagram"
+> width    = 5
+> height   = 5
+> res = 600
+> tiff(paste0(rprojroot::find_package_root_file(),"/paper/figures_tiff/", filename, ".tiff"),
++      width = width, height = height, units = "in", res = res)
+> plot_venn(dat,
++        covari.sel = c(5, 7, 4),
++        cat.sel = c(2,2,2),
++        trt.sel = 3,
++        resp.sel = c(1,2),
++        outcome.type = "survival",
++        fill = FALSE,
++        cat.dist = c(0.04,0.04,0.07),
++        font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6))
+The minimum of treatment effect sizes is -1.557225 
+The maximum of treatment effect sizes is 1.178853 
+> dev.off()
+null device 
+          1 
+> 
+> proc.time()
+   user  system elapsed 
+  1.802   0.108   2.428 

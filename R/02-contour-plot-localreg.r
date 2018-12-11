@@ -45,7 +45,7 @@
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param strip        a string specifying the title of the colour strip.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(dplyr)
 #'
 #' # Load the data to be used

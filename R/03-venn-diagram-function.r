@@ -71,7 +71,7 @@
 #'           strip = paste("Treatment effect size (log hazard ratio)"),
 #'           palette = "hcl")
 #'
-#' \dontrun{
+#' \donttest{
 #' ## 3.c Area-proportional Venn Diagram -------------------------------------------------------------
 #' dat <- prca
 #' plot_venn(dat,

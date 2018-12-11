@@ -75,7 +75,7 @@ hazard ratio for displaying subgroup effect sizes in binary and survival data, r
 sizes over the covariates are shown on the console window.
 }
 \examples{
-\dontrun{
+\donttest{
 library(dplyr)
 
 # Load the data to be used

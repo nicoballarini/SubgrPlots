@@ -1,0 +1,131 @@
+
+R version 3.4.2 (2017-09-28) -- "Short Summer"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ###############################################################################-
+> ##
+> ## This program creates the figures for the manuscript using the
+> ## prca data that is included in this package
+> ##
+> ##
+> ## Instead of using rm(list = ls()), make sure you start with a fresh R
+> ## by restarting R -> Control+Shift+F10
+> # cat("\014") # Cleans the console
+> ## Load needed libraries
+> ## If SubgrPlots package is not installed, then open project and use following lines or
+> ## in the build window, click Install and Restart
+> # devtools::build()
+> # devtools::install()
+> 
+> pkgroot = rprojroot::find_package_root_file()
+> 
+> 
+> library(SubgrPlots) # Loads this package. Install it first
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> 
+> # # Load the data to be used
+> data(prca)
+> dat <- prca
+> dat %>%
++   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
++          hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
+> 
+> 
+> filename = "08-galbraith-plot-naive"
+> width    = 5
+> height   = 5
+> res = 600
+> setEPS()
+> postscript(paste0(rprojroot::find_package_root_file(),
++                   "/paper/figures_eps/", filename, ".eps"),
++            width = width, height = height)
+> # postscript("paper/figures_eps/08-galbraith-plot-naive.eps", width = 5, height = 5)
+> # pdf("paper/figures/08-galbraith-plot-naive.pdf", width = 5, height = 5)
+> label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
++                          expression((hat(delta)[i]-hat(delta)[F])/hat(sigma)[hat(delta)[i]]))
+> plot_radial(dat,
++             covari.sel = c(4, 5, 6, 7),
++             trt.sel = 3,
++             resp.sel = c(1, 2),
++             outcome.type = "survival",
++             range.v = c(-7, 6),
++             adj.ann.subgrp = 4,
++             font.size = c(1, 1, 0.75, 0.8, 0.85),
++             lab.xy = label.xy)
+> dev.off()
+null device 
+          1 
+> 
+> 
+> filename = "08-galbraith-plot"
+> width    = 5
+> height   = 5
+> setEPS()
+> postscript(paste0(rprojroot::find_package_root_file(),
++                   "/paper/figures_eps/", filename, ".eps"),
++            width = width, height = height)
+> # pdf("paper/figures/08-galbraith-plot.pdf", width = 5, height = 5)
+> label.xy = list(expression(1/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))),
++                          expression((hat(delta)[i]-hat(delta)[F])/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))))
+> plot_radial2(dat,
++             covari.sel = c(4, 5, 6, 7),
++             trt.sel = 3,
++             resp.sel = c(1, 2),
++             outcome.type = "survival",
++             range.v = c(-11, 8),
++             adj.ann.subgrp = 4,
++             font.size = c(1, 1, .6, .6, .6),
++             lab.xy = label.xy)
+[1] -0.1773594
+                      mean     zscore     sdDsDf       std   lambda_t  lambda_c
+(A1) bm = No   -0.13620037  0.7567925 0.05438619 0.1221528 0.80672269 0.8691983
+(A2) bm = Yes  -0.87127362 -2.9571443 0.23465685 0.2619288 0.19327731 0.1308017
+(B1) hx = No   -0.32445916 -1.3576139 0.10835166 0.1536877 0.59663866 0.5358650
+(B2) hx = Yes   0.10132959  2.5309938 0.11011052 0.1552602 0.40336134 0.4641350
+(C1) stage = 3 -0.09459903  0.8142638 0.10163833 0.1491303 0.56722689 0.5780591
+(C2) stage = 4 -0.31715615 -1.1916651 0.11731208 0.1603103 0.43277311 0.4219409
+(D1) pf = 0    -0.22100379 -1.0472531 0.04167508 0.1168423 0.90756303 0.8945148
+(D2) pf = 1     0.27557868  1.5649499 0.28942659 0.3097994 0.09243697 0.1054852
+                  lambda
+(A1) bm = No   0.8017751
+(A2) bm = Yes  0.1982249
+(B1) hx = No   0.5029586
+(B2) hx = Yes  0.4970414
+(C1) stage = 3 0.5355030
+(C2) stage = 4 0.4644970
+(D1) pf = 0    0.8727811
+(D2) pf = 1    0.1272189
+> dev.off()
+null device 
+          1 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  1.642   0.090   1.903 

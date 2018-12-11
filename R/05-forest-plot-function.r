@@ -60,7 +60,10 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
                       title = NULL, lab.x = NULL, time = mean(dat[,resp.sel[1]]),
                       KM = FALSE, show.km.axis = TRUE,
-                      widths = c(1,1,1), max.time = NULL, n.brk = 10)
+                      widths = c(1,1,1), max.time = NULL, n.brk = 10,
+                      trt.labels = c("Treatment", "Control"),
+                      panel.titles = c("Eff.size", "95% CI", "S.Size(T|C)"),
+                      eff.scale = "HR")
 {
   old.par <- par(no.readonly=T)
 
@@ -409,11 +412,14 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
   lab.subgrp[n.subgrp.tol + 1] = "Full"
 
-  est.range = cbind.data.frame(treatment.mean, treatment.lower, treatment.upper )
-  est.C.range = cbind.data.frame(treatment.C.mean, treatment.C.lower, treatment.C.upper )
-  est.T.range = cbind.data.frame(treatment.T.mean, treatment.T.lower, treatment.T.upper )
-  dimnames(est.range) = list(c(lab.subgrp), c("mean", "lower","upper") )
-
+  est.range = cbind.data.frame(treatment.mean, treatment.lower, treatment.upper)
+  est.C.range = cbind.data.frame(treatment.C.mean, treatment.C.lower, treatment.C.upper)
+  est.T.range = cbind.data.frame(treatment.T.mean, treatment.T.lower, treatment.T.upper)
+  dimnames(est.range) = list(c(lab.subgrp), c("mean", "lower","upper"))
+  # if (eff.scale == "HR"){
+  #   est.range  = exp(est.range)
+  #   treatment.mean = exp(treatment.mean)
+  # }
   ################################################ 2. create plots #################################################################
   grid.newpage()
   col.line = c("blue", "red", "forestgreen", "orange", "darkorchid1", "darkgoldenrod3", "darkseagreen3", "chartreuse3", "cyan1", "deeppink1")
@@ -435,23 +441,33 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   # grid.rect()
   vertical_width = 1/(n.subgrp.tol + 1.5)
-  sub.title = c("Eff.size", "Low.", "Upp.", "S.Size(T|C)")
-  grid.text(x = c(0.4,0.55,0.7,0.98), y = 1-(vertical_width/2)/2,
-            label = sub.title, gp = gpar(cex = font.size[3], font=4, adj = c(1,0)), hjust = 1)
+  grid.text(x = c(0.5,0.7,0.98), y = 1-(vertical_width/2)/2,
+            label = panel.titles, gp = gpar(cex = font.size[3], font=4, adj = c(1,0)), hjust = 1)
   data.size = dim(dat)[1]
+
+  if (eff.scale == "HR"){
+    treatment.mean = exp(treatment.mean)
+    treatment.lower = exp(treatment.lower)
+    treatment.upper = exp(treatment.upper)
+  }
+
   for (i in 1:(n.subgrp.tol)){
     y_p = 1 - (vertical_width/2 + vertical_width*(i) + vertical_width/2)
+    conf_int = sprintf("(%.02f;%.02f)", treatment.lower[i], treatment.upper[i])
     grid.text(x=0.05, y=y_p, label = lab.subgrp[i],               gp = gpar(cex = font.size[3], adj = c(0,1)), hjust = 0)
-    grid.text(x=0.40, y=y_p, label = round(treatment.mean[i],2),  gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
-    grid.text(x=0.55, y=y_p, label = round(treatment.lower[i],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
-    grid.text(x=0.70, y=y_p, label = round(treatment.upper[i],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+    grid.text(x=0.50, y=y_p, label = round(treatment.mean[i],2),  gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+    # grid.text(x=0.55, y=y_p, label = round(treatment.lower[i],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+    # grid.text(x=0.70, y=y_p, label = round(treatment.upper[i],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+    grid.text(x=0.70, y=y_p, label = conf_int,                    gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
     grid.text(x=0.98, y=y_p, label = ss.subgrp.list[i],           gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
   }
   y_p = 1 - vertical_width
+  conf_int = sprintf("(%.02f;%.02f)", treatment.lower[n.subgrp.tol+1], treatment.upper[n.subgrp.tol+1])
   grid.text(x=0.05, y=y_p, label = lab.subgrp[n.subgrp.tol+1],               gp = gpar(cex = font.size[3], adj = c(0,1)), hjust = 0)
-  grid.text(x=0.40, y=y_p, label = round(treatment.mean[n.subgrp.tol+1],2),  gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
-  grid.text(x=0.55, y=y_p, label = round(treatment.lower[n.subgrp.tol+1],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
-  grid.text(x=0.70, y=y_p, label = round(treatment.upper[n.subgrp.tol+1],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+  grid.text(x=0.50, y=y_p, label = round(treatment.mean[n.subgrp.tol+1],2),  gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+  # grid.text(x=0.55, y=y_p, label = round(treatment.lower[n.subgrp.tol+1],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+  # grid.text(x=0.70, y=y_p, label = round(treatment.upper[n.subgrp.tol+1],2), gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
+  grid.text(x=0.70, y=y_p, label = conf_int,                                 gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
   grid.text(x=0.98, y=y_p, label = ss.subgrp.list[n.subgrp.tol+1],           gp = gpar(cex = font.size[3], adj = c(1,1)), hjust = 1)
 
   upViewport()
@@ -471,19 +487,31 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   pushViewport(vp)
   vp <- viewport(x = 0.05, y = 0, width=0.9, height=1, just = c("left", "bottom"))
   pushViewport(vp)
+
   line.centre  = est.range[, 1]
   line.x.range = est.range[, 2:3]
+
   i = 1:(n.subgrp.tol + 1)
   y_p_vec = 1 - (vertical_width/2 + vertical_width*(i) + vertical_width/2)
   line.y.range = matrix(rep(y_p_vec,2), ncol = 2)
 
-  x.lim.min = round(est.range[dim(est.range)[1],1],2) - 1.5
-  x.lim.min = round(x.lim.min/0.5) * 0.5
-  x.lim.max = x.lim.min + 3
-  x.lim.diff = x.lim.max-x.lim.min
-
-  grid.xaxis(at = seq(0,1, len = 9),
-             label = round(seq(x.lim.min, x.lim.max, len =9), 2),
+  if (eff.scale == "HR"){
+    x.lim.min = log(0.1)
+    x.lim.max = log(4)
+    x.lim.diff = x.lim.max - x.lim.min
+    x_labels = c(1/10, 1/4, 1/2, 1, 2, 4)
+    x_at1 = log(c(1/10, 1/4, 1/2, 1, 2, 4))
+    x_at  = (x_at1 - x.lim.min) / x.lim.diff
+  } else{
+    x.lim.min = round(est.range[dim(est.range)[1],1],2) - 1.5
+    x.lim.min = round(x.lim.min/0.5) * 0.5
+    x.lim.max = x.lim.min + 3
+    x.lim.diff = x.lim.max-x.lim.min
+    x_labels = round(seq(x.lim.min, x.lim.max, len = 9), 2)
+    x_at = seq(0, 1, len = 9)
+  }
+  grid.xaxis(at = x_at,
+             label = x_labels,
              gp = gpar(cex = font.size[3]),
              edits = gEdit(gPath="labels", rot=0))
 
@@ -512,13 +540,23 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   x = c(x0 - w, x0 + w, x0 + w, x0 - w)
   y = c(y0 - w2, y0 - w2, y0 + w2, y0 + w2)
   grid.polygon(x, y, gp = gpar(fill = "black"))
-  grid.lines(x = (0-x.lim.min)/x.lim.diff, y=c(0,1),gp = gpar(col="gray", lty=2))
-  grid.lines(x = (treatment.mean[n.subgrp.tol+1]-x.lim.min)/x.lim.diff, y=c(0,1),gp = gpar(col="gray", lty=1))
+  # noeff = ifelse(eff.scale == "HR", 1, 0)
+  noeff = 0
+  overall_eff = treatment.mean[n.subgrp.tol+1]
+  if (eff.scale == "HR") {
+    overall_eff = log(overall_eff)
+  }
+  grid.lines(x = (noeff-x.lim.min)/x.lim.diff, y=c(0,1),gp = gpar(col="gray", lty=2))
+  grid.lines(x = (overall_eff - x.lim.min)/x.lim.diff, y=c(0,1),gp = gpar(col="gray", lty=1))
   upViewport()
   upViewport()
 
 
   ## 2.3 Third panel: Forest plot -----
+  if (widhts[3] == 0){
+    par(old.par)
+    return()
+  }
   vp <- viewport(x = widhts[1]+widhts[2], y = 0.83+0.10, width=widhts[3], height=0.07, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(title[[3]], gp = gpar(cex = font.size[1]))
@@ -535,7 +573,7 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     # grid.rect()
     vp <- viewport(x = 0.3, y = 1-vertical_width/2, width=0.4, height=vertical_width/2, just = c("left", "bottom"))
     pushViewport(vp)
-    grid.legend(labels = c("Treatment", "Control"), nrow = 1, do.lines = TRUE,
+    grid.legend(labels = trt.labels, nrow = 1, do.lines = TRUE,
                 gp=gpar(col = c("blue", "red"), cex = font.size[2]*0.6))
     upViewport()
 
@@ -611,7 +649,7 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     vp <- viewport(x = 0.3, y = 1-vertical_width/2, width=0.4, height=vertical_width/2, just = c("left", "bottom"))
     pushViewport(vp)
-    grid.legend(labels = c("Treatment", "Control"), nrow = 1, do.lines = TRUE,
+    grid.legend(labels = trt.labels, nrow = 1, do.lines = TRUE,
                 hgap = unit(0.5, "lines"),
                 gp=gpar(col = rev(col.line), cex = font.size[2]))
     upViewport()
@@ -634,9 +672,9 @@ plot_forest <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     pushViewport(vp)
     grid.draw(mini_km(plot.data[[n.subgrp.tol+1]], col.line, max.time, show.km.axis))
     upViewport(2)
-    vp <- viewport(x = 1, y = 0, width = 0.99, height = 1, just = c("right", "bottom"))
+    vp <- viewport(x = 1, y = 0, width = 1, height = 1, just = c("right", "bottom"))
     pushViewport(vp)
-    grid.xaxis(at = seq(0.03, 1, len = n.brk),
+    grid.xaxis(at = seq(0, 1, len = n.brk),
                label = seq(0, max.time, len = n.brk),
                gp = gpar(cex = font.size[3]),
                edits = gEdit(gPath="labels", rot=0))

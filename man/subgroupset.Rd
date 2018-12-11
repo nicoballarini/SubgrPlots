@@ -138,7 +138,7 @@ intervals in a forest plot-like panel.
 Data set must be formatted as described on the orginal UpSet github page: \url{http://github.com/VCG/upset/wiki}.
 }
 \examples{
-\dontrun{
+\donttest{
 data(prca)
 dat <- prca
 vars = data.frame(variable = names(dat), index = 1:length(names(dat)))

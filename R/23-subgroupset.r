@@ -71,7 +71,7 @@
 #'
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(prca)
 #' dat <- prca
 #' vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
