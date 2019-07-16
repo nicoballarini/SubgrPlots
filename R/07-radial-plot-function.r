@@ -531,16 +531,18 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 
 
 
-#' Radial (Galbraith) plot for subgroup effect size
+#' Modified Radial (Galbraith) plot for subgroup effect size
 #'
 #' This function produces a modified Galbraith's radial plot showing the
 #' treatment effect size of subgroups defined by the categories
-#' of covariates. The x-axis represents the reciprocal of the standard error
-#' of subgroup treatment effect estimates. The y-axis means
+#' of covariates.
+#' The x-axis represents the reciprocal of the standard error
+#' of the difference between the subgroup treatment effect estimates and the
+#' overall treatment effect estimate.
+#' The y-axis is the
 #' standardized effect size difference (the difference between subgroup effect
-#' the full popultion effect is divided by the standard error
-#' of the estimator for the overall population effect. Points here are for
-#' subgroups. The grey region indicates whether subgroup effects
+#' the full popultion effect is divided by its standard error).
+#' Points here are for subgroups. The grey region indicates whether subgroup effects
 #' are homogeneous to the full population effect or not. The two arcs on the
 #' right side show subgroup treatment effects in the original
 #' scale, where the red spots are the projection of points from the origin on
@@ -729,7 +731,6 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coefficients[2, 1]
       treatment.std.full  = model.sum$coefficients[2, 2]
-      zscore.full = treatment.mean.full / treatment.std.full
       zscore.full = 0
 
       sigma2      = sum((model.int$residuals^2))/model.int$df.residual
@@ -743,7 +744,10 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coefficients[2, 1]
       treatment.std.full = model.sum$coefficients[2, 2]
-      zscore.full = treatment.mean.full / treatment.std.full
+      zscore.full = 0
+
+      varDeltaF   = treatment.std.full^2
+      deltaF = treatment.mean.full
 
     }else if (outcome.type == "survival"){
 
@@ -751,12 +755,10 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
       model.sum = summary(model.int)
       treatment.mean.full = model.sum$coef[1, 1]
       treatment.std.full = model.sum$coef[1, 3]
-      zscore.full = treatment.mean.full / treatment.std.full
       zscore.full = 0
 
       varDeltaF   = treatment.std.full^2
       deltaF = treatment.mean.full
-
     }
   }
 
@@ -777,8 +779,9 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coefficients[2, 1]                                # record subgroup effect size
         treatment.std[i] = model.sum$coefficients[2, 2]
-        # zscore[i] = treatment.mean[i] / treatment.std[i]                             # calculate the z-score of the subgroup effect size relative
-        # to the standardized error of the full population effect size
+        # calculate the z-score of the subgroup effect size relative
+        # to the standardized error of the difference between
+        # subgroup treatment effect and population effect size
         # estimator
         VarDsDf[i] = ((1-lambda_t[[i]])/lambda_t[[i]]/n_t +
                       (1-lambda_c[[i]])/lambda_c[[i]]/n_c) * sigma2
@@ -790,16 +793,17 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coefficients[2, 1]                                # record subgroup effect size
         treatment.std[i] = model.sum$coefficients[2, 2]
-        zscore[i] = treatment.mean[i] / treatment.std[i]                        # calculate the z-score of the subgroup effect size relative
-        # to the standardized error of the full population effect size
-        # estimator
+
+        VarDsDf[i] = treatment.std[i]^2 + varDeltaF -
+          2 * sqrt(lambda[[i]])*treatment.std[i]*sqrt(varDeltaF)
+        zscore[i] = (treatment.mean[i] - deltaF) / sqrt(VarDsDf[i])
+        sdDsDf[i] = sqrt(VarDsDf[i])
       }else if (outcome.type == "survival"){
 
         model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[i]])
         model.sum = summary(model.int)
         treatment.mean[i] = model.sum$coef[1, 1]
         treatment.std[i] = model.sum$coef[1, 3]
-        zscore[i] = treatment.mean[i] / treatment.std[i]
 
         VarDsDf[i] = treatment.std[i]^2 + varDeltaF -
           2 * sqrt(lambda[[i]])*treatment.std[i]*sqrt(varDeltaF)

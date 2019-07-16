@@ -5,8 +5,8 @@
 \title{Radial (Galbraith) plot for subgroup effect size}
 \usage{
 ggplot_radial(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
-  title = NULL, lab.xy = NULL, legend.position = c("inside", "outside"))
+  range.v = NULL, font.size = 4, title = NULL, lab.xy = "default",
+  ticks.length = 0.05)
 }
 \arguments{
 \item{dat}{a data set}
@@ -21,21 +21,17 @@ ggplot_radial(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 \item{range.v}{a vector specifying the vertical range of graphical display.}
 
-\item{adj.ann.subgrp}{a parameter adjusting the distance between a point and its corresponding subgroup label. The smaller the value
-is, the larger the distance is.}
-
-\item{font.size}{a vector specifying the size of labels and text; the first element is for the main title, the second is for
-for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
-labels near points; the fifth is for the unit labels on all the axes.}
+\item{font.size}{a number specifying the font size for the subgroup labels near points}
 
 \item{title}{a string specifying the main title.}
 
 \item{lab.xy}{a list of two strings specifying the labels of the x and y axes.}
 
-\item{legend.position}{where to place the legend? either "inside" or "outside"}
+\item{ticks.length}{a number from 0 to 1 to specify the length of the red
+ticks indicating the treatment effect in the radial axis. A value of 1 will draw a complete line from the (0,0) point to the axis.}
 }
 \description{
-This function produces a modified Galbraith's radial plot showing the
+This function produces a modified Galbraith's radial plot using ggplot. It shows the
 treatment effect size of subgroups defined by the categories
 of covariates. The x-axis represents the reciprocal of the standard error
  of subgroup treatment effect estimates.The y-axis means
@@ -52,6 +48,7 @@ be changed by setting different values on the associated input argument.
 In addition, the function uses log odd ratio and log hazard
 ratio for displaying subgroup effect sizes in binary and survival data,
 respectively.
+A ggplot object is returned, where further modifications can be added using the theme() function.
 }
 \examples{
 library(dplyr)
@@ -63,15 +60,11 @@ dat \%>\%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
          hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
 
-label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
-                expression((hat(delta)[i]-hat(delta)[F])/hat(sigma)[hat(delta)[i]]))
-plot_radial(dat,
+ggplot_radial(dat,
             covari.sel = c(4, 5, 6, 7),
             trt.sel = 3,
             resp.sel = c(1, 2),
             outcome.type = "survival",
             range.v = c(-7, 6),
-            adj.ann.subgrp = 4,
-            font.size = c(1, 1, 0.75, 0.8, 0.85),
-            lab.xy = label.xy)
+            font.size = 4)
 }

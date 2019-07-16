@@ -15,7 +15,7 @@
 
 library(SubgrPlots) # Loads this package. Install it first
 library(dplyr)
-
+library(ggplot2)
 # # Load the data to be used
 data(prca)
 dat <- prca
@@ -27,32 +27,32 @@ dat %>%
   rename(Weight = weight_group,
          Age = age_group) -> dat
 
-# pdf("paper/figures/08-galbraith-plot-naive.pdf", width = 5/.70, height = 5)
-label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
-                         expression((hat(delta)[i]-hat(delta)[F])/hat(sigma)[hat(delta)[i]]))
+pdf("paper/figures/08-galbraith-plot-naive.pdf", width = 5/.70, height = 5)
 ggplot_radial(dat,
-            covari.sel = c(4, 5, 6, 7),
-            trt.sel = 3,
-            resp.sel = c(1, 2),
-            outcome.type = "survival",
-            range.v = c(-7, 6),
-            adj.ann.subgrp = 4,
-            font.size = c(1, 1, 1, 1, 1),
-            lab.xy = label.xy, legend.position = "outside")
-# dev.off()
+              covari.sel = c(4, 5, 6, 7),
+              trt.sel = 3,
+              resp.sel = c(1, 2),
+              outcome.type = "survival",
+              range.v = c(-8, 6),
+              font.size = 4,
+              lab.xy = "default",
+              ticks.length = 0.05) -> my_plot
+my_plot +
+  theme(text = element_text(size = 14))
+dev.off()
 
 
 pdf("paper/figures/08-galbraith-plot.pdf", width = 5/.7, height = 5)
-label.xy = list(expression(1/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))),
-                         expression((hat(delta)[i]-hat(delta)[F])/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))))
-plot_radial2(dat,
-            covari.sel = c(4, 5, 6, 7),
-            trt.sel = 3,
-            resp.sel = c(1, 2),
-            outcome.type = "survival",
-            range.v = c(-11, 8),
-            adj.ann.subgrp = 4,
-            font.size = c(1, 1, 1, 1, 1),
-            lab.xy = label.xy, legend.position = "outside")
+ggplot_radial2(dat,
+              covari.sel = c(4, 5, 6, 7),
+              trt.sel = 3,
+              resp.sel = c(1, 2),
+              outcome.type = "survival",
+              range.v = c(-11, 9),
+              font.size = 4,
+              lab.xy = "default",
+              ticks.length = 0.05) -> my_plot
+my_plot +
+  theme(text = element_text(size = 14))
 dev.off()
 

@@ -114,8 +114,8 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]              # set the names of the covariates which relates to the defined subgroup; if a covariate
-                                                 # are considered for multiple times, we make their name identical. (otherwise, the resulsting
-                                                 # names are like var, var.1, var.2 and so on.)
+  # are considered for multiple times, we make their name identical. (otherwise, the resulsting
+  # names are like var, var.1, var.2 and so on.)
 
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -348,7 +348,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   y.max = (treatment.upp[1] - axis.min[1] )/(axis.max[1] - axis.min[1])
   y.min = (treatment.low[1] - axis.min[1] )/(axis.max[1] - axis.min[1])
   grid.lines(c(1/2, 1/2), c(y.min, y.max))                                                                              # draw the line representing the C.I. of the effect size for the full population
-  grid.lines(c(1/2-0.15, 1/2+0.15), c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)), gp=gpar(col = "mediumvioletred"))    # draw the line representing the sample size of the full population
+  point_size = 1/3
+  grid.points(x = c(1/2),
+              y = c(1/2 *(y.min + y.max)),
+              pch = 20,
+              size = unit(point_size, "char"))
+  # grid.lines(c(1/2-0.15, 1/2+0.15),
+  #            c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
+  #            gp=gpar(col = "mediumvioletred"))    # draw the line representing the sample size of the full population
   grid.lines(c(1/2-0.01, 1/2+0.01), c(y.min, y.min))                                                                    # draw the line representing the top of the C.I.
   grid.lines(c(1/2-0.01, 1/2+0.01), c(y.max, y.max))                                                                    # draw the line representing the bottom of the C.I.
 
@@ -408,10 +415,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                      c(y.max, y.max))
           grid.lines(c(x.gap * i, x.gap * i),
                      c(y.min, y.max))
-          grid.lines(c(x.gap * i - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
-                       x.gap * i + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
-                     c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
-                     gp = gpar(col = "mediumvioletred"))
+          grid.points(x = x.gap * i,
+                      y = c(1/2 *(y.min + y.max)),
+                      pch = 20,
+                      size = unit(point_size, "char"))
+          # grid.lines(c(x.gap * i - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
+          #              x.gap * i + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
+          #            c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
+          #            gp = gpar(col = "mediumvioletred"))
         } else {
           y.max = (treatment.upp[ind] - axis.min[j] )/(axis.max[j] - axis.min[j])
           y.min = (treatment.low[ind] - axis.min[j] )/(axis.max[j] - axis.min[j])
@@ -421,10 +432,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                      c(y.max, y.max))
           grid.lines(c(x.gap * (1+(2*(i-1))), x.gap * (1+(2*(i-1)))),
                      c(y.min, y.max))
-          grid.lines(c(x.gap * (1+(2*(i-1))) - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
-                       x.gap * (1+(2*(i-1))) + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
-                     c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
-                     gp = gpar(col = "mediumvioletred"))
+          grid.points(x = x.gap * (1+(2*(i-1))),
+                      y = c(1/2 *(y.min + y.max)),
+                      pch = 20,
+                      size = unit(point_size, "char"))
+          # grid.lines(c(x.gap * (1+(2*(i-1))) - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
+          #              x.gap * (1+(2*(i-1))) + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
+          #            c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
+          #            gp = gpar(col = "mediumvioletred"))
         }
 
       }

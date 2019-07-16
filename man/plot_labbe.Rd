@@ -4,10 +4,11 @@
 \alias{plot_labbe}
 \title{L'Abbe plot for subgroup effect size}
 \usage{
-plot_labbe(dat, covari.sel, trt.sel, resp.sel, outcome.type, effect = c("HR",
-  "RMST"), size.shape = 1/18, adj.ann.subgrp = 1/30, font.size = c(1, 1,
-  0.85, 0.85), title = NULL, lab.xy = NULL, time = mean(dat[,
-  resp.sel[1]]), show.ci = TRUE, legend.position = c("inside", "outside"))
+plot_labbe(dat, covari.sel, trt.sel, resp.sel, outcome.type,
+  effect = c("HR", "RMST"), size.shape = 1/18, adj.ann.subgrp = 1/30,
+  font.size = c(1, 1, 0.85, 0.85), title = NULL, lab.xy = NULL,
+  time = mean(dat[, resp.sel[1]]), show.ci = TRUE,
+  legend.position = c("inside", "outside"))
 }
 \arguments{
 \item{dat}{a data set}

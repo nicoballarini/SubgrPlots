@@ -42,7 +42,7 @@ plot_nightingale <- function(dat, covari.sel, trt.sel = NULL, resp.sel,
                              title = NULL, lab.y = NULL,
                              strip = "Response",
                              palette_colors = c("#faa8d2", "#80b1d3")
-                             ){
+){
 
   #### 0. argument validity check  #############################################
   outcome.type = match.arg(outcome.type)
@@ -80,9 +80,9 @@ plot_nightingale <- function(dat, covari.sel, trt.sel = NULL, resp.sel,
   #### 2. draw plot using ggplot2 ##############################################
   ggplot(dt) +
     geom_hline(yintercept = y_int, colour = "grey80", size = 0.2) +
-    geom_segment(aes(x = pos, xend = pos, y = 0, yend = max_freq), colour = "grey80", size = 0.2) +
-    geom_bar(aes(x = pos, y = (Total), fill = y_lev[1]), color = "black", width = 1, stat = "identity") +
-    geom_bar(aes(x = pos, y = (Yes),   fill = y_lev[2]), color = "black", width = 1, stat = "identity") +
+    geom_segment(aes_string(x = "pos", xend = "pos", y = "0", yend = "max_freq"), colour = "grey80", size = 0.2) +
+    geom_bar(aes_string(x = "pos", y = "Total", fill = "y_lev[1]"), color = "black", width = 1, stat = "identity") +
+    geom_bar(aes_string(x = "pos", y = "Yes",   fill = "y_lev[2]"), color = "black", width = 1, stat = "identity") +
     scale_y_continuous(name = lab.y, trans = "sqrt", limits = c(0, max_freq+100), breaks = y_int) +
     scale_fill_manual(values = palette_colors) +
     coord_polar(start = pi/4) +
@@ -95,18 +95,18 @@ plot_nightingale <- function(dat, covari.sel, trt.sel = NULL, resp.sel,
           panel.grid  = element_blank(),
           legend.position = "bottom",
           legend.direction = "horizontal") +
-    geom_text(aes(x = pos, y = Total + 1,
-                  label = new_var),
+    geom_text(aes_string(x = "pos", y = "Total + 1",
+                         label = "new_var"),
               hjust = 0,
               angle = 45 - 360/max(dt$pos)/2 - 360/max(dt$pos) * (dt$pos - 1))
 }
 
 plot_nightingale_by_trt <- function(dat, covari.sel, trt.sel, resp.sel,
-                             outcome.type = "binary",
-                             seq_by = 100,
-                             title = NULL, lab.y = NULL,
-                             strip = "Response",
-                             palette_colors = c("#faa8d2", "#80b1d3")){
+                                    outcome.type = "binary",
+                                    seq_by = 100,
+                                    title = NULL, lab.y = NULL,
+                                    strip = "Response",
+                                    palette_colors = c("#faa8d2", "#80b1d3")){
 
   #### 0. argument validity check  #############################################
   outcome.type = match.arg(outcome.type)
@@ -145,9 +145,9 @@ plot_nightingale_by_trt <- function(dat, covari.sel, trt.sel, resp.sel,
   names(palette_colors) = y_lev
   ggplot(dt) +
     geom_hline(yintercept = y_int, colour = "grey80", size = 0.2) +
-    geom_segment(aes(x = pos, xend = pos, y = 0, yend = max_freq), colour = "grey80", size = 0.2) +
-    geom_bar(aes(x = pos, y = (Total), fill = y_lev[1]), color = "black", width = 1, stat = "identity") +
-    geom_bar(aes(x = pos, y = (Yes),   fill = y_lev[2]), color = "black", width = 1, stat = "identity") +
+    geom_segment(aes_string(x = "pos", xend = "pos", y = "0", yend = "max_freq"), colour = "grey80", size = 0.2) +
+    geom_bar(aes_string(x = "pos", y = "Total", fill = "y_lev[1]"), color = "black", width = 1, stat = "identity") +
+    geom_bar(aes_string(x = "pos", y = "Yes",   fill = "y_lev[2]"), color = "black", width = 1, stat = "identity") +
     scale_y_continuous(name = lab.y, trans = "sqrt", limits = c(0, max_freq+100), breaks = y_int) +
     scale_fill_manual(values = palette_colors) +
     coord_polar(start = pi/4) +
@@ -160,8 +160,8 @@ plot_nightingale_by_trt <- function(dat, covari.sel, trt.sel, resp.sel,
           panel.grid  = element_blank(),
           legend.position = "bottom",
           legend.direction = "horizontal") +
-    geom_text(aes(x = pos, y = Total + 1,
-                  label = new_var),
+    geom_text(aes_string(x = "pos", y = "Total + 1",
+                         label = "new_var"),
               hjust = 0,
               angle = 45 - 360/max(dt$pos)/2 - 360/max(dt$pos) * (dt$pos - 1)) +
     facet_grid(~Treatment)
@@ -485,8 +485,8 @@ plot_nightingale_effect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.
   #### draw plot using ggplot2 ##############################################
   ggplot(dt) +
     geom_hline(yintercept = y_int, colour = "grey80", size = 0.2) +
-    geom_segment(aes(x = pos, xend = pos, y = 0, yend = max_freq), colour = "grey80", size = 0.2) +
-    geom_bar(aes(x = pos, y = (Freq), fill = trt_effect), color = "black", width = 1, stat = "identity") +
+    geom_segment(aes_string(x = "pos", xend = "pos", y = "0", yend = "max_freq"), colour = "grey80", size = 0.2) +
+    geom_bar(aes_string(x = "pos", y = "Freq", fill = "trt_effect"), color = "black", width = 1, stat = "identity") +
     scale_y_continuous(name = lab.y, trans = "sqrt", limits = c(0, max_freq+100), breaks = y_int) +
     scale_fill_gradientn(colours = col.vec, limits=range.strip,
                          guide = guide_colourbar(title.position = "right",
@@ -494,7 +494,7 @@ plot_nightingale_effect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.
                                                  barheight = 17,
                                                  ticks.colour = "black",
                                                  label.position = "left"
-                                                  )) +
+                         )) +
     coord_polar(start = pi/4) +
     labs(title = title, x = NULL, y = lab.y, fill = strip) +
     theme_bw(base_size = 14) +
@@ -505,9 +505,9 @@ plot_nightingale_effect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.
           legend.margin = margin(0,0,0,0, unit='cm'),
           panel.grid  = element_blank(),
           legend.position = "none") +
-          # legend.direction = "horizontal") +
-    geom_text(aes(x = pos, y = Freq + 1,
-                  label = new_var),
+    # legend.direction = "horizontal") +
+    geom_text(aes_string(x = "pos", y = "Freq + 1",
+                         label = "new_var"),
               hjust = 0,
               angle = 45 - 360/max(dt$pos)/2 - 360/max(dt$pos) * (dt$pos - 1)) -> plot_main
 
@@ -517,12 +517,12 @@ plot_nightingale_effect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.
   size. = breaks[2] - breaks[1]
   ggplot() +
     geom_tile(data = data.frame(y = breaks[-length(breaks)] + size./2, col.vec),
-              aes(x = 1, y = y),
+              aes_string(x = "1", y = "y"),
               fill = col.vec, height = 1*size.) -> ppl
   if(show.overall) {
     ppl = ppl +
-      geom_point(data = overall, aes(x = 1, y = estimate)) +
-      geom_errorbar(data = overall, aes(x = 1, ymin = ll, ymax = ul), width = 0.25)
+      geom_point(data = overall, aes_string(x = "1", y = "estimate")) +
+      geom_errorbar(data = overall, aes_string(x = "1", ymin = "ll", ymax = "ul"), width = 0.25)
   }
   ppl = ppl +
     scale_x_continuous(expand = c(0,0)) +

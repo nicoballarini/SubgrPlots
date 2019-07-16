@@ -4,10 +4,11 @@
 \alias{plot_alluvial}
 \title{Alluvial plot}
 \usage{
-plot_alluvial(..., freq, col = "gray", border = 0, layer, hide = FALSE,
-  alpha = 0.5, gap.width = 0.05, xw = 0.1, cw = 0.1, blocks = TRUE,
-  ordering = NULL, axis_labels = NULL, cex = par("cex"),
-  cex.axis = par("cex.axis"), rotate = 0, las = 1, bottom.mar = 2)
+plot_alluvial(..., freq, col = "gray", border = 0, layer,
+  hide = FALSE, alpha = 0.5, gap.width = 0.05, xw = 0.1,
+  cw = 0.1, blocks = TRUE, ordering = NULL, axis_labels = NULL,
+  cex = par("cex"), cex.axis = par("cex.axis"), rotate = 0,
+  las = 1, bottom.mar = 2)
 }
 \arguments{
 \item{...}{vectors or data frames, all for the same number of observations}

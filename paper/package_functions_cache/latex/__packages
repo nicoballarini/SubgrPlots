@@ -1,6 +1,5 @@
 base
 SubgrPlots
 dplyr
+bindrcpp
 UpSetR
-ggplot2
-ggrepel

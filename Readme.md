@@ -13,23 +13,30 @@ This project contains the article and code for:
   
 * `/R`  R Code for functions in the package
 
-Dependencies:
+Imports:
     alluvial,
     circlize,
     colorspace,
     diagram,
     dplyr,
+    ggplot2 (>= 2.1.1),
+    ggrepel,
     geoR,
     grid,
     gridBase,
-    pacman,
+    gridExtra,
+    methods,
+    plyr,
     polyclip,
+    scales,
     shape,
     sp,
-    spatstat,
     survRM2,
     survival,
     UpSetR,
     VennDiagram
+    
 Optional:
     rgeos for the proportional area venn diagram (This package requires additional dev libraries which may not be trivial to install)
+    
+    knitr and rmarkdown for building the vignettes

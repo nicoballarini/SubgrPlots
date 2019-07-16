@@ -5,10 +5,11 @@
 \title{Contour plot for effect size via local regression.}
 \usage{
 plot_contour_localreg(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3), n.brk.axis = 3,
-  para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2, 1, 0.85, 0.8),
-  title = NULL, subtitle = NULL, unit.x = 1, unit.y = 1,
-  effect = "HR", show.overall = TRUE, strip = "Effect Size")
+  setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3),
+  n.brk.axis = 3, para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2,
+  1, 0.85, 0.8), title = NULL, subtitle = NULL, unit.x = 1,
+  unit.y = 1, effect = "HR", show.overall = TRUE,
+  strip = "Effect Size")
 }
 \arguments{
 \item{dat}{a data set}

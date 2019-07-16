@@ -1,32 +1,53 @@
-# Bugs/changes
+# Bugs/changes since CRAN submission
 
-Forest plot 
+* Gailbraith plot:
+
+  There is a new function ggplot_radial that implements the plot using ggplot.
+
+  This is better for handling subgroup levels with ggrepel
+
+* Forest plot 
+
   Third panel colors for treatment and control in legend.
+
   Fix xaxis in forest plots.
+
   added eff.scale for showing HR instead of logHR
 
-Contour plot:
+* Contour plot:
+  
   The default value for subtitle argument is "default", which prints the sample sizes.
-Venn diagram:
+
+* Venn diagram:
+  
   Fixed problem with font sizes.
-Barchart:
+
+* Barchart:
+  
   Added additional check for tau. If RMST is specified and time = NULL then it throws an error.
+  
   The example is modified so that time = 50.
 
-plot_dissimilarity
+* plot_dissimilarity
+  
   Now it does not print the overlap matrix.
   
   
 # Additional features
 
-Forest Plot: 
+* Forest Plot: 
+
   Allow to have only two panels 
+
   Warning messages:
   1: In doTryCatch(return(expr), name, parentenv, handler) :
     calling par(new=TRUE) with no plot
   #416 -> col.line duplicated
  
  Allow for results in HR scale
+
  Check time = NA option. Give error if not specified. Dont care about it if the KM TRUE
+
  Check for tibble and trnasform to data.frame
+
  Document labels in forest plot function

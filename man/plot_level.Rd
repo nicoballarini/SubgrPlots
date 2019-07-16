@@ -4,11 +4,12 @@
 \alias{plot_level}
 \title{Level plot for subgroup effect size}
 \usage{
-plot_level(dat, covari.sel, trt.sel, resp.sel, outcome.type, ss.rect = FALSE,
-  range.strip = c(-6, 6), n.brk = 30, n.brk.axis = NULL,
-  font.size = c(15, 12, 0.8, 15, 0.6), title = NULL, strip = NULL,
-  effect = c("HR", "RMST"), time = NULL, show.overall = FALSE,
-  palette = "divergent", col.power = 0.5)
+plot_level(dat, covari.sel, trt.sel, resp.sel, outcome.type,
+  ss.rect = FALSE, range.strip = c(-6, 6), n.brk = 30,
+  n.brk.axis = NULL, font.size = c(15, 12, 0.8, 15, 0.6),
+  title = NULL, strip = NULL, effect = c("HR", "RMST"),
+  time = NULL, show.overall = FALSE, palette = "divergent",
+  col.power = 0.5)
 }
 \arguments{
 \item{dat}{a data set}

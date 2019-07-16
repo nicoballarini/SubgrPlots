@@ -4,8 +4,8 @@
 \alias{plot_stepp}
 \title{STEPP for subgroup effect size}
 \usage{
-plot_stepp(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, alpha,
-  font.size = c(1.2, 1, 1, 0.85), title = NULL, lab.y = NULL,
+plot_stepp(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss,
+  alpha, font.size = c(1.2, 1, 1, 0.85), title = NULL, lab.y = NULL,
   subtitle = NULL)
 }
 \arguments{
