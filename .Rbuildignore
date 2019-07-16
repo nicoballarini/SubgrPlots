@@ -1,6 +1,6 @@
-^.*\.Rproj$
 ^\.Rproj\.user$
-^paper$
 ^poster$
-^Readme\.md$
 ^rcmdcheck\.md$
+^todo\.md$
+^inst/paper$
+^.*\.Rproj$

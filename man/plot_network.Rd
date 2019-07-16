@@ -41,4 +41,3 @@ plot_network(dat = dat,
              title = NULL)
 
 }
-

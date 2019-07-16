@@ -35,7 +35,7 @@ is, the larger the distance is.}
 \item{n.brk.axis}{number of breaks in the axis of the treatment effect scale}
 
 \item{font.size}{a vector specifying the size of labels and text; the first element is for the main title, the second is for
-for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
+for x-axis and y-axis labels; the third is for the legend text of subgroups; the fourth is for the subgroup
 labels near points; the fifth is for the unit labels on all the axes.}
 
 \item{title}{a string specifying the main title.}
@@ -120,4 +120,3 @@ plot_mosaic(dat = dat,
             strip = "Treatment effect size (log-hazard ratio)",
             effect = "HR", palette = "hcl")
 }
-

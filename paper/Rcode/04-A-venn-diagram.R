@@ -25,12 +25,12 @@ dat %>%
 ## 3. Venn Diagram -----------------------------------------------------------
 pdf("paper/figures/04-A-venn-diagram.pdf", width = 5, height = 5)
 plot_venn(dat,
-       covari.sel = c(5, 7, 4),
-       cat.sel = c(2,2,2),
-       trt.sel = 3,
-       resp.sel = c(1,2),
-       outcome.type = "survival",
-       fill = FALSE,
-       cat.dist = c(0.04,0.04,0.07),
-       font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.6))
+          covari.sel = c(5, 7, 4),
+          cat.sel  = c(2,2,2),
+          trt.sel  = 3,
+          resp.sel = c(1,2),
+          outcome.type = "survival",
+          fill      = FALSE,
+          cat.dist  = c(.03,.04,0.08),
+          font.size = c(1, 1.29, 1.4, 1, 1, 1))
 dev.off()

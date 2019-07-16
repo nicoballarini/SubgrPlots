@@ -23,14 +23,15 @@ dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
          hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
 
-pdf("paper/figures/07-A-tree-plot.pdf", width = 5, height = 5)
+pdf("paper/figures/07-A-tree-plot.pdf", width = 5, height = 4.5)
 plot_tree(dat,
           covari.sel = c(4, 5, 7),
           trt.sel = 3,
           resp.sel = c(1, 2),
           outcome.type = "survival",
           add.aux.line = TRUE,
-          font.size = c(12, 8, 0.55),
+          font.size = c(12, 12, 0.8),
+          text.shift = 0.01,
           title = NULL,
           lab.y = "Effect size (log hazard ratio)",
           keep.y.axis = TRUE)

@@ -31,6 +31,7 @@
 #' labels near points; the fifth is for the unit labels on all the axes.
 #' @param title            a string specifying the main title.
 #' @param lab.xy           a list of two strings specifying the labels of the x and y axes.
+#' @param legend.position  where to place the legend? either "inside" or "outside"
 #'
 #' @examples
 #' library(dplyr)
@@ -56,13 +57,13 @@
 #' @export
 #' @import grid
 #' @import graphics
-plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
-                        title = NULL, lab.xy = NULL)
-{
+plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
+                        adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
+                        title = NULL, lab.xy = NULL,
+                        legend.position = c("inside", "outside")){
 
-  old.par <- par(no.readonly=T)
   ################################################ 0. argument validity check  #################################################################
-
+  legend.position = match.arg(legend.position)
   if (missing(dat)) stop("Data have not been inputed!")
   if (!(is.data.frame(dat))) stop("The data set is not with a data frame!")
 
@@ -251,7 +252,10 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
   dimnames(zscore) = list(c(lab.subgrp), c("zscore") )
   zscore = (treatment.mean - treatment.mean.full)/treatment.std
   ################################################ 2. produce a graph  #################################################################
-  par(mar = c(4,4,1,1))
+  old.par = par(mar = c(3,3,0,0) + 0.1)
+  if(legend.position == "outside"){
+    layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(.7,.3))
+  }
   if (is.null(range.v)){
     y.lim.max = ceiling(max(zscore, na.rm = TRUE))
     y.lim.min = floor(min(zscore, na.rm = TRUE))
@@ -270,8 +274,8 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
        xlim = c(0,13.5), xaxt = 'n', yaxt='n', xaxs = "i",
        main = title, cex.lab = font.size[2], cex.main = font.size[1])
 
-  mtext(text =  lab.xy[[2]], side = 2, line = 2)
-  mtext(text =  lab.xy[[1]], side = 1, line = 3)
+  mtext(text =  lab.xy[[1]], side = 1, line = 2)
+  mtext(text =  lab.xy[[2]], side = 2, line = 1.5)
   expand.fac = 2                                                                   # the expansion factor of the original unit on the x-axis
   length.unit.xaxis = 5                                                            # the number of the units on the x-axis
   upper.bd = 2; lower.bd = -2
@@ -279,12 +283,17 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
   x.lab.max.pos = round(max(1/c(treatment.std, treatment.std.full))) + 1 #ceiling(max(1/treatment.std))
   y.lab.upp.pos = treatment.mean.full + upper.bd
   y.lab.low.pos = treatment.mean.full + lower.bd
-  axis(1, at= seq(0, length.unit.xaxis * expand.fac, 1 * expand.fac),
-       labels = round(seq(0, x.lab.max.pos, len = length.unit.xaxis + 1), 2),
+  axis(1,
+       at = seq(0, length.unit.xaxis * expand.fac, 1 * expand.fac),
+       labels = rep("", length(seq(0, x.lab.max.pos, len = length.unit.xaxis + 1))),
+       tck =  -0.02,
+       line = 0, padj = 0,
        cex.axis = font.size[5])
-
-  xy.current.pos = par("usr")
-  legend(xy.current.pos[1], xy.current.pos[4], lab.subgrp, bty = "n", cex = font.size[3])
+  axis(1,
+       at = seq(0, length.unit.xaxis * expand.fac, 1 * expand.fac),
+       labels = round(seq(0, x.lab.max.pos, len = length.unit.xaxis + 1), 2),
+       line = -.5, padj = 0, lwd = 0,
+       cex.axis = font.size[5])
 
   # pos.esize.mean  = zscore.full                  # the y-coordinate of the full
   # pos.esize.lower = pos.esize.mean + lower.bd
@@ -307,9 +316,15 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 
   axis(2,
        at= seq(y.lab.low.pos - 1, y.lab.upp.pos + 1, 1)[c(2,4,6)],
+       labels = rep("",3),
+       tck =  -0.02,
+       line = 0, padj = 0,
+       cex.axis = font.size[5])
+  axis(2,
+       at= seq(y.lab.low.pos - 1, y.lab.upp.pos + 1, 1)[c(2,4,6)],
        labels = c(NA, lower.bd, NA, 0, NA, upper.bd, NA)[c(2,4,6)],
-       cex.axis = font.size[5] )
-
+       line = -0.5, padj = 0, lwd = 0,
+       cex.axis = font.size[5])
 
   x <- c(0, length.unit.xaxis * expand.fac, length.unit.xaxis * expand.fac, 0)
   y <- c(pos.esize.lower, pos.esize.lower, pos.esize.upper, pos.esize.upper)
@@ -340,8 +355,8 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
   #      zscore.full + 10*lab.subgrp.pos.adj,
   #      labels = "Full",  cex = font.size[4])      # the annotation for the points
 
-  ### draw arcs for displaying effect sizes
 
+  ### draw arcs for displaying effect sizes-------------------------------------
   angle = vector()
   zscore.diff = zscore - treatment.mean.full
   len.pt = dim(zscore)[1]
@@ -499,6 +514,16 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 
   }
   box()
+  # Draw legend ----------------------------------------------------------------
+  if(legend.position == "outside"){
+    par(mar = c(0,0,0,0) + 0.1, plt = c(0,1,0,1), mgp = c(0,0,0))
+    plot.new()
+    xy.current.pos = par("usr")
+    legend(xy.current.pos[1], xy.current.pos[4], lab.subgrp, bty = "n", cex = font.size[3])
+  } else {
+    xy.current.pos = par("usr")
+    legend(xy.current.pos[1], xy.current.pos[4], lab.subgrp, bty = "n", cex = font.size[3])
+  }
   par(old.par)
 }
 
@@ -539,6 +564,7 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 #' @param title            a string specifying the main title.
 #' @param lab.xy           a list of two strings specifying the labels of the x and y axes.
 #' @param plot.full a logical indicating whether to show the overall treatment effect
+#' @param legend.position  where to place the legend? either "inside" or "outside"
 #'
 #' @examples
 #' library(dplyr)
@@ -566,12 +592,14 @@ plot_radial <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.
 #' @import grid
 #' @import graphics
 plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1),
-                        title = NULL, lab.xy = NULL, plot.full = FALSE)
+                        title = NULL, lab.xy = NULL,
+                        plot.full = FALSE,
+                        legend.position = c("inside", "outside"))
 {
   old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
-
+  legend.position = match.arg(legend.position)
   if (missing(dat)) stop("Data have not been inputed!")
   if (!(is.data.frame(dat))) stop("The data set is not with a data frame!")
 
@@ -797,14 +825,16 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   dimnames(treatment.std) = list(c(lab.subgrp), c("std") )
   dimnames(zscore) = list(c(lab.subgrp), c("zscore") )
   dimnames(sdDsDf) = list(c(lab.subgrp), c("sdDsDf") )
-  print(treatment.mean.full)
-  print(data.frame(treatment.mean, zscore, sdDsDf, treatment.std,
-                   lambda_t=unlist(lambda_t),
-                   lambda_c=unlist(lambda_c),
-                   lambda = unlist(lambda)))
+  # print(treatment.mean.full)
+  # print(data.frame(treatment.mean, zscore, sdDsDf, treatment.std,
+  #                  lambda_t=unlist(lambda_t),
+  #                  lambda_c=unlist(lambda_c),
+  #                  lambda = unlist(lambda)))
   ################################################ 2. produce a graph  #################################################################
-  # par(mar = c(4,5,2,2))
-  par(mar = c(4,4,1,1))
+  par(mar = c(3,3,0,0)+0.2)
+  if(legend.position == "outside"){
+    layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(.7,.3))
+  }
   if (is.null(range.v)){
     y.lim.max = ceiling(max(zscore, na.rm = TRUE))
     y.lim.min = floor(min(zscore, na.rm = TRUE))
@@ -822,8 +852,8 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
        xlim = c(0,13.5), xaxt = 'n', yaxt='n', xaxs = "i",
        main = title, cex.lab = font.size[2], cex.main = font.size[1])
 
-  mtext(text =  lab.xy[[2]], side = 2, line = 2)
-  mtext(text =  lab.xy[[1]], side = 1, line = 3)
+  mtext(text =  lab.xy[[1]], side = 1, line = 2.1)
+  mtext(text =  lab.xy[[2]], side = 2, line = 1.5)
 
   expand.fac = 2                                                                  # the expansion factor of the original unit on the x-axis
   length.unit.xaxis = 5                                                            # the number of the units on the x-axis
@@ -832,11 +862,18 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
   x.lab.max.pos = round(max(1/c(sdDsDf, sqrt(varDeltaF)))) + 1 #ceiling(max(1/treatment.std))
   y.lab.upp.pos = zscore.full + upper.bd
   y.lab.low.pos = zscore.full + lower.bd
-  axis(1, at= seq(0, length.unit.xaxis * expand.fac, 1 * expand.fac),
-       labels = round(seq(0, x.lab.max.pos, len = length.unit.xaxis + 1), 2), cex.axis = font.size[5]  )
 
-  xy.current.pos = par("usr")
-  legend(xy.current.pos[1], xy.current.pos[4], lab.subgrp, bty = "n", cex = font.size[3])
+  axis(1,
+       at = seq(0, length.unit.xaxis * expand.fac, 1 * expand.fac),
+       labels = rep("", length(seq(0, x.lab.max.pos, len = length.unit.xaxis + 1))),
+       tck =  -0.02,
+       line = 0, padj = 0,
+       cex.axis = font.size[5])
+  axis(1,
+       at = seq(0, length.unit.xaxis * expand.fac, 1 * expand.fac),
+       labels = round(seq(0, x.lab.max.pos, len = length.unit.xaxis + 1), 2),
+       line = -.5, padj = 0, lwd = 0,
+       cex.axis = font.size[5])
 
   pos.esize.mean  = zscore.full                  # the y-coordinate of the full
   pos.esize.lower = pos.esize.mean + lower.bd
@@ -849,16 +886,17 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
           c(lower.bd, NA, 0, NA, upper.bd),
           c(pos.esize.lower, NA, pos.esize.mean, NA, pos.esize.upper),
           rep(NA, len = length(seq(upper.bd +1, y.lim.max, 1))))
-  # axis(2, at = round(seq(y.lim.min + zscore.full, y.lim.max + zscore.full, 2),2),
-  #      las = 1,
-  #      # labels = round(lab, 2),
-  #      cex.axis = font.size[5])
-
+  axis(2,
+       at= seq(y.lab.low.pos - 1, y.lab.upp.pos + 1, 1)[c(2,4,6)],
+       labels = rep("",3),
+       tck =  -0.02,
+       line = 0, padj = 0,
+       cex.axis = font.size[5])
   axis(2,
        at= seq(y.lab.low.pos - 1, y.lab.upp.pos + 1, 1)[c(2,4,6)],
        labels = c(NA, lower.bd, NA, 0, NA, upper.bd, NA)[c(2,4,6)],
-       cex.axis = font.size[5] )
-
+       line = -0.5, padj = 0, lwd = 0,
+       cex.axis = font.size[5])
 
   x <- c(0, length.unit.xaxis * expand.fac, length.unit.xaxis * expand.fac, 0)
   y <- c(pos.esize.lower, pos.esize.lower, pos.esize.upper, pos.esize.upper)
@@ -891,8 +929,7 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
        zscore.full + 10*lab.subgrp.pos.adj,
        labels = "Full",  cex = font.size[4])      # the annotation for the points
   }
-  ### draw arcs for displaying effect sizes
-
+  ### draw arcs for displaying effect sizes-------------------------------------
   angle = vector()
   zscore.diff = zscore - zscore.full
   len.pt = dim(zscore)[1]
@@ -1039,6 +1076,14 @@ plot_radial2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, range
     }
 
   }
+  # Draw legend ----------------------------------------------------------------
+  if(legend.position == "outside"){
+    par(mar = c(0,0,0,0) + 0.1, plt = c(0,1,0,1), mgp = c(0,0,0))
+    plot.new()
+  }
+  xy.current.pos = par("usr")
+  legend(xy.current.pos[1], xy.current.pos[4], lab.subgrp, bty = "n", cex = font.size[3])
+
   par(old.par)
 }
 

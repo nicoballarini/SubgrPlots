@@ -106,7 +106,7 @@ plot_dissimilarity <- function(dat, covari.sel, mode, range.ds = c(0,1), font.si
     }
   }
   colnames(r.prop) = rownames(r.prop) = lab.subgrp
-  print(r.prop)
+  # print(r.prop)
   ################################################ 2. create plots ########################################################################################
 
   ### produce a graph

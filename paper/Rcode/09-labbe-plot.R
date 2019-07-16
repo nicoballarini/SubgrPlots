@@ -21,14 +21,17 @@ library(dplyr)
 # # Load the data to be used
 data(prca)
 dat <- prca
+levels(dat$age_group) = c("Young", "Middle-aged", "Old")
+levels(dat$weight_group)  = c("Low", "Mid", "High")
 dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
-         hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
+         hx = factor(ifelse(hx == 0 , "No", "Yes"))) %>%
+  rename(Weight = weight_group,
+         Age = age_group) -> dat
 
 ###############################################################################-
 ## 8. Labbe Plot -----------------------------------------------------------
-pdf("paper/figures/09-labbe-plot.pdf", width = 6, height = 6)
-
+pdf("paper/figures/09-labbe-plot.pdf", width = 5.5/.7, height = 5)
 lab.xy = list("Control Group Estimate", "Treatment Group Estimate")
 plot_labbe(dat = dat,
            covari.sel = c(4,5,6,7),
@@ -39,6 +42,8 @@ plot_labbe(dat = dat,
            lab.xy = lab.xy,
            size.shape = 0.2,
            adj.ann.subgrp = 1/30,
-           time=50, show.ci = FALSE)
+           font.size = c(1, 1, 1, 1),
+           time=50, show.ci = FALSE,
+           legend.position = "outside")
 dev.off()
 

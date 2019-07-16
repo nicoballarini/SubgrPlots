@@ -27,6 +27,7 @@
 #' @param time              time for calculating the survival in each subgroup
 #' @param show.ci A logical indicating whether to show an additional line for confidence intervals
 #' @param effect Either "HR" of "RMST". Only when outcome.type = "survival"
+#' @param legend.position  where to place the legend? either "inside" or "outside"
 #'
 #' @examples
 #' library(dplyr)
@@ -58,12 +59,11 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        effect = c("HR","RMST"), size.shape = 1/18,
                        adj.ann.subgrp = 1/30, font.size = c(1, 1, 0.85, 0.85),
                        title = NULL, lab.xy = NULL,
-                       time = mean(dat[,resp.sel[1]]), show.ci = TRUE)
+                       time = mean(dat[,resp.sel[1]]), show.ci = TRUE,
+                       legend.position = c("inside", "outside"))
 {
-  old.par <- par(no.readonly=T)
-
   ################################################ 0. argument validity check  #################################################################
-
+  legend.position = match.arg(legend.position)
   if (missing(dat)) stop("Data have not been inputed!")
   if (!(is.data.frame(dat))) stop("The data set is not with a data frame!")
 
@@ -111,8 +111,8 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]                                                # set the names of the covariates which relates to the defined subgroup; if a covariate
-                                                                                   # are considered for multiple times, we make their name identical. (otherwise, the resulsting
-                                                                                   # names are like var, var.1, var.2 and so on.)
+  # are considered for multiple times, we make their name identical. (otherwise, the resulsting
+  # names are like var, var.1, var.2 and so on.)
 
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -402,8 +402,14 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   dimnames(treatment.lower) = list(c(lab.subgrp), c("lower"))
 
   ################################################ 2. produce a graph  #################################################################
-
-  par(mar = c(4,4,2,0.5))
+  if (is.null(title)){
+   old.par = par(mar = c(3,3,0,0)+0.1)
+  } else{
+   old.par = par(mar = c(3,3,1,0)+0.1)
+  }
+  if(legend.position == "outside"){
+    layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(.7,.3))
+  }
   x.lim.min = min(min(treatment.T.mean, na.rm = TRUE),  min(treatment.C.mean, na.rm = TRUE)) - 0.2
   x.lim.max = max(max(treatment.T.mean, na.rm = TRUE),  max(treatment.C.mean, na.rm = TRUE)) + 0.2
   eff.col = c("#2c75c9","#fb4b4b")
@@ -425,14 +431,21 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
 
   plot(treatment.C.mean, treatment.T.mean, type='n',
-       xlab = lab.x,
-       ylab = lab.y,
-       main= title,
-       ylim = c(x.lim.min, x.lim.max), xlim = c(x.lim.min, x.lim.max), cex.main = font.size[1], cex.lab = font.size[2], bty = "o")
+       xlab = "",
+       ylab = "",
+       main = title,
+       ylim = c(x.lim.min, x.lim.max),
+       xlim = c(x.lim.min, x.lim.max),
+       cex.main = font.size[1],
+       cex.lab  = font.size[2],
+       bty = "o")
   abline(a=0, b = 1, lty = 2)
-  text( max(max(treatment.T.mean, na.rm = TRUE),  max(treatment.C.mean, na.rm = TRUE)),
-        max(max(treatment.T.mean, na.rm = TRUE),  max(treatment.C.mean, na.rm = TRUE)),
-        labels = "x = y")
+  mtext(text =  lab.x, side = 1, line = 2)
+  mtext(text =  lab.y, side = 2, line = 2)
+
+  text(max(max(treatment.T.mean, na.rm = TRUE),  max(treatment.C.mean, na.rm = TRUE)),
+       max(max(treatment.T.mean, na.rm = TRUE),  max(treatment.C.mean, na.rm = TRUE)),
+       labels = "x = y")
 
   if (!(outcome.type == "survival" & effect == "HR")){
     eff.col = rev(eff.col)
@@ -460,30 +473,23 @@ plot_labbe <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     segments(treatment.C.mean[i], treatment.C.mean[i], treatment.C.mean[i], treatment.T.mean[i], col = col.seg[i], lwd = 2)
     if (show.ci){
-    segments(treatment.C.mean[i], treatment.C.mean[i], treatment.C.mean[i], CI.bar.y.pos[i], col = "violet", lwd = 3, lty = 2)
+      segments(treatment.C.mean[i], treatment.C.mean[i], treatment.C.mean[i], CI.bar.y.pos[i], col = "violet", lwd = 3, lty = 2)
     }
   }
   text(treatment.C.mean, treatment.T.mean - (x.lim.max - x.lim.min) * adj.ann.subgrp, labels = lab.subgrp2, pch = 4, cex = font.size[4])
 
   x.pos = vector(); y.pos = vector()
-  xy.current.pos = par("usr")
-  lab.pos.adj = (x.lim.max - x.lim.min) * adj.ann.subgrp
-  for (i in 1 : (n.subgrp.tol + 1)){
-    x.pos[i] = xy.current.pos[1] + lab.pos.adj
-    y.pos[i] = xy.current.pos[4] - (i - 1) * lab.pos.adj - lab.pos.adj * 2
+
+  # Draw legend ----------------------------------------------------------------
+  if(legend.position == "outside"){
+    par(mar = c(0,0,0,0) + 0.1, plt = c(0,1,0,1), mgp = c(0,0,0))
+    plot.new()
   }
-  text(x.pos, y.pos, labels = lab.subgrp, adj = c(0, 1),  cex = font.size[3])
-  text(x.pos + lab.pos.adj * 9,
-       y.pos,
-       labels = round(treatment.mean[1 : (n.subgrp.tol + 1)], 2),
-       col = col.seg[1 : (n.subgrp.tol + 1)],
-       adj = c(1, 1),
-       cex = font.size[3])
-
-  text(x.pos[n.subgrp.tol] + lab.pos.adj * 9, y.pos[1] + lab.pos.adj,
-       labels = "Effect size",
-       adj = c(1, 1),
-       cex = font.size[3], font=4)
+  xy.current.pos = par("usr")
+  lab.pos.adj = (xy.current.pos[2] - xy.current.pos[1]) * adj.ann.subgrp
+  legend(xy.current.pos[1], xy.current.pos[4],
+         c("",lab.subgrp[-length(lab.subgrp)]),
+         bty = "n",
+         cex = font.size[3])
   par(old.par)
-
 }

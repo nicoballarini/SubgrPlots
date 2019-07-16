@@ -1,9 +1,22 @@
-# Bugs
+# Bugs/changes
 
-Forest plot. Third panel colors for treatment and control in legend.
-Fix xaxis in forest plots.
-added eff.scale for showing HR instead of logHR
+Forest plot 
+  Third panel colors for treatment and control in legend.
+  Fix xaxis in forest plots.
+  added eff.scale for showing HR instead of logHR
 
+Contour plot:
+  The default value for subtitle argument is "default", which prints the sample sizes.
+Venn diagram:
+  Fixed problem with font sizes.
+Barchart:
+  Added additional check for tau. If RMST is specified and time = NULL then it throws an error.
+  The example is modified so that time = 50.
+
+plot_dissimilarity
+  Now it does not print the overlap matrix.
+  
+  
 # Additional features
 
 Forest Plot: 

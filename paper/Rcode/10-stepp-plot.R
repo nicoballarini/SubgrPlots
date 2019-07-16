@@ -23,10 +23,10 @@ data(prca)
 dat <- prca
 ###############################################################################-
 ## 9. stepp Plot -----------------------------------------------------------
-pdf("paper/figures/10-stepp-plot.pdf", width = 7, height = 7)
+pdf("paper/figures/10-stepp-plot.pdf", width = 5, height = 5)
 lab.y.title = paste("Treatment effect size (log-hazard ratio)");
 setup.ss = c(30,40)
-sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2], "; overlap sizes are set to ", setup.ss[1], ")" )
+sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2], "; overlap of ", setup.ss[1], ")" )
 plot_stepp(dat,
           covari.sel = 8,
           trt.sel = 3,
@@ -34,7 +34,7 @@ plot_stepp(dat,
           outcome.type = "survival",
           setup.ss = c(30,40),
           alpha = 0.05,
-          font.size = c(0.9, 1, 1, 1),
+          font.size = c(1, 1, 1, 1),
           title = NULL,
           lab.y = lab.y.title,
           subtitle = sub.title)

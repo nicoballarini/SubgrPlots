@@ -137,14 +137,14 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
                                         c = 100, l = c(50,90),
                                         power = col.power))
 
-  ### Create a nice plot -------------------------------------------------------
+  ### Create a plot -------------------------------------------------------
   if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
   cols = col.vec
   layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
   if (is.null(title)){
-    par(mar=c(4,4,2,1))
+    graphics::par(mar=c(3,3,2,1), mgp = c(2,1,0))
   } else{
-    par(mar=c(4,4,4,1))
+    graphics::par(mar=c(3,3,4,1), mgp = c(2,1,0))
   }
   plot(grid.xy[,1], grid.xy[,2], type = "n",
        xlim = range(grid.pts.x),
@@ -163,9 +163,9 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
                   col = rev(cols))
   points(dat[, covari.sel[1]], dat[, covari.sel[2]], cex = 0.5)
   if (is.null(title)){
-    par(mar=c(4,2,2,2.5))
+    par(mar=c(3,2,2,1.5), mgp = c(0,1,0))
   } else{
-    par(mar=c(4,2,4,2.5))
+    par(mar=c(3,2,4,1.5), mgp = c(0,1,0))
   }
   image.scale(brk.es,
               col= rev(cols),
@@ -173,7 +173,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
               axis.pos = 4, add.axis = FALSE)
   axis(2, at = breaks.axis, labels = round(breaks.axis, 3),
        las = 0, cex.axis = font.size[5])
-  mtext(strip, side=4, line=1, cex.lab = font.size[5])
+  mtext(strip, side=4, line=0, cex.lab = font.size[5])
 
   # Calculate overall Treatment effect -----------------------------------------
   if (outcome.type == "continuous"){
@@ -206,9 +206,8 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
     }
   }
   if(show.overall){
-    cat("Overall Treatment effect is:",
-        overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")\n")
+    cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
     points(x = 0.5,
            (overall.treatment.mean), pch = 20)
     points(x = 0.5, overall.treatment.lower, pch = "-")

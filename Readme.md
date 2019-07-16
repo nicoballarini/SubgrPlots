@@ -1,5 +1,5 @@
 This project contains the article and code for: 
-# Graphical displays for subgroup analysis in clinical trials
+# A Critical Review of Graphics for Subgroup Analyses in Clinical Trials and Some Improvements
 
 * `/data` Contains the dataset used in the examples.
 

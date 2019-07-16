@@ -33,16 +33,16 @@ dat %>%
          Weight = weight_group,
          Age = age_group) -> dat
 
-pdf("paper/figures/02-B-mosaic-plot.pdf", width = 5, height = 4)
+pdf("paper/figures/02-B-mosaic-plot.pdf", width = 5, height = 4.5)
 plot_mosaic(dat = dat,
-            covari.sel = c(15, 7, 4),
+            covari.sel = c(5, 7, 4),
             trt.sel = 3,
             resp.sel = c(1, 2),
             outcome.type =  "survival",
             range.v = NULL, adj.ann.subgrp = 4,
             range.strip=c(-3, 3),
             n.brk = 31, n.brk.axis = 7,
-            font.size = c(10, 10, 10, 10, 0.7),
+            font.size = c(12, 12, 12, 10, 1),
             title = NULL, lab.xy = NULL,
             strip = "Treatment effect size (log-hazard ratio)",
             effect = "HR", palette = "hcl")

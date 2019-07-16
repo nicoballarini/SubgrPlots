@@ -7,7 +7,7 @@
 plot_contour(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss,
   n.grid = c(41, 41), brk.es = c(0, 1, 2, 3), n.brk.axis = 7,
   para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2, 1, 0.85, 0.8),
-  title = NULL, subtitle = NULL, effect = "HR", point.size = 1.2,
+  title = NULL, subtitle = "default", effect = "HR", point.size = 1.2,
   filled = FALSE, strip = NULL, show.overall = FALSE,
   palette = "divergent", col.power = 0.5, show.points = FALSE)
 }
@@ -105,4 +105,3 @@ plot_contour(dat,
              filled = TRUE, palette = "hcl",col.power = 0.75)
 
 }
-

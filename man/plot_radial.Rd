@@ -6,7 +6,7 @@
 \usage{
 plot_radial(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
   adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1), title = NULL,
-  lab.xy = NULL)
+  lab.xy = NULL, legend.position = c("inside", "outside"))
 }
 \arguments{
 \item{dat}{a data set}
@@ -31,6 +31,8 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \item{title}{a string specifying the main title.}
 
 \item{lab.xy}{a list of two strings specifying the labels of the x and y axes.}
+
+\item{legend.position}{where to place the legend? either "inside" or "outside"}
 }
 \description{
 This function produces a modified Galbraith's radial plot showing the
@@ -73,4 +75,3 @@ plot_radial(dat,
             font.size = c(1, 1, 0.75, 0.8, 0.85),
             lab.xy = label.xy)
 }
-

@@ -12,7 +12,6 @@
 ## in the build window, click Install and Restart
 # devtools::build()
 # devtools::install()
-
 library(SubgrPlots) # Loads this package. Install it first
 library(dplyr)
 
@@ -26,7 +25,7 @@ dat %>%
          `Bone\nmetastasis` = bm,
          `History of\ncardiovascular\nevents` = hx) -> dat
 
-pdf("paper/figures/04-B-venn-diagram-filled.pdf", width = 6, height = 5,  onefile = FALSE)
+pdf("paper/figures/04-B-venn-diagram-filled.pdf", width = 5, height = 4,  onefile = FALSE)
 plot_venn(dat,
           covari.sel = c(4,6,7,5),#vars,
           cat.sel = c(2,2,2,2),
@@ -36,9 +35,10 @@ plot_venn(dat,
           fill = TRUE,
           range.strip = c(-3, 3),
           n.brk = 31, n.brk.axis = 7,
-          font.size = c(0.5, 0.5, 0.7, 0.5, 0.6, 0.8),
+          font.size = c(0.5, 1.1, 1.4, 1, 1, 1),
           strip = paste("Treatment effect size (log hazard ratio)"),
-          palette = "hcl")
+          palette = "hcl",
+          cat.dist = c(0.22, 0.22, 0.11, 0.16))
 dev.off()
 
 

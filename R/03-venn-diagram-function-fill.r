@@ -3,7 +3,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
                            n.brk.axis=7,
                font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL, strip = NULL,
                effect = "HR", show.overall = TRUE,
-               palette = "divergent", col.power = 0.5){
+               palette = "divergent", col.power = 0.5, cat.dist = "default"){
   old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
@@ -141,20 +141,20 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     cond[[2]] = which( !A & B == T  );  n.2 = length(which( !A & B == T  ))
     cond[[3]] = which(A & B == T  );    n.12 = length(which(A & B == T  ))
     cond[[4]] = which(!A & !B == T  );  n.compl = length(which(!A & !B == T  ))
-
+    if(cat.dist[1] == "default") cat.dist = rep(0.025, 2)
     vp = VennDiagram::draw.pairwise.venn(area1 = sum(A),
                                         area2 = sum(B),
                                         cross.area = sum(A&B),
-                                        # scaled = F,
+                                        scaled = F,
                                         ext.pos = c(90,90),
                                         # inverted = sum(A)<sum(B),
                                         category = names(dat)[covari.sel],
+                                        cat.dist = cat.dist,
                                         lty = 1,
                                         fill = "white", ind = F,
                                         title = title)
 
   }else if (n.subgrp == 3){
-
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
     B = dat[, covari.sel[2]] == cats.var.all[[2]][cat.sel[2]]
     C = dat[, covari.sel[3]] == cats.var.all[[3]][cat.sel[3]]
@@ -171,6 +171,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     cond[[7]] = which( A & B & C == T  );    n.123 = length(which(A & B & C == T  ))
     cond[[8]] = which( !A & !B & !C == T  ); n.compl = length(which(!A & !B & !C == T  ))
 
+    if(cat.dist[1] == "default") cat.dist = c(0.05, 0.05, 0.025)
     vp = VennDiagram::draw.triple.venn(area1 = sum(A),
                                   area2 = sum(B),
                                   area3 = sum(C),
@@ -180,11 +181,12 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
                                   n123 = sum(A&B&C),
                                   rotation.degree = 60,
                                   cat.pos  = c(225, 0, 140),
-                                  cat.dist = rep(0.04, 3),
                                   euler.d = F, scaled = F,
                                   category = names(dat)[covari.sel],
+                                  cat.dist = cat.dist,
+                                  cat.fontfamily = rep("sans", 3),
                                   fontfamily = rep("sans", 7),
-                                  cat.fontfamily = rep("sans", 3),ind = FALSE,
+                                  ind = FALSE,
                                   lty = 1, cex = 1, cat.cex = 1,
                                   fill = "white", title = title)
   }else if(n.subgrp == 4){
@@ -211,6 +213,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     cond[[15]] = which( A & B & C & D == T  );     n.1234 = length(which(A & B & C & D == T  ))
     cond[[16]] = which( !A & !B & !C & !D == T  ); n.compl = length(which(!A & !B & !C & !D == T  ))
 
+    if(cat.dist[1] == "default") cat.dist = c(0.22, 0.22, 0.11, 0.11)
     vp = VennDiagram::draw.quad.venn(area1 = sum(A),
                                 area2 = sum(B),
                                 area3 = sum(C),
@@ -227,6 +230,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
                                 n234 = sum(B&C&D),
                                 n1234 = sum(A&B&C&D),
                                 category = names(dat)[covari.sel],
+                                cat.dist = cat.dist,
                                 lty = 1, ind = F,
                                 fill = "white", title = title)
 
@@ -270,7 +274,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     cond[[30]] = which( !A & B & C & D & E == T  );     n.2345 = length(which( !A & B & C & D & E == T  ))
     cond[[31]] = which( A & B & C & D & E == T  );      n.12345 = length(which( A & B & C & D & E == T  ))
     cond[[32]] = which( !A & !B & !C & !D & !E == T  ); n.compl = length(which( !A & !B & !C & !D & !E == T  ))
-
+    if(cat.dist[1] == "default") cat.dist = rep(0.2, 5)
     vp = VennDiagram::draw.quintuple.venn(area1 = sum(A),
                                      area2 = sum(B),
                                      area3 = sum(C),
@@ -302,6 +306,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
                                      n1345 = sum(A&C&D&E),
                                      n2345 = sum(B&C&D&E),
                                      n12345 = sum(A&B&C&D&E),
+                                     cat.dist = cat.dist,
                                      category = names(dat)[covari.sel], ind = F,
                                      lty = 1, fill = "white", title = title)
   }
@@ -378,13 +383,16 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     A <- list(list(x = as.vector(vp[[2]][[1]]), y = as.vector(vp[[2]][[2]])))
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    labs_size = labs[1:(nrow(labs)-1), ]
+    labs_sets = labs[(nrow(labs)):nrow(labs), ]
     # Plot it!
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
            col =  colors[n.subgrp.tol])
       polygon(A[[1]], col = colors[1])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      text(x = labs_size$x, y = labs_size$y, labels = labs_size$label, cex = font.size[3])
+      text(x = labs_sets$x, y = labs_sets$y, labels = labs_sets$label, cex = font.size[2])
       box()
     }
 
@@ -394,16 +402,19 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     AintB <- polyclip::polyclip(A, B)
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    labs_size = labs[1:(nrow(labs)-2), ]
+    labs_sets = labs[(nrow(labs)-1):nrow(labs), ]
     # Plot it!
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
            col =  colors[n.subgrp.tol])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      # text(x = labs$x, y = labs$y, labels = labs$label)
       polygon(A[[1]], col = colors[1])
       polygon(B[[1]], col = colors[2])
       polygon(AintB[[1]], col = colors[3])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      text(x = labs_size$x, y = labs_size$y, labels = labs_size$label, cex = font.size[3])
+      text(x = labs_sets$x, y = labs_sets$y, labels = labs_sets$label, cex = font.size[2])
       box()
     }
 
@@ -417,12 +428,14 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     AiBiC <- polyclip::polyclip(polyclip::polyclip(A, B), C)
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    labs_size = labs[1:(nrow(labs)-3), ]
+    labs_sets = labs[(nrow(labs)-2):nrow(labs), ]
     # Plot it!
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "", main = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
            col =  colors[n.subgrp.tol])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      # text(x = labs$x, y = labs$y, labels = labs$label)
       polygon(A[[1]], col = colors[1])
       polygon(B[[1]], col = colors[2])
       polygon(C[[1]], col = colors[3])
@@ -430,8 +443,9 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
       polygon(AintC[[1]], col = colors[5])
       polygon(BintC[[1]], col = colors[6])
       polygon(AiBiC[[1]], col = colors[7])
-      text(x = labs$x, y = labs$y, labels = labs$label)
-      text(x=0.9, y=0.9 , labels = n.compl)
+      text(x = labs_size$x, y = labs_size$y, labels = labs_size$label, cex = font.size[3])
+      text(x = labs_sets$x, y = labs_sets$y, labels = labs_sets$label, cex = font.size[2])
+      text(x=0.9, y=0.9 , labels = n.compl, cex = font.size[3])
       box()
     }
   }else if (n.subgrp == 4){
@@ -453,12 +467,14 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
 
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    labs_size = labs[1:(nrow(labs)-4), ]
+    labs_sets = labs[(nrow(labs)-3):nrow(labs), ]
     # Plot it!
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
            col =  colors[n.subgrp.tol])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      # text(x = labs$x, y = labs$y, labels = labs$label)
       polygon(A[[1]], col = colors[1])
       polygon(B[[1]], col = colors[2])
       polygon(C[[1]], col = colors[3])
@@ -474,8 +490,9 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
       polygon(AiCiD[[1]], col = colors[13])
       polygon(BiCiD[[1]], col = colors[14])
       polygon(AiBiCiD[[1]], col = colors[15])
-      text(x=0.1, y=0.1 , labels = n.compl)
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      text(x=0.1, y=0.1 , labels = n.compl, cex = font.size[3])
+      text(x = labs_size$x, y = labs_size$y, labels = labs_size$label, cex = font.size[3])
+      text(x = labs_sets$x, y = labs_sets$y, labels = labs_sets$label, cex = font.size[2])
       box()
     }
   }else if (n.subgrp == 5){
@@ -513,13 +530,15 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
 
     ix <- sapply(vp, function(x) grepl("text", x$name, fixed = TRUE))
     labs <- do.call(rbind.data.frame, lapply(vp[ix], `[`, c("x", "y", "label")))
+    labs_size = labs[1:(nrow(labs)-5), ]
+    labs_sets = labs[(nrow(labs)-5):nrow(labs), ]
     # Plot it!
 
     vpf <- function(){
       plot(c(0, 1), c(0, 1), type = "n", axes = FALSE, xlab = "", ylab = "")
       rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
            col =  colors[n.subgrp.tol])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      # text(x = labs$x, y = labs$y, labels = labs$label)
       polygon(A[[1]], col = colors[1])
       polygon(B[[1]], col = colors[2])
       polygon(C[[1]], col = colors[3])
@@ -551,21 +570,21 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
       polygon(AiCiDiE[[1]], col = colors[29])
       polygon(BiCiDiE[[1]], col = colors[30])
       polygon(AiBiCiDiE[[1]], col = colors[31])
-      text(x = labs$x, y = labs$y, labels = labs$label)
+      text(x = labs_size$x, y = labs_size$y, labels = labs_size$label, cex = font.size[3])
+      text(x = labs_sets$x, y = labs_sets$y, labels = labs_sets$label, cex = font.size[2])
       box()
     }
   }
 
   layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
-  par(mar=c(1,1,1,1))
+  par(mar=c(0, 0, 0, 0)+0.1)
   vpf()
-  par(mar=c(1,2, 1, 2))
+  par(mar=c(0, 2, 0, 1)+0.5)
   image.scale(treatment.mean, col=col.vec,
               breaks = breaks-1e-8, axis.pos = 4, add.axis = FALSE)
   if(show.overall){
-    cat("Overall Treatment effect is:",
-        overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")\n")
+    cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
     points(x = 0.5,
            (overall.treatment.mean), pch = 20)
     points(x = 0.5, overall.treatment.lower, pch = "-")
@@ -578,7 +597,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
        at = breaks.axis,
        labels = round(breaks.axis, 3),
        las = 0, cex.axis = font.size[6])
-  mtext(strip, side=4, line=1, cex.lab = font.size[5])
-  par(mfrow=c(1,1))
+  mtext(strip, side=4, line=0, cex.lab = font.size[5])
+
   par(old.par)
 }

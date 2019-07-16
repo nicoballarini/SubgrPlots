@@ -370,7 +370,7 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(7,1))
   # layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(1,1))
-  par(mar=c(1,1,3,1), xpd = TRUE)
+  par(mar=c(1,1,2,1), xpd = TRUE)
   ##########   middle-middle cell
   pal.YlRd = colorRampPalette(c("#fee090", "#d73027"), space = "rgb")
   pal.WhBl = colorRampPalette(c("#e0f3f8", "#4575b4"),  space = "rgb")
@@ -500,8 +500,8 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                   col = col_mat[i, i])
     }
   }
-  par(mar=c(1,2, 2, 2))
-  par(mar=c(3,1, 5, 1), xpd = FALSE)
+
+  par(mar=c(3,1, 4, 1), xpd = FALSE)
   image.scale(treatment.mean,
                            col= col.vec,
                            breaks = breaks,
@@ -510,12 +510,15 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   axis(2,
        at = seq(min(range.strip), max(range.strip), len = n.brk.axis),
        labels = seq(min(range.strip), max(range.strip), len = n.brk.axis),
+       line = -0.5, lwd = 0, las = 0, cex.axis = font.size[4])
+  axis(2,
+       at = seq(min(range.strip), max(range.strip), len = n.brk.axis),
+       labels = rep("", length(seq(min(range.strip), max(range.strip), len = n.brk.axis))),
        las = 0, cex.axis = font.size[4])
   # box()
   if(show.overall){
-    cat("Overall Treatment effect is:",
-        overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")")
+    cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
     points(x = 0.5,
            (overall.treatment.mean), pch = 20)
     points(x = 0.5, overall.treatment.lower, pch = "-")

@@ -264,7 +264,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
   }
 
   if (fill) layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
-  par(mar=c(1,1,1,1))
+  par(mar=c(0, 0, 0, 0) + 0.1)
 
   if (n.subgrp == 2){
 
@@ -326,13 +326,13 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
       plot(picture[[i]], add=TRUE, xlim=c(-1,1), ylim=c(-1,1), col=colors[i], lty = 2, lwd = 2, border = "lightblue")
     }
 
-    text(circle.ox[1]-0.1, circle.oy[1] -0.1, labels= n.1, col = "green")
-    text(circle.ox[1] +0.55, circle.oy[2], labels= n.2, col = "green")
-    text(circle.ox[1]+ 0.2, circle.oy[1], labels= n.12, col = "green")
+    text(circle.ox[1] - 0.10, circle.oy[1] - 0.1, labels= n.1, col = "green", cex = font.size[3])
+    text(circle.ox[1] + 0.55, circle.oy[2],       labels= n.2, col = "green", cex = font.size[3])
+    text(circle.ox[1] + 0.20, circle.oy[1],       labels= n.12, col = "green", cex = font.size[3])
 
-    text(circle.ox[1]-r1, circle.oy[1] -r1, labels=c("A"), col = "black", cex = 1.5)
-    text(circle.ox[2]+r2, circle.oy[2] -r2,  labels=c("B"), col = "black", cex = 1.5)
-    text(.9, .9, labels= n.compl, col = "green", cex = 1)
+    text(circle.ox[1] - r1, circle.oy[1] - r1, labels = c("A"), col = "black", cex = font.size[2])
+    text(circle.ox[2] + r2, circle.oy[2] - r2, labels = c("B"), col = "black", cex = font.size[2])
+    text(.9, .9, labels = n.compl, col = "green", cex = font.size[3])
     box()
 
   }else if (n.subgrp ==3){
@@ -409,19 +409,19 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
 
     text.color = "black"
 
-    text(circle.ox[1] - 0.1,  circle.oy[1] -0.1,    labels = n.1,   col = text.color, cex = 1)
-    text(circle.ox[1] + 0.55, circle.oy[2],         labels = n.2,   col = text.color, cex = 1)
-    text(circle.ox[3] + 0.05, circle.oy[3] + 0.1,   labels = n.3,   col = text.color, cex = 1)
-    text(circle.ox[1] + 0.27, circle.oy[3] - 0.25,  labels = n.12,  col = text.color, cex = 1)
-    text(circle.ox[3] - 0.1,  circle.oy[3],         labels = n.13,  col = text.color, cex = 1)
-    text(circle.ox[3] + 0.12, circle.oy[3] - 0.05,  labels = n.23,  col = text.color, cex = 1)
-    text(circle.ox[1] + 0.27, circle.oy[1] + 0.1,   labels = n.123, col = text.color, cex = 1)
+    text(circle.ox[1] - 0.1,  circle.oy[1] -0.1,    labels = n.1,   col = text.color, cex = font.size[3])
+    text(circle.ox[1] + 0.55, circle.oy[2],         labels = n.2,   col = text.color, cex = font.size[3])
+    text(circle.ox[3] + 0.05, circle.oy[3] + 0.1,   labels = n.3,   col = text.color, cex = font.size[3])
+    text(circle.ox[1] + 0.27, circle.oy[3] - 0.25,  labels = n.12,  col = text.color, cex = font.size[3])
+    text(circle.ox[3] - 0.1,  circle.oy[3],         labels = n.13,  col = text.color, cex = font.size[3])
+    text(circle.ox[3] + 0.12, circle.oy[3] - 0.05,  labels = n.23,  col = text.color, cex = font.size[3])
+    text(circle.ox[1] + 0.27, circle.oy[1] + 0.1,   labels = n.123, col = text.color, cex = font.size[3])
 
-    text(circle.ox[1], circle.oy[1] - r1, pos = 1, labels = lab.vars[1], col = "black", cex = 1)
-    text(circle.ox[2], circle.oy[2] - r2, pos = 1, labels = lab.vars[2], col = "black", cex = 1)
-    text(circle.ox[3], circle.oy[3] + r3, pos = 3, labels = lab.vars[3], col = "black", cex = 1)
+    text(circle.ox[1], circle.oy[1] - r1, pos = 1, labels = lab.vars[1], col = "black", cex = font.size[2])
+    text(circle.ox[2], circle.oy[2] - r2, pos = 1, labels = lab.vars[2], col = "black", cex = font.size[2])
+    text(circle.ox[3], circle.oy[3] + r3, pos = 3, labels = lab.vars[3], col = "black", cex = font.size[2])
     # text(.9, .9, labels= n.compl, col = text.color, cex = 1)
-    text(plot_center_x + 0.45, plot_center_y + 0.45, labels= n.compl, col = text.color, cex = 1)
+    text(plot_center_x + 0.45, plot_center_y + 0.45, labels= n.compl, col = text.color, cex = font.size[3])
     box()
 
   }
@@ -429,17 +429,16 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
   xy.current.pos = par("usr")
 
   if (fill){
-    par(mar=c(1,2, 1, 2))
+    par(mar=c(0, 2, 0, 1)+0.5)
     image.scale(treatment.mean, col=col.vec,
-                             breaks = breaks-1e-8, axis.pos = 4, add.axis = FALSE)
+                breaks = breaks-1e-8, axis.pos = 4, add.axis = FALSE)
     axis(2,
          at = breaks.axis,
          labels = round(breaks.axis, 3),
          las = 0, cex.axis = font.size[6])
     if(show.overall){
-      cat("Overall Treatment effect is:",
-          overall.treatment.mean, ", with confidence interval: (",
-          overall.treatment.lower,";",overall.treatment.upper,")\n")
+      cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                  overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
       points(x = 0.5,
              (overall.treatment.mean), pch = 20)
       points(x = 0.5, overall.treatment.lower, pch = "-")
@@ -448,8 +447,7 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                y0 = overall.treatment.lower,
                y1 = overall.treatment.upper)
     }
-    mtext(strip, side=4, line=1, cex.lab = font.size[5])
-    par(mfrow=c(1,1))
+    mtext(strip, side=4, line=0, cex.lab = font.size[5])
   }
   par(old.par)
 }

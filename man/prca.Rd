@@ -103,4 +103,3 @@ prca <- dat
 }
 }
 \keyword{datasets}
-

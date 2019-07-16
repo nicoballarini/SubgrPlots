@@ -18,7 +18,7 @@ dat = prca
 dat %>%
   rename(Weight = weight,
          Age = age) -> dat
-pdf("paper/figures/03-B-contour-plot-localreg.pdf", width = 6, height = 5)
+pdf("paper/figures/03-B-contour-plot-localreg.pdf", width = 5, height = 4)
 plot_contour_localreg(dat,
                covari.sel = c(8,9),
                trt.sel = 3,

@@ -12,7 +12,6 @@
 ## in the build window, click Install and Restart
 # devtools::build()
 # devtools::install()
-
 library(SubgrPlots) # Loads this package. Install it first
 library(dplyr)
 
@@ -24,11 +23,11 @@ dat %>%
   rename(Stage = stage,
          Performance = pf,
          `Bone\nmetastasis` = bm,
-         `History of\ncardiovascular\nevents` = hx) -> dat
+         `History of\ncardiovascular events` = hx) -> dat
 
 ###############################################################################-
 ## 3. Venn Diagram -------------------------------------------------------------
-pdf("paper/figures/04-C-venn-diagram-proportional.pdf", width = 6, height = 5,  onefile = FALSE)
+pdf("paper/figures/04-C-venn-diagram-proportional.pdf", width = 5, height = 4,  onefile = FALSE)
 plot_venn(dat,
           covari.sel = c(5,7,4),
           cat.sel = c(2,2,2),
@@ -38,7 +37,7 @@ plot_venn(dat,
           fill = TRUE,
           range.strip = c(-3, 3),
           n.brk = 31, n.brk.axis = 7,
-          font.size = c(0.5, 0.5, 0.7, 0.75, 0.6, 0.8),
+          font.size = c(1, 1.29, 1.4, 1, 1, 1),
           strip = paste("Treatment effect size (log hazard ratio)"),
           palette = "hcl", prop_area = TRUE)
 dev.off()

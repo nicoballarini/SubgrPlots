@@ -52,8 +52,7 @@ plot_barchart(dat,
               trt.sel = 3,
               resp.sel = c(1, 2),
               outcome.type = "survival",
-              font.size = c(14, 12, 14, 0.75),
+              font.size = c(14, 12, 14, 0.75), time = 50,
               lab.y = "Treatment effect size (RMST difference)")
 
 }
-

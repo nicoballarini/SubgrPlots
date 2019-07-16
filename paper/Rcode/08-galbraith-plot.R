@@ -19,27 +19,30 @@ library(dplyr)
 # # Load the data to be used
 data(prca)
 dat <- prca
+levels(dat$age_group) = c("Young", "Middle-aged", "Old")
+levels(dat$weight_group)  = c("Low", "Mid", "High")
 dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
-         hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
+         hx = factor(ifelse(hx == 0 , "No", "Yes"))) %>%
+  rename(Weight = weight_group,
+         Age = age_group) -> dat
 
-
-pdf("paper/figures/08-galbraith-plot-naive.pdf", width = 5, height = 5)
+# pdf("paper/figures/08-galbraith-plot-naive.pdf", width = 5/.70, height = 5)
 label.xy = list(expression(1/hat(sigma)[hat(delta)[i]]),
                          expression((hat(delta)[i]-hat(delta)[F])/hat(sigma)[hat(delta)[i]]))
-plot_radial(dat,
+ggplot_radial(dat,
             covari.sel = c(4, 5, 6, 7),
             trt.sel = 3,
             resp.sel = c(1, 2),
             outcome.type = "survival",
             range.v = c(-7, 6),
             adj.ann.subgrp = 4,
-            font.size = c(1, 1, 0.75, 0.8, 0.85),
-            lab.xy = label.xy)
-dev.off()
+            font.size = c(1, 1, 1, 1, 1),
+            lab.xy = label.xy, legend.position = "outside")
+# dev.off()
 
 
-pdf("paper/figures/08-galbraith-plot.pdf", width = 5, height = 5)
+pdf("paper/figures/08-galbraith-plot.pdf", width = 5/.7, height = 5)
 label.xy = list(expression(1/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))),
                          expression((hat(delta)[i]-hat(delta)[F])/sqrt(hat(Var)(hat(delta)[i]-hat(delta)[F]))))
 plot_radial2(dat,
@@ -49,7 +52,7 @@ plot_radial2(dat,
             outcome.type = "survival",
             range.v = c(-11, 8),
             adj.ann.subgrp = 4,
-            font.size = c(1, 1, .6, .6, .6),
-            lab.xy = label.xy)
+            font.size = c(1, 1, 1, 1, 1),
+            lab.xy = label.xy, legend.position = "outside")
 dev.off()
 

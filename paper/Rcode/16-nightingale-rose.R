@@ -1,78 +1,37 @@
+###############################################################################-
+## This program creates the figures for the manuscript using the
+## prca data that is included in this package
+##
+##
+## Instead of using rm(list = ls()), make sure you start with a fresh R
+## by restarting R -> Control+Shift+F10
+
+## Load needed libraries
+## If SubgrPlots package is not installed, then open project and use following
+## lines or in the build window, click Install and Restart
+# devtools::build()
+# devtools::install()
 library(SubgrPlots) # Loads this package. Install it first
 library(survival)
 library(ggplot2)
 library(dplyr)
 
-# # Load the data to be used
-data(prca)
 dat <- prca
-vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
-vars
 levels(dat$age_group) = c("Young","Middle-aged","Old")
 levels(dat$weight_group)  = c("Low","Mid","High")
-
+comb_levels = c("Young - Low", "Young - Mid", "Young - High",
+                "Middle-aged - Low", "Middle-aged - Mid", "Middle-aged - High",
+                "Old - Low", "Old - Mid", "Old - High")
 dat %>%
-  rename(Age= age_group,
-         Weight = weight_group)-> dat
+  mutate(AgeWeight = factor(sprintf("%s - %s", age_group, weight_group),
+                            levels = comb_levels))  %>%
+  mutate(survival = factor(ifelse(survtime > 24 , "Yes", "No"),
+                           levels = c("No", "Yes"))) %>%
+  mutate(rx = factor(rx, labels = c("Control", "Treatment"))) -> dat
 
-library(ggplot2)
-
-dat %>%
-  mutate(Agecategory=cut(age, breaks=seq(45,90, by = 5)))   %>%
-  mutate(Weightcategory=cut(weight, breaks=seq(65,155, by = 10)))   %>%
-  mutate(survival = factor(ifelse(survtime > 24 , "Yes", "No"), levels = c("No", "Yes")))-> dat
-dat %>%
-  mutate(AgeWeight = factor(sprintf("%s - %s", Age, Weight),
-                            levels = c("Young - Low",
-                                       "Young - Mid",
-                                       "Young - High",
-                                       "Middle-aged - Low",
-                                       "Middle-aged - Mid",
-                                       "Middle-aged - High",
-                                       "Old - Low",
-                                       "Old - Mid",
-                                       "Old - High")))  %>%
-  mutate(survival = factor(ifelse(survtime > 24 , "Yes", "No"), levels = c("No", "Yes"))) -> dat
-dat
-
-
-# Option 2
-table(dat$AgeWeight, dat$survival, dat$rx)-> datatable.
-data.frame(datatable.)
-datatable.
-dt.control = datatable.[,,1]
-dt.trt = datatable.[,,2]
-
-
-data.frame(Treatment = "Control",
-           AgeWeight = factor(rownames(dt.control), levels = rownames(dt.control)),
-           cbind(dt.control,
-                 Total = rowSums(dt.control),
-                 pos = 1:nrow(dt.control))) -> dt.c
-data.frame(Treatment = "Treatment",
-  AgeWeight = factor(rownames(datatable.), levels = rownames(datatable.)),
-           cbind(dt.trt,
-                 Total = rowSums(dt.trt),
-                 pos = 1:nrow(dt.trt))) -> dt.t
-dt = rbind(dt.c, dt.t)
-
-
-pdf("paper/figures/16-nightingale-rose-by-trt.pdf", width = 10, height = 6)
-ggplot(dt) +
-  geom_bar(aes(x=AgeWeight, y = (Total), fill = "No"), color = "black", width = 1, stat = "identity") +
-  geom_bar(aes(x=AgeWeight, y = (Yes), fill = "Yes"), color = "black", width = 1, stat = "identity") +
-  scale_y_continuous(trans = "sqrt", limits = c(0,150)) +
-  scale_fill_manual(values = c("Yes"="#80b1d3","No"="#faa8d2")) +
-  coord_polar(start = pi/4) +
-  labs(x = "", y = "", fill = "2-year survival") +
-  theme_bw(base_size = 12) +
-  theme(
-    axis.text.x = element_blank(),
-    legend.position = "bottom",
-    legend.direction = "horizontal") +
-  geom_text(aes(x = AgeWeight, y=Total+1,
-                label = AgeWeight),
-            hjust = 0,
-            angle = 45-360/max(dt$pos)/2 - 360/max(dt$pos) * (dt$pos-1))+
-  facet_grid(~Treatment)
+pdf("paper/figures/16-nightingale-rose-by-trt.pdf", width = 9, height = 5)
+plot_nightingale(dat = dat, trt.sel = 3, covari.sel = 16,
+                 resp.sel = 17,
+                 seq_by = 25,
+                 strip = "2-year survival")
 dev.off()

@@ -18,7 +18,7 @@ dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
          hx = factor(ifelse(hx == 0 , "No", "Yes")),
          # pf = factor(ifelse(pf == 0 , "No", "Yes")),
-         Treatment = factor(ifelse(rx == 0 , "Control", "Treatment")),
+         Treatment = factor(ifelse(rx == 0 , "Ctrl", "Exp")),
          Survival = factor(ifelse(survtime > 24 , "Yes", "No"), levels = c("Yes", "No")))-> dat
 levels(dat$age_group) = c("Young","Middle-aged","Old")
 levels(dat$weight_group)  = c("Low","Mid","High")
@@ -42,7 +42,7 @@ plot_mosaic(dat,
             range.v = NULL, adj.ann.subgrp = 4,
             range.strip=c(-3, 3),
             n.brk = 7,
-            font.size = c(12, 12, 8, 10, 0.7),
+            font.size = c(12, 12, 12, 12, 0.7),
             title = NULL, lab.xy = NULL, sep. = 0.03,
             strip = "Treatment effect size",
             effect = "HR", show.effect = FALSE)

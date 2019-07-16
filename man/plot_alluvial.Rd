@@ -101,4 +101,3 @@ plot_alluvial(alldat[,c(5,1,3,2,4)], freq = alldat$Freq,
               layer = alldat$trt  == 1, rotate = 90, las = 2, bottom.mar = 5)
 
 }
-

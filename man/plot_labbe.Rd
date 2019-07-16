@@ -7,7 +7,7 @@
 plot_labbe(dat, covari.sel, trt.sel, resp.sel, outcome.type, effect = c("HR",
   "RMST"), size.shape = 1/18, adj.ann.subgrp = 1/30, font.size = c(1, 1,
   0.85, 0.85), title = NULL, lab.xy = NULL, time = mean(dat[,
-  resp.sel[1]]), show.ci = TRUE)
+  resp.sel[1]]), show.ci = TRUE, legend.position = c("inside", "outside"))
 }
 \arguments{
 \item{dat}{a data set}
@@ -39,6 +39,8 @@ labels near the corresponding squares.}
 \item{time}{time for calculating the survival in each subgroup}
 
 \item{show.ci}{A logical indicating whether to show an additional line for confidence intervals}
+
+\item{legend.position}{where to place the legend? either "inside" or "outside"}
 }
 \description{
 this function produces a L'Abbe plot showing the treatment effect size of subgroups defined by the categories of covariates. The
@@ -74,4 +76,3 @@ plot_labbe(dat = dat,
            time=50, show.ci = FALSE)
 
 }
-

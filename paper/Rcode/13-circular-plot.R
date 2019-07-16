@@ -13,7 +13,7 @@ dat %>%
   rename(Age= age_group,
          Weight = weight_group)-> dat
 
-pdf("paper/figures/13-circle-plot.pdf", height = 5, width = 6)
+pdf("paper/figures/13-circle-plot.pdf", height = 5, width = 5)
 set.seed(55643)
 plot_circle(dat,
             covari.sel = c(14, 15),
@@ -24,7 +24,7 @@ plot_circle(dat,
             range.strip=c(-3, 3),
             n.brk = 31,
             n.brk.axis = 7,
-            font.size = c(1, 1, 0.85, 0.85, 1),
+            font.size = c(1, 1, 1, 1, 1),
             title = NULL, lab.xy = NULL,
             strip = "Treatment effect size (log hazard ratio)",
             effect = "HR",

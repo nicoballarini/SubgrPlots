@@ -75,4 +75,3 @@ plot_tree(dat,
           keep.y.axis = FALSE)
 
 }
-

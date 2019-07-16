@@ -107,7 +107,7 @@ plot_dissimilarity_alternative <- function(dat, covari.sel, mode, range.ds = c(0
   }
 
   colnames(r.prop) = rownames(r.prop) = lab.subgrp
-  print(r.prop)
+  # print(r.prop)
   ################################################ 2. produce a graph  #################################################################
 
   layout(matrix(c(1,2), byrow = TRUE, nrow=2, ncol=1), widths=c(1,1), heights=c(5,1))

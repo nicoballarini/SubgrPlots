@@ -19,7 +19,7 @@ dat <- prca
 vars <- data.frame(variable = names(dat), index = 1:length(names(dat)))
 levels(dat$age_group) <- c("Young", "Middle-aged", "Old")
 levels(dat$weight_group) <- c("Low", "Mid", "High")
-names(dat)[c(14,15)] <- c("age", "weight")
+names(dat)[c(14,15)] <- c("Age", "Weight")
 
 ###############################################################################-
 ## 1. Level plot ---------------------------------------------------------------

@@ -32,7 +32,7 @@
 #'               trt.sel = 3,
 #'               resp.sel = c(1, 2),
 #'               outcome.type = "survival",
-#'               font.size = c(14, 12, 14, 0.75),
+#'               font.size = c(14, 12, 14, 0.75), time = 50,
 #'               lab.y = "Treatment effect size (RMST difference)")
 #'
 #' @export
@@ -81,6 +81,7 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
     if (!(is.numeric(dat[, resp.sel[2]]) || is.logical(dat[, resp.sel[2]]) ) ) stop("The response variable specifying indicators of right censoring should be numerical or logical!")
     if (length(names(table(dat[, resp.sel[2]]))) > 2) stop("The response variable specifying indicators of right censoring is not binary!")
     if (sum(is.element(names(table(dat[, resp.sel[2]])), c("0","1"))) != 2) stop("The response variable specifying indicators of right censoring is not coded as 0 and 1!")
+    if (effect == "RMST" & is.null(time)) stop("Please specify the time argument when effect = 'RMST'")
   }
 
   if (!(is.numeric(font.size))) stop("The argument about the font sizes of the label and text is not numeric!")
@@ -152,7 +153,7 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
           treatment.std[i,j] = model.sum$coefficients[ 2, 2]
         }else if (outcome.type == "survival"){
           if (effect == "HR"){
-            model.int = survival::coxph(survival::Surv(time, status) ~ trt, data = data.subgrp[[k]])
+            model.int = survival::coxph(survival::Surv(data.subgrp[[k]]$time, data.subgrp[[k]]$status) ~ trt, data = data.subgrp[[k]])
             model.sum = summary(model.int)
             treatment.mean[i,j] = model.sum$coef[1, 1]
             treatment.std[i,j] = model.sum$coef[1, 3]
@@ -184,21 +185,26 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
 
   grid.newpage()
 
-  ##########  middle-top cell (set title)
-  vp <- viewport(x = 0.1 + 0.02, y = 0.91, width = 0.85, height = 0.05, just = c("left", "bottom"))
+  margin_width  = 0.12*font.size[4]
+  margin_height = 0.2*font.size[3]/10
+  panel_area = 1 - margin_width - 0.03
+
+  ##########  plot title -------------------------------------------------------
+  vp <- viewport(x = margin_width, y = 0.91, width = panel_area, height = 0.05, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(title, gp = gpar(fontsize = font.size[1], fontface = 2))
   upViewport()
-  vp <- viewport(x = 0.1 + 0.02, y = 0.86, width = 0.85, height = 0.05, just = c("left", "bottom"))
+  ##########  top x-axis title -------------------------------------------------
+  vp <- viewport(x = margin_width, y = 0.86, width = panel_area, height = 0.05, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(lab.vars[2], gp = gpar(fontsize = font.size[2], fontface = 2))
   upViewport()
 
-  ##   left-middle gap (set axis)
-  vp <- viewport(x = 0.1, y = 0.02, width = 0.02, height = 0.8, just = c("left", "bottom"))
+  ##########  y-axis -----------------------------------------------------------
+  vp <- viewport(x = margin_width, y = 0.02, width = margin_width, height = 0.8, just = c("left", "bottom"))
   pushViewport(vp)
 
-  vp <- viewport(x = 0, y = 0.2, width = 1, height = (1 - 0.2), just = c("left", "bottom"))
+  vp <- viewport(x = 0, y = margin_height, width = 1, height = (1 - margin_height), just = c("left", "bottom"))
   pushViewport(vp)
 
   breaks <- seq(min(c(treatment.mean), na.rm = T) - 1e-8,
@@ -206,7 +212,6 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
                 length.out = 100)
   if (sign(breaks[1]) == sign(breaks[100])){
     if (sign(breaks[1]) >0){
-
       # when all subgroups have positive effect sizes
       if(outcome.type != "survival"){
         axis.min = 0; axis.max = breaks[100] + max(treatment.std, na.rm = T)
@@ -214,10 +219,8 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
         axis.min = 0; axis.max = breaks[100]
       }
     }else{
-
       # when all subgroups have negative effect sizes
       # axis.min = breaks[1] - max(treatment.std, na.rm = T); axis.max = 0
-
       if(outcome.type != "survival"){
         axis.min = breaks[1] - max(treatment.std, na.rm = T); axis.max = 0
       }else{
@@ -239,34 +242,36 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
     }
   }
 
-  grid.yaxis(seq(0, 1,  by = 0.1),
+
+  grid.yaxis(seq(0, 1,  length.out = 5),
              vp    = viewport(y=0.5),
-             label = round(seq(axis.min, axis.max, len = 11), 2),
+             label = round(seq(axis.min, axis.max, length.out = 5), 2),
              gp    = gpar(cex = font.size[4]),
              edits = gEdit(gPath ="labels", just = "center", rot=90))
 
   upViewport(2)
 
-  ## vertical line (Left-side, set labels)
 
-  vp <- viewport(x = 0, y = 0.02, width = 0.1, height = 0.8, just = c("left", "bottom"))
+  ##########  x-axis title -----------------------------------------------------
+  vp <- viewport(x = 0, y = 0.02, width = margin_width, height = 0.8, just = c("left", "bottom"))
   pushViewport(vp)
   vp <- viewport(x = 0, y = 0, width = 1, height = 0.2, just = c("left", "bottom"))
   pushViewport(vp)
-
   grid.text(lab.vars[1], gp = gpar(fontsize = font.size[2], fontface = 2), rot = 90)            # place the label of the first covariate
   upViewport(2)
 
-  vp <- viewport(x = 0, y = 0.02 + 0.8*0.2, width = 0.1, height = 0.8*(1 - 0.2), just = c("left", "bottom"))
+
+  ##########  y-axis title -----------------------------------------------------
+  vp <- viewport(x = 0, y = 0.02 + 0.8*margin_height, width = margin_width/2, height = 0.8*(1 - margin_height), just = c("left", "bottom"))
   pushViewport(vp)
   vp <- viewport(x = 0, y = 0, width = 1, height= 1, just = c("left", "bottom"))
   pushViewport(vp)
+  grid.text(lab.y, gp = gpar(fontsize = font.size[2], fontface = 2), vjust = 0.5, rot = 90)                  # place the label of the y-axis
 
-  grid.text(lab.y, gp = gpar(fontsize = font.size[2], fontface = 2), vjust = 0, rot = 90)                  # place the label of the y-axis
 
   y.pos.zero = 0.8 / (axis.max - axis.min) * (0 - axis.min)                                     # set the y-coordinate of the buttom or the top of the bars
   if (sign(breaks[1]) != sign(breaks[100])){
-    grid.lines(c(0.91,1), c(y.pos.zero/0.8, y.pos.zero/0.8), gp = gpar(col = "black"))
+    # grid.lines(c(0.91,1), c(y.pos.zero/0.8, y.pos.zero/0.8), gp = gpar(col = "red"))
     vp <- viewport(x = 0.73, y = y.pos.zero/0.8 - 0.01, width = 0.2, height = 0.02, just = c("left", "bottom"))
     pushViewport(vp)
     # grid.text("0", just = "bottom", gp = gpar(cex = font.size[4]), rot = 90)                    # place the label of the second covariate
@@ -274,25 +279,24 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
   }
   upViewport(2)
 
-  ############ middle area (middle)
-
-  vp <- viewport(x=0.1 + 0.02, y =0.02 + 0.8 *0.2, width=0.85, height=0.8 * (1 - 0.2), just = c("left", "bottom"))
+  ############ main panel ------------------------------------------------------
+  vp <- viewport(x = margin_width + 0.015, y = 0.02 + 0.8 * margin_height, width=panel_area, height=0.8 * (1 - margin_height), just = c("left", "bottom"))
   pushViewport(vp)
   # grid.rect(gp = gpar(fill= "gray89", col = NA))
 
-  length.ann.y = length(seq(axis.min, axis.max, len = 6))
+  num_grid = 5
+  length.ann.y = length(seq(axis.min, axis.max, len = num_grid))
   for (i in 1 : (length.ann.y - 2)){
-    grid.lines(c(0,1), c(i * 1/(6-1), i * 1/(6-1)), gp=gpar(col = "gray95", lty = "solid", lwd = 2.5))   # set lightgray lines
+    grid.lines(c(0,1), c(i * 1/(num_grid-1), i * 1/(num_grid-1)), gp=gpar(col = "gray95", lty = "solid", lwd = 2.5))   # set lightgray lines
   }
   for (i in 1 : (length.ann.y - 1)){
-    st = 1/(2 * (6-1)) + (i - 1) * 1/(6-1)
+    st = 1/(2 * (num_grid-1)) + (i - 1) * 1/(num_grid-1)
     grid.lines(c(0,1), c(st, st), gp=gpar(col = "gray95"))                                               # set lightgray lines
   }
 
   ## calculate the width of the bars
-
-  width.bar = ss.subgrp/sum(ss.subgrp) * 0.85 #sqrt(ss.subgrp)/sum(sqrt(ss.subgrp)) * 0.85
-  width.between.bar = (1 - 0.85)/(n.subgrp.tol - 1)
+  width.bar = ss.subgrp/sum(ss.subgrp) * panel_area #sqrt(ss.subgrp)/sum(sqrt(ss.subgrp)) * panel_area
+  width.between.bar = (1 - panel_area)/(n.subgrp.tol - 1)
 
   y.pos.zero = 0.8 / (axis.max - axis.min) * (0 - axis.min)                                              # set the y-coordinate of the buttom or the top of the bars
   grid.lines(c(0,1), c(y.pos.zero/0.8, y.pos.zero/0.8), gp = gpar(col = "black"))
@@ -354,9 +358,8 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
 
   # back to the initial viewport
 
-  ############ horizontal area (middle-bottom, set labels)
-
-  vp <- viewport(x = 0.1 + 0.02, y = 0.02, width = 0.85, height = 0.8 * 0.2, just = c("left", "bottom"))
+  ############ x-axis labels -----------------------------------------------
+  vp <- viewport(x = margin_width + 0.015, y = 0.02, width = panel_area, height = 0.8 * margin_height, just = c("left", "bottom"))
   pushViewport(vp)
 
   for (i in 1 : n.subgrp.tol){
@@ -374,9 +377,8 @@ plot_barchart <- function(dat, covari.sel, trt.sel, resp.sel,
 
   upViewport()                                                                                   # back to the initial viewport
 
-  ############ horizontal area (middle-top, set labels)
-
-  vp <- viewport(x= 0.1 + 0.02, y =0.83, width=0.85, height=0.02, just = c("left", "bottom"))
+  ############ top x-axis labels -----------------------------------------------
+  vp <- viewport(x= margin_width+0.015, y =0.83, width=panel_area, height=0.02, just = c("left", "bottom"))
   pushViewport(vp)
 
   x.width.pos = vector()                                                                         # calculate the width of the labels for the categories of the second covariate

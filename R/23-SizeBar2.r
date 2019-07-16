@@ -138,7 +138,7 @@ Make_size_plot_t <- function(Set_size_data, sbar_color, ratios, ylabel, scale_se
                         # plot.margin = unit(c(-0.11,-1.3,0.5,0.5), "lines"),
                         axis.title.y = element_text(size = 8.3*x_axis_title_scale),
                         axis.text.y  = element_text(size = 7*x_axis_tick_label_scale, angle = set_size_angle,
-                                                   vjust = 0.5, hjust = 0.5),
+                                                   vjust = 0.5, hjust = 1),
                         axis.line = element_line(colour = "gray0"),
                         axis.line.x = element_blank(),
                         axis.line.y = element_line(colour = "gray0", size = 0.3),

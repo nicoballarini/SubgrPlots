@@ -239,9 +239,9 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
 
   ################################################ 2. produce a graph  #################################################################
   if (is.null(title)){
-    par(mar=c(4,4,2,1))
+    par(mar = c(3,3,1,0)+0.1)
   } else{
-    par(mar=c(4,4,4,1))
+    par(mar = c(3,3,2,0)+0.1)
   }
 
   color = c("green", "red", "blue", "aquamarine2", "brown3", "blueviolet" )
@@ -261,13 +261,16 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
        type = "o", lwd = 1.5, pch = 16, lty = 1,  col = "red", xaxt = "n",
        ylim = c(min(treatment.lower, na.rm = TRUE), max(treatment.upper, na.rm = TRUE)),
        xlim = c(1, n.subgrp.covar1),
-       xlab = lab.var,
-       ylab = lab.y,
+       xlab = "",
+       ylab = "",
        main = title,
        # sub = subtitle,
        cex.main = font.size[1],
        cex.lab =  font.size[2],
        cex.sub =  font.size[3])
+
+  mtext(text =  lab.var, side = 1, line = 2)
+  mtext(text =  lab.y, side = 2, line = 2)
   mtext(subtitle, cex = font.size[3], line = .1)
   by. = ceiling(diff((range(cutpoint.covar1[[1]])))/10)
   axis(side = 1, at = seq(1, n.subgrp.covar1, by=by.),

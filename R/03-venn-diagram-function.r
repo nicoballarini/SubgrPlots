@@ -99,10 +99,8 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                       font.size = c(1, 1.5, 1, 0.9, 1, 1),
                       title = NULL,
                       strip = NULL,
-                      cat.dist = rep(0.04, 3),
-                      prop_area = FALSE){
-
-
+                      prop_area = FALSE,
+                      cat.dist = "default"){
   if (prop_area){
     plot_venn_proportional(dat = dat, covari.sel = covari.sel, cat.sel = cat.sel,
                            trt.sel = trt.sel, resp.sel = resp.sel,
@@ -123,9 +121,9 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                    font.size = font.size,
                    title = title, strip = strip,
                    effect  = effect, show.overall = show.overall,
-                   palette = palette, col.power = col.power)
+                   palette = palette, col.power = col.power, cat.dist = cat.dist)
   } else {
-  old.par <- par(no.readonly=T)
+  old.par = par(mar = c(5, 4, 4, 4) + 0.1)
   ## 0. argument validity check  ###############################################
 
   if (missing(dat)) stop("Data have not been inputed!")
@@ -183,7 +181,7 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
   if (!(length(font.size) == 6)) stop("The font size setups for labels or text should have six components only!")
 
   ################################################ 1. create subgroup data  #################################################################
-
+  # plot.new()
   grid::grid.newpage()
   lab.vars = names(dat)[covari.sel]              # set the names of the covariates which relates to the defined subgroup; if a covariate
                                                  # are considered for multiple times, we make their name identical. (otherwise, the resulsting
@@ -222,9 +220,11 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     VennDiagram::draw.single.venn(area = sum(A),
                                   category = names(dat)[covari.sel],
                                   lty = 1,
+                                  cat.cex = font.size[2],
+                                  cex = font.size[3],
                                   fill = "white", title = title) -> vp
     grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                grid::textGrob(x=0.1, y=0.1, n.compl, hjust = 0, just = 0, gp = gpar(cex = font.size[3]))))
   }else if (n.subgrp == 2){
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
@@ -236,14 +236,17 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     cond[[3]] = which(A & B == T  );    n.12 = length(which(A & B == T  ))
     cond[[4]] = which(!A & !B == T  );  n.compl = length(which(!A & !B == T  ))
 
+    if(cat.dist[1] == "default") cat.dist = rep(0.025, 2)
     VennDiagram::draw.pairwise.venn(area1 = sum(A),
                                   area2 = sum(B),
                                   n12 = sum(A&B),
                                   category = names(dat)[covari.sel],
                                   lty = 1,
+                                  cat.cex = font.size[2],
+                                  cex = font.size[3],
                                   fill = "white", title = title) -> vp
     grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                grid::textGrob(x=0.1, y=0.1, n.compl, hjust = 0, just = 0, gp = gpar(cex = font.size[3]))))
   }else if (n.subgrp == 3){
 
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
@@ -263,27 +266,30 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     # print(n.1 + n.2 + n.3 + n.12 + n.13 + n.23 + n.123 + n.compl)
     # print(nrow(dat))
     # grid::grid.newpage()
+    if(cat.dist[1] == "default") cat.dist = c(0.05, 0.05, 0.025)
     VennDiagram::draw.triple.venn(area1 = sum(A),
                                   area2 = sum(B),
                                   area3 = sum(C),
-                                  n12 = sum(A&B),
-                                  n23 = sum(B&C),
-                                  n13 = sum(A&C),
-                                  n123 = sum(A&B&C),
+                                  n12   = sum(A&B),
+                                  n23   = sum(B&C),
+                                  n13   = sum(A&C),
+                                  n123  = sum(A&B&C),
                                   rotation.degree = 60,
                                   category = names(dat)[covari.sel],
                                   cat.pos  = c(225, 0, 140),
                                   cat.dist = cat.dist,
-                                  lty = 1, cex = 1, cat.cex = 1,
+                                  cat.cex = font.size[2],
+                                  cex = font.size[3],
+                                  lty = 1,
                                   fontfamily = rep("sans", 7),
-                                  cat.fontfamily = rep("sans", 3),ind = FALSE,
+                                  cat.fontfamily = rep("sans", 3), ind = FALSE,
                                   fill = "white", title = title) -> vp
 
     grid::pushViewport(grid::viewport(width = 0.8, height = 0.8))
     grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.9, y=0.9 ,n.compl, hjust = 0, just = 0)))
+                                grid::textGrob(x=0.9, y=0.9, n.compl, hjust = 0, just = 0, gp = gpar(cex = font.size[3]))))
     grid::upViewport()
-    grid::grid.rect(width = 0.97, height = 0.97, gp = grid::gpar(fill=NA))
+    grid::grid.rect(width = 0.99, height = 0.99, gp = grid::gpar(fill=NA))
   }else if(n.subgrp == 4){
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
     B = dat[, covari.sel[2]] == cats.var.all[[2]][cat.sel[2]]
@@ -308,6 +314,7 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     cond[[15]] = which( A & B & C & D == T  );     n.1234 = length(which(A & B & C & D == T  ))
     cond[[16]] = which( !A & !B & !C & !D == T  ); n.compl = length(which(!A & !B & !C & !D == T  ))
 
+    if(cat.dist[1] == "default") cat.dist = c(0.22, 0.22, 0.11, 0.11)
     VennDiagram::draw.quad.venn(area1 = sum(A),
                                 area2 = sum(B),
                                 area3 = sum(C),
@@ -324,10 +331,12 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                                 n234 = sum(B&C&D),
                                 n1234 = sum(A&B&C&D),
                                 category = names(dat)[covari.sel],
+                                cat.cex = font.size[2],
+                                cex = font.size[3],
                                 lty = 1,
                                 fill = "white", title = title) -> vp
     grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                grid::textGrob(x=0.1, y=0.1, n.compl, hjust = 0, just = 0, gp = gpar(cex = font.size[3]))))
 
   }else if(n.subgrp == 5){
     A = dat[, covari.sel[1]] == cats.var.all[[1]][cat.sel[1]]
@@ -369,7 +378,7 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
     cond[[30]] = which( !A & B & C & D & E == T  );     n.2345 = length(which( !A & B & C & D & E == T  ))
     cond[[31]] = which( A & B & C & D & E == T  );      n.12345 = length(which( A & B & C & D & E == T  ))
     cond[[32]] = which( !A & !B & !C & !D & !E == T  ); n.compl = length(which( !A & !B & !C & !D & !E == T  ))
-
+    if(cat.dist[1] == "default") cat.dist = rep(0.2, 5)
     VennDiagram::draw.quintuple.venn(area1 = sum(A),
                                      area2 = sum(B),
                                      area3 = sum(C),
@@ -402,9 +411,12 @@ plot_venn <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
                                      n2345 = sum(B&C&D&E),
                                      n12345 = sum(A&B&C&D&E),
                                      category = names(dat)[covari.sel],
-                                     lty = 1, fill = "white", title = title) -> vp
+                                     lty = 1,
+                                     cat.cex = font.size[2],
+                                     cex = font.size[3],
+                                     fill = "white", title = title) -> vp
     grid::grid.draw(grid::gList(vp,
-                                grid::textGrob(x=0.1, y=0.1 ,n.compl, hjust = 0, just = 0)))
+                                grid::textGrob(x=0.1, y=0.1, n.compl, hjust = 0, just = 0, gp = gpar(cex = font.size[3]))))
   }
 
   data.subgrp = list()

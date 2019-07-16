@@ -14,7 +14,7 @@
 #' @param n.brk            number of breaks in the treatment effect scale
 #' @param n.brk.axis        number of breaks in the axis of the treatment effect scale
 #' @param font.size        a vector specifying the size of labels and text; the first element is for the main title, the second is for
-#' for x-axis and y-axis labels; the thrid is for the legend text of subgroups; the fourth is for the subgroup
+#' for x-axis and y-axis labels; the third is for the legend text of subgroups; the fourth is for the subgroup
 #' labels near points; the fifth is for the unit labels on all the axes.
 #' @param title            a string specifying the main title.
 #' @param lab.xy           a list of two strings specifying the labels of the x and y axes.
@@ -175,7 +175,6 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white",
                           time = NULL){
-  old.par <- par(no.readonly=T)
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -327,7 +326,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  par(mar=c(0,0,0,0), xpd = TRUE)
+  old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
   vp <- viewport(x = 0, width = 0.9, height = 1,just = c("left", "center"))
@@ -408,9 +407,8 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
              gp = gpar(cex = font.size[5], lwd = 0),
              edits = gEdit(gPath="labels", rot=90, hjust = 0.5, vjust = 0.5))
   if(show.overall){
-    cat("Overall Treatment effect is:",
-        overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")")
+    cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+               overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
     grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
     grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
     grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
@@ -446,7 +444,6 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
                                    palette = "divergent", col.power = 0.5,
                                    print.ss = FALSE, col.line = "white",
                                    time = NULL){
-  old.par <- par(no.readonly=T)
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -670,7 +667,7 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
   #####   Produce a plot -------------------------------------------------------------------
-  par(mar=c(0,0,0,0), xpd = TRUE)
+  old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
   vp <- viewport(x = 0.1, y = 0.1, width = 0.7, height = 0.9,just = c("left", "bottom"))
@@ -870,9 +867,8 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
              edits = gEdit(gPath="labels", rot=90, hjust = 0.5, vjust = 0.5))
 
   if(show.overall){
-    cat("Overall Treatment effect is:",
-        overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")\n")
+    cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
     grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
     grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
     grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
@@ -910,7 +906,6 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
                           effect = "HR", lwd. = 2, sep. = 0.05,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white"){
-  old.par <- par(no.readonly=T)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -967,9 +962,9 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
 
   #####   Produce a plot -------------------------------------------------------------------
+  old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
   col =c("#80b1d3", "#fccde5")
   col.treat = rep(col,10)
-  par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
   vp <- viewport(x = sep., width = 1 - 2*sep., height = 1-4*sep.,just = c("left", "center"))
@@ -1073,7 +1068,6 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white",
                           time = NULL){
-  old.par <- par(no.readonly=T)
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -1244,7 +1238,7 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   }
 
   #####   Produce a plot -------------------------------------------------------------------
-  par(mar=c(0,0,0,0), xpd = TRUE)
+  old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
   grid.newpage()
   ii=0
   vp <- viewport(x = 0, width = 0.8, height = 1,just = c("left", "center"))
@@ -1341,9 +1335,8 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
              gp = gpar(cex = font.size[5], lwd = 0),
              edits = gEdit(gPath="labels", rot=90, hjust = 0.5, vjust = 0.5))
   if(show.overall){
-    cat("Overall Treatment effect is:",
-        overall.treatment.mean, ", with confidence interval: (",
-        overall.treatment.lower,";",overall.treatment.upper,")")
+    cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
     grid.points(x = 0.5, (overall.treatment.mean / (range.strip[2]-range.strip[1])) + 0.5, pch = 20)
     grid.points(x = 0.5, (overall.treatment.lower / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")
     grid.points(x = 0.5, (overall.treatment.upper / (range.strip[2]-range.strip[1])) + 0.5, pch = "-")

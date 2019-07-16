@@ -8,7 +8,9 @@ plot_forest(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
   title = NULL, lab.x = NULL, time = mean(dat[, resp.sel[1]]),
   KM = FALSE, show.km.axis = TRUE, widths = c(1, 1, 1), max.time = NULL,
-  n.brk = 10)
+  n.brk = 10, trt.labels = c("Treatment", "Control"),
+  panel.titles = c("Eff.size", "95\% CI", "S.Size(T|C)"),
+  eff.scale = c("logHR", "HR"))
 }
 \arguments{
 \item{dat}{a data set}
@@ -42,6 +44,12 @@ the x-axis.}
 \item{max.time}{a numeric input indicating the maximum time for x-axis in the the Kaplan-Meier curves. If NULL, the maximum is taken from the dataset.}
 
 \item{n.brk}{number of breaks in the Kaplan-Meier curves}
+
+\item{trt.labels}{A character vector or length 2 specifying the labels of the treatments}
+
+\item{panel.titles}{A character vector or length 3 specifying the column titles in the first panel}
+
+\item{eff.scale}{Either "logHR" or "HR". Only necessary when outcome.type = "survival".}
 }
 \description{
 This function produces a forest plot showing the treatment effect size of subgroups defined by the categories of covariates. The
@@ -79,4 +87,3 @@ plot_forest(dat,
             widths = c(1,1,0.6))
 
 }
-

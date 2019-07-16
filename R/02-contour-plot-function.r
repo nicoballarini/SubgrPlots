@@ -78,7 +78,7 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                             n.brk.axis =  7,
                             para.plot = c(0.35, 2, 20),
                             font.size = c(1.5, 1.2, 1, 0.85, 0.8),
-                            title = NULL, subtitle = NULL,
+                            title = NULL, subtitle = "default",
                             effect = "HR", point.size = 1.2, filled = FALSE,
                             strip = NULL, show.overall = FALSE,
                             palette = "divergent", col.power = 0.5,
@@ -313,6 +313,13 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     cat("The number of further divided subgroups over the second covariate is", n.subgrp.covar2, "\n")
 
   ## 2. produce a graph  #######################################################
+
+  if (subtitle == "default"){
+    subtitle = bquote(N[11] %~~% .(setup.ss[2]) ~", "~
+                         N[12] %~~% .(setup.ss[1]) ~", "~
+                         N[21] %~~% .(setup.ss[4]) ~", "~
+                         N[22] %~~% .(setup.ss[3]))
+  }
   treatment.df = data.frame(x, y, treatment.mean)
   treatment.df.model = loess(treatment.mean ~ x*y, data = treatment.df,
                              span = para.plot[1], degree = para.plot[2])
@@ -361,7 +368,14 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
       col.point = col.vec
     }
-
+    if (palette == "hcl"){
+      col.vec = rev(colorspace::diverge_hcl(n = length(brk.es)-1,
+                                            # h = c(218, 0),
+                                            c = 100, l = c(50,90),
+                                            power = col.power))
+      if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
+      col.point = col.vec
+    }
     for (i in 1:(length(cutoff.es) - 1)){
       graphics::points(x[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
              y[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
@@ -424,9 +438,9 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
     graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
     if (is.null(title)){
-      graphics::par(mar=c(4,4,2,1))
+      graphics::par(mar=c(3,3,2,1), mgp = c(2,1,0))
     } else{
-      graphics::par(mar=c(4,4,4,1))
+      graphics::par(mar=c(3,3,4,1), mgp = c(2,1,0))
     }
     axis.sep = 0
     graphics::plot(x.range, y.range, type = "n",
@@ -447,20 +461,19 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                     col = rev(cols))
     if(show.points) graphics::points(dat[, covari.sel], cex = 0.5, lwd = 0.1)
     if (is.null(title)){
-      par(mar=c(4,2,2,2.5))
+      par(mar=c(3,2,2,1.5), mgp = c(0,1,0))
     } else{
-      par(mar=c(4,2,4,2.5))
+      par(mar=c(3,2,4,1.5), mgp = c(0,1,0))
     }
     image.scale(brk.es,
                 col= rev(cols),
                 breaks = breaks,
                 axis.pos = 4, add.axis = FALSE)
     graphics::axis(2, at = breaks.axis, labels = round(breaks.axis, 3), las = 0, cex.axis = font.size[5])
-    graphics::mtext(strip, side=4, line=1, cex.lab = font.size[5])
+    graphics::mtext(strip, side=4, line=0, cex.lab = font.size[5])
     if(show.overall){
-      cat("Overall Treatment effect is:",
-          overall.treatment.mean, ", with confidence interval: (",
-          overall.treatment.lower,";",overall.treatment.upper,")\n")
+      cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
+                  overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
       graphics::points(x = 0.5,
              (overall.treatment.mean), pch = 20)
       graphics::points(x = 0.5, overall.treatment.lower, pch = "-")

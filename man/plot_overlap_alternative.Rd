@@ -43,4 +43,3 @@ plot_overlap_alternative(dat = dat,
                          title = NULL)
 
 }
-

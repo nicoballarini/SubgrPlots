@@ -97,4 +97,3 @@ plot_contour_localreg(dat,
                       outcome.type = "survival")
 }
 }
-

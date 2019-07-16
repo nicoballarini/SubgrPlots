@@ -96,4 +96,3 @@ plot_circle(dat,
             conf.int = FALSE, palette = "hcl")
 
 }
-

@@ -24,7 +24,7 @@ dat <- prca
 vars = data.frame(variable = names(dat), index = 1:length(names(dat)))
 levels(dat$age_group) = c("Young", "Middle-aged", "Old")
 levels(dat$weight_group)  = c("Low", "Mid", "High")
-names(dat)[c(14,15)] = c("age", "weight")
+names(dat)[c(14,15)] = c("Age", "Weight")
 
 ## 10 Modified Level plot ------------------------------------------------------
 pdf("paper/figures/01-B-level-plot-proportional.pdf", width = 5, height = 5)
@@ -39,7 +39,7 @@ plot_level(dat,
            range.strip=c(-3, 3),
            n.brk = 31,
            n.brk.axis =  7,
-           font.size = c(14, 12, .8, 14, 0.7),
+           font.size = c(14, 12, 1, 14, 1),
            title = paste0("Total sample size = ", nrow(dat)),
            strip = strip.title, show.overall = TRUE, palette = "hcl")
 dev.off()

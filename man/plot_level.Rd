@@ -93,4 +93,3 @@ plot_level(dat,
            strip = "Treatment effect size (log hazard ratio)",
            show.overall = TRUE, palette = "hcl")
 }
-

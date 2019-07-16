@@ -28,20 +28,22 @@ dat %>%
 
 ###############################################################################-
 ## 5. Forest Plot -----------------------------------------------------------
-pdf("paper/figures/06-forest-plot.pdf", width = 5, height = 4, onefile = F)
+pdf("paper/figures/06-forest-plot.pdf", width = 10, height = 7, onefile = F)
 main.title = list("", "Forest plot of subgroups",
                   "Kaplan-Meier curves\n by treatment group")
 label.x = list("", "Log hazard ratio",
                "Time (days)")
 plot_forest(dat,
-             covari.sel = c(4,5,6,7),#vars
+             covari.sel = c(4,5,6,7),
              trt.sel = 3,
              resp.sel = c(1, 2),
              outcome.type = "survival",
-             size.shape = c(0.3, 6.5/4),
-             font.size = c(0.6, 0.4, 0.4, 0.6),
+             size.shape = c(0.3, 1.1),
+             font.size = c(1, 1, 1, .8),
              title = main.title,
              lab.x = label.x, time = 50, KM = TRUE,
-             show.km.axis = TRUE, n.brk = 12, max.time = 77,
-             widths = c(1,1,0.6))
+             show.km.axis = TRUE,
+             n.brk = 6, max.time = 70,
+             widths = c(2, 1.5, 1))
 dev.off()
+

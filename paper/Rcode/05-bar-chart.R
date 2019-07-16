@@ -27,12 +27,12 @@ names(dat)[c(14,15)] = c("Age", "Weight")
 
 ###############################################################################-
 ## 4. Bar chart -----------------------------------------------------------
-pdf("paper/figures/05-bar-chart.pdf", width = 7, height = 7)
+pdf("paper/figures/05-bar-chart.pdf", width = 5, height = 5)
 plot_barchart(dat,
-       covari.sel = c(14,15),
-       trt.sel = 3,
-       resp.sel = c(1, 2),
-       outcome.type = "survival",
-       font.size = c(14, 12, 14, 0.75),
-       lab.y = "Treatment effect size (RMST difference)")
+              covari.sel = c(14,15),
+              trt.sel = 3,
+              resp.sel = c(1, 2),
+              outcome.type = "survival",
+              font.size = c(12, 12, 12, 1), time = 50,
+              lab.y = "Treatment effect size (RMST difference)")
 dev.off()

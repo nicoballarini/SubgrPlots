@@ -8,7 +8,7 @@ plot_venn(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
   fill = TRUE, range.strip = c(-6, 6), n.brk = 13, n.brk.axis = 7,
   effect = "HR", show.overall = TRUE, palette = "divergent",
   col.power = 0.5, font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL,
-  strip = NULL, cat.dist = rep(0.04, 3), prop_area = FALSE)
+  strip = NULL, prop_area = FALSE, cat.dist = "default")
 }
 \arguments{
 \item{dat}{a data set}
@@ -47,9 +47,9 @@ the sixth is for the unit label on the y axis.}
 
 \item{strip}{a string specifying the title of the colour strip.}
 
-\item{cat.dist}{A vector (length same as covari.sel) giving the distances (in npc units) of the category names from the edges of the circles (can be negative)}
-
 \item{prop_area}{A logical indicating whether to make the areas approximately proportional to the set size}
+
+\item{cat.dist}{A vector (length same as covari.sel) giving the distances (in npc units) of the category names from the edges of the circles (can be negative)}
 }
 \description{
 This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.
@@ -121,4 +121,3 @@ plot_venn(dat,
 
 
 }
-

@@ -40,4 +40,3 @@ plot_overlap(dat = dat,
              font.size = c(1.2, 1.2, 0.8),
              title = NULL)
 }
-

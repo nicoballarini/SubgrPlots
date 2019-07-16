@@ -41,6 +41,7 @@ subgroupset_transposed <- function(data, nsets = 5, nintersects = 40, sets = NUL
     }
     Sets_to_remove <- Remove(data, first.col, last.col, Set_names)
     New_data <- Wanted(data, Sets_to_remove)
+    New_data = cbind(New_data, data[effects.summary])
     Num_of_set <- Number_of_sets(Set_names)
     if(keep.order == F){
     Set_names <- order_sets(New_data, Set_names)

@@ -46,4 +46,3 @@ plot_dissimilarity(dat = dat,
                    lab.x = "Dissimilarity distance")
 
 }
-

@@ -30,10 +30,9 @@ alldat %>%
   ungroup() %>%
   mutate(trt = ifelse(trt == 0 , "Control", "Treatment"),
          bm = ifelse(bm == 0 , "No", "Yes"),
-         hx = ifelse(hx == 0 , "No", "Yes"),
-         pf = ifelse(pf == 0 , "No", "Yes"))-> alldat
+         hx = ifelse(hx == 0 , "No", "Yes"))-> alldat
 
-pdf("paper/figures/18-alluvial-plot.pdf", width = 7, height = 5)
+pdf("paper/figures/18-alluvial-plot.pdf", width = 5, height = 5)
 plot_alluvial(alldat[,c(1,3,2,4)], freq = alldat$Freq,
                    xw=0.2,cw = 0.12,cex = 1,
                    alpha  = 0.8,
