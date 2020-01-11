@@ -11,6 +11,8 @@
 #' for displaying subgroup effect sizes in binary and survival data, respectively. The actual subgroup sample sizes over the covariate
 #' are shown on the console window as well.
 #'
+#' Contrary to \code{\link{ggplot_stepp}}, \code{plot_stepp} implements an x-axis where each midpoint of the subgroups is drawn equidistant.
+#'
 #' @param dat            a data set
 #' @param covari.sel     a vector of indices of the two covariates
 #' @param trt.sel        a variate index specifying the treatment code
@@ -46,7 +48,7 @@
 #'            lab.y = lab.y.title,
 #'            subtitle = sub.title)
 #'
-#'
+#' @seealso \code{\link{ggplot_stepp}}
 #' @export
 #' @import grid
 #' @import graphics
@@ -144,7 +146,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
     low.bd.covar1.idx = 1 + (i-1) * (N2 - N1)
     upp.bd.covar1.idx = N2+ (i-1) * (N2 - N1)
     cutpoint.covar1[[1]][i] = covari1.table[low.bd.covar1.idx]
-    cutpoint.covar1[[2]][i] = covari1.table[upp.bd.covar1.idx]
+    cutpoint.covar1[[2]][i] = covari1.table[min(upp.bd.covar1.idx, ss.full)]
   }
 
 
@@ -169,6 +171,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   alpha.adj = 1 - (1 - alpha)^(1/n.subgrp.covar1)
   gamma = qnorm(1 - alpha.adj/2 ) / qnorm(1 - alpha/2 )
 
+  covari.subgrp.mid = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
   treatment.mean =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
   treatment.upper.idl =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
   treatment.lower.idl =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
@@ -183,6 +186,7 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
       treatment.lower.idl[i] = NA
     }else{
 
+      covari.subgrp.mid[i] = mean(data.subgrp.covar1[[i]][, covari.sel[1]])
       if (outcome.type == "continuous"){
         model.int = lm(resp ~ trt,  data = data.subgrp.covar1[[i]])
         model.sum = summary(model.int)
@@ -247,11 +251,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   color = c("green", "red", "blue", "aquamarine2", "brown3", "blueviolet" )
   linetype = c(3:5, 6:8)
   plotchar = c(2, 3, 6, 1, 4, 5)
-
-  covari.subgrp.mid = vector()
-  for (i in 1:n.subgrp.covar1){
-    covari.subgrp.mid[i]= (cutpoint.covar1[[2]][i] + cutpoint.covar1[[1]][i]) /2
-  }
 
   cutpoint.all = vector()
   cutpoint.all = c(cutpoint.covar1[[1]], cutpoint.covar1[[2]])

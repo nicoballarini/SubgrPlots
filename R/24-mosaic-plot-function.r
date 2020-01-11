@@ -30,6 +30,7 @@
 #' @param time             time for calculating the RMST
 #' @param show.marginal    logical indicating whether to show the marginal subgroups. only when 2 covariates are used
 #' @param show.effect      logical indicating whether to show effect size using color or not. only when 3 covariates are used
+#' @param grid.newpage     logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.
 #'
 #' @examples
 #' library(dplyr)
@@ -95,7 +96,8 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                         show.overall = TRUE,
                         palette = "divergent", col.power = 0.5,
                         print.ss = FALSE, col.line = "white",
-                        time = NULL, show.marginal = TRUE, show.effect = TRUE){
+                        time = NULL, show.marginal = TRUE, show.effect = TRUE,
+                        grid.newpage = TRUE){
   if (length(covari.sel) == 2){
     if (show.marginal){
       plot_mosaic_2_marginal(dat, covari.sel, trt.sel, resp.sel, outcome.type,
@@ -110,7 +112,8 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                              show.overall = show.overall,
                              palette = palette, col.power = col.power,
                              print.ss = print.ss, col.line = col.line,
-                             time = time)
+                             time = time,
+                             grid.newpage = grid.newpage)
     } else {
       plot_mosaic_2(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                     range.v = range.v, adj.ann.subgrp = adj.ann.subgrp,
@@ -124,7 +127,8 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                     show.overall = show.overall,
                     palette = palette, col.power = col.power,
                     print.ss = print.ss, col.line = col.line,
-                    time = time)
+                    time = time,
+                    grid.newpage = grid.newpage)
     }
   } else if (length(covari.sel) == 3){
     if (show.effect){
@@ -140,7 +144,8 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                     show.overall = show.overall,
                     palette = palette, col.power = col.power,
                     print.ss = print.ss, col.line = col.line,
-                    time = time)
+                    time = time,
+                    grid.newpage = grid.newpage)
     } else {
       plot_mosaic_3_noeffect(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                              range.v = range.v, adj.ann.subgrp = adj.ann.subgrp,
@@ -152,7 +157,8 @@ plot_mosaic <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                              strip = strip,
                              effect = effect, lwd. = lwd., sep. = sep.,
                              palette = palette, col.power = col.power,
-                             print.ss = print.ss, col.line = col.line)
+                             print.ss = print.ss, col.line = col.line,
+                             grid.newpage = grid.newpage)
     }
   } else {
     stop("Only 2 or 3 covariates are allowed in 'covari.sel'")
@@ -174,7 +180,8 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           show.overall = TRUE,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white",
-                          time = NULL){
+                          time = NULL,
+                          grid.newpage = TRUE){
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -327,7 +334,7 @@ plot_mosaic_2 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   #####   Produce a plot -------------------------------------------------------------------
   old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
-  grid.newpage()
+  if (grid.newpage) grid::grid.newpage()
   ii=0
   vp <- viewport(x = 0, width = 0.9, height = 1,just = c("left", "center"))
   pushViewport(vp)
@@ -443,7 +450,8 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
                                    show.overall = TRUE,
                                    palette = "divergent", col.power = 0.5,
                                    print.ss = FALSE, col.line = "white",
-                                   time = NULL){
+                                   time = NULL,
+                                   grid.newpage = TRUE){
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -668,7 +676,8 @@ plot_mosaic_2_marginal <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
 
   #####   Produce a plot -------------------------------------------------------------------
   old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
-  grid.newpage()
+
+  if (grid.newpage) grid::grid.newpage()
   ii=0
   vp <- viewport(x = 0.1, y = 0.1, width = 0.7, height = 0.9,just = c("left", "bottom"))
   pushViewport(vp)
@@ -905,7 +914,8 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
                           strip = "Treatment effect size",
                           effect = "HR", lwd. = 2, sep. = 0.05,
                           palette = "divergent", col.power = 0.5,
-                          print.ss = FALSE, col.line = "white"){
+                          print.ss = FALSE, col.line = "white",
+                          grid.newpage = TRUE){
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -965,7 +975,8 @@ plot_mosaic_3_noeffect <- function(dat, covari.sel, trt.sel, resp.sel, outcome.t
   old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
   col =c("#80b1d3", "#fccde5")
   col.treat = rep(col,10)
-  grid.newpage()
+
+  if (grid.newpage) grid::grid.newpage()
   ii=0
   vp <- viewport(x = sep., width = 1 - 2*sep., height = 1-4*sep.,just = c("left", "center"))
   pushViewport(vp)
@@ -1067,7 +1078,8 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                           show.overall = TRUE,
                           palette = "divergent", col.power = 0.5,
                           print.ss = FALSE, col.line = "white",
-                          time = NULL){
+                          time = NULL,
+                          grid.newpage = TRUE){
   if(n.brk%%2 == 0) n.brk = n.brk+1
   if(is.null(n.brk.axis)) n.brk.axis = n.brk
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -1239,7 +1251,8 @@ plot_mosaic_3 <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   #####   Produce a plot -------------------------------------------------------------------
   old.par <- par(mar=c(0,0,0,0), xpd = TRUE)
-  grid.newpage()
+
+  if (grid.newpage) grid::grid.newpage()
   ii=0
   vp <- viewport(x = 0, width = 0.8, height = 1,just = c("left", "center"))
   pushViewport(vp)

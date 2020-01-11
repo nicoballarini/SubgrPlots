@@ -4,13 +4,31 @@
 \alias{plot_circle2}
 \title{Circular plot using circlize package with matrix layout.}
 \usage{
-plot_circle2(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  range.v = NULL, adj.ann.subgrp = 4, range.strip = c(-3, 3),
-  n.brk = 31, n.brk.axis = NULL, font.size = c(1, 1, 0.85, 0.85, 1),
-  title = NULL, lab.xy = NULL, strip = "Treatment effect size",
-  effect = "HR", equal.width = TRUE, show.KM = FALSE,
-  show.effect = TRUE, conf.int = TRUE, palette = "divergent",
-  col.power = 0.5, nrow = 2, ncol = 4)
+plot_circle2(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  range.v = NULL,
+  adj.ann.subgrp = 4,
+  range.strip = c(-3, 3),
+  n.brk = 31,
+  n.brk.axis = NULL,
+  font.size = c(1, 1, 0.85, 0.85, 1),
+  title = NULL,
+  lab.xy = NULL,
+  strip = "Treatment effect size",
+  effect = "HR",
+  equal.width = TRUE,
+  show.KM = FALSE,
+  show.effect = TRUE,
+  conf.int = TRUE,
+  palette = "divergent",
+  col.power = 0.5,
+  nrow = 2,
+  ncol = 4
+)
 }
 \arguments{
 \item{dat}{a data set}

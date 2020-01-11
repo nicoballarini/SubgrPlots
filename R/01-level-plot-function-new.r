@@ -25,6 +25,7 @@
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param palette          either "divergent" or "hcl"
 #' @param col.power        to be used when palette = "hcl". see colorspace package for reference
+#' @param grid.newpage     logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.
 #'
 #' @examples
 #' # Load the data to be used
@@ -73,7 +74,8 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                        title = NULL, strip = NULL,
                        effect = c("HR","RMST"), time = NULL,
                        show.overall = FALSE,
-                       palette = "divergent", col.power = 0.5){
+                       palette = "divergent", col.power = 0.5,
+                       grid.newpage = TRUE){
   ## 0. argument validity check  ###############################################
   effect = match.arg(effect)
   if(n.brk%%2 == 0) n.brk = n.brk+1
@@ -306,7 +308,7 @@ plot_level <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ## 2. produce a graph  #######################################################
   panel_dim = 0.65
-  grid::grid.newpage()
+  if (grid.newpage) grid::grid.newpage()
 
   ##### draw x-axis ------------------------------------------------------------
   vp <- grid::viewport(x = 0.15 + 0.0375, y = 0.15 + 0.04, width = panel_dim, height = 0.0375, just = c("left", "bottom"))

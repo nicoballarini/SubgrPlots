@@ -4,8 +4,15 @@
 \alias{plot_dissimilarity_alternative}
 \title{An alternative plot for displaying dissimilarity distances of subgroups}
 \usage{
-plot_dissimilarity_alternative(dat, covari.sel, mode, range.ds = c(0, 1),
-  font.size = c(1.3, 1, 1), title = NULL, lab.y = NULL)
+plot_dissimilarity_alternative(
+  dat,
+  covari.sel,
+  mode,
+  range.ds = c(0, 1),
+  font.size = c(1.3, 1, 1),
+  title = NULL,
+  lab.y = NULL
+)
 }
 \arguments{
 \item{dat}{a data set}

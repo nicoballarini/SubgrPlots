@@ -4,12 +4,27 @@
 \alias{plot_contour_localreg}
 \title{Contour plot for effect size via local regression.}
 \usage{
-plot_contour_localreg(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  setup.ss, n.grid = c(41, 41), brk.es = c(0, 1, 2, 3),
-  n.brk.axis = 3, para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2,
-  1, 0.85, 0.8), title = NULL, subtitle = NULL, unit.x = 1,
-  unit.y = 1, effect = "HR", show.overall = TRUE,
-  strip = "Effect Size")
+plot_contour_localreg(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  setup.ss,
+  n.grid = c(41, 41),
+  brk.es = c(0, 1, 2, 3),
+  n.brk.axis = 3,
+  para.plot = c(0.35, 2, 20),
+  font.size = c(1.5, 1.2, 1, 0.85, 0.8),
+  title = NULL,
+  subtitle = NULL,
+  unit.x = 1,
+  unit.y = 1,
+  effect = "HR",
+  show.overall = TRUE,
+  strip = "Effect Size",
+  new.layout = TRUE
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -61,6 +76,8 @@ legend; the fifth is for the labels on contour lines.}
 \item{show.overall}{logical. whether to show or not the overall treatment effect in the strip}
 
 \item{strip}{a string specifying the title of the colour strip.}
+
+\item{new.layout}{logical. If TRUE (default), the function calls graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1)) to start from an empty page.}
 }
 \description{
 this function produces a contour plot showing the treatment effect size of subgroups. The subgroups are first defined by certain

@@ -4,13 +4,30 @@
 \alias{plot_contour}
 \title{Contour plot for subgroup effect size}
 \usage{
-plot_contour(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss,
-  n.grid = c(41, 41), brk.es = c(0, 1, 2, 3), n.brk.axis = 7,
-  para.plot = c(0.35, 2, 20), font.size = c(1.5, 1.2, 1, 0.85, 0.8),
-  title = NULL, subtitle = "default", effect = "HR",
-  point.size = 1.2, filled = FALSE, strip = NULL,
-  show.overall = FALSE, palette = "divergent", col.power = 0.5,
-  show.points = FALSE)
+plot_contour(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  setup.ss,
+  n.grid = c(41, 41),
+  brk.es = c(0, 1, 2, 3),
+  n.brk.axis = 7,
+  para.plot = c(0.35, 2, 20),
+  font.size = c(1.5, 1.2, 1, 0.85, 0.8),
+  title = NULL,
+  subtitle = "default",
+  effect = "HR",
+  point.size = 1.2,
+  filled = FALSE,
+  strip = NULL,
+  show.overall = FALSE,
+  palette = "divergent",
+  col.power = 0.5,
+  show.points = FALSE,
+  new.layout = TRUE
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -59,6 +76,8 @@ labels; the third is for the subtitle; the fourth is for the text in the legend;
 \item{col.power}{to be used when palette = "hcl". see colorspace package for reference}
 
 \item{show.points}{a logical indicator specifying whether to show the raw data points}
+
+\item{new.layout}{logical. If TRUE (default), the function calls graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1)) to start from an empty page.}
 }
 \description{
 this function produces a contour plot showing the treatment effect size of subgroups. The subgroups are first defined by certain

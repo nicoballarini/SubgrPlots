@@ -4,14 +4,34 @@
 \alias{plot_mosaic}
 \title{Mosaic plot}
 \usage{
-plot_mosaic(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  range.v = NULL, adj.ann.subgrp = 4, range.strip = c(-3, 3),
-  n.brk = 30, n.brk.axis = NULL, font.size = c(1, 1, 0.85, 0.85, 1),
-  title = NULL, lab.xy = NULL, strip = "default", effect = "HR",
-  lwd. = 2, sep. = 0.05, show.overall = TRUE,
-  palette = "divergent", col.power = 0.5, print.ss = FALSE,
-  col.line = "white", time = NULL, show.marginal = TRUE,
-  show.effect = TRUE)
+plot_mosaic(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  range.v = NULL,
+  adj.ann.subgrp = 4,
+  range.strip = c(-3, 3),
+  n.brk = 30,
+  n.brk.axis = NULL,
+  font.size = c(1, 1, 0.85, 0.85, 1),
+  title = NULL,
+  lab.xy = NULL,
+  strip = "default",
+  effect = "HR",
+  lwd. = 2,
+  sep. = 0.05,
+  show.overall = TRUE,
+  palette = "divergent",
+  col.power = 0.5,
+  print.ss = FALSE,
+  col.line = "white",
+  time = NULL,
+  show.marginal = TRUE,
+  show.effect = TRUE,
+  grid.newpage = TRUE
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -66,6 +86,8 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \item{show.marginal}{logical indicating whether to show the marginal subgroups. only when 2 covariates are used}
 
 \item{show.effect}{logical indicating whether to show effect size using color or not. only when 3 covariates are used}
+
+\item{grid.newpage}{logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.}
 }
 \description{
 This function produces a mosaic plot for subgroup analysis

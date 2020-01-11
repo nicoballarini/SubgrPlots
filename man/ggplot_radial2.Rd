@@ -4,9 +4,18 @@
 \alias{ggplot_radial2}
 \title{Modified Radial (Galbraith) plot for subgroup effect size}
 \usage{
-ggplot_radial2(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  range.v = NULL, font.size = 4, title = NULL, lab.xy = "default",
-  ticks.length = 0.05)
+ggplot_radial2(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  range.v = NULL,
+  font.size = 4,
+  title = NULL,
+  lab.xy = "default",
+  ticks.length = 0.05
+)
 }
 \arguments{
 \item{dat}{a data set}

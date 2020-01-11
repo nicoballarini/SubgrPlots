@@ -3,8 +3,10 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
                            n.brk.axis=7,
                font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL, strip = NULL,
                effect = "HR", show.overall = TRUE,
-               palette = "divergent", col.power = 0.5, cat.dist = "default"){
-  old.par <- par(no.readonly=T)
+               palette = "divergent", col.power = 0.5, cat.dist = "default",
+               grid.newpage = TRUE){
+
+  if (grid.newpage) old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
   effect = match.arg(effect)
@@ -576,7 +578,7 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
     }
   }
 
-  layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+  if (grid.newpage) layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
   par(mar=c(0, 0, 0, 0)+0.1)
   vpf()
   par(mar=c(0, 2, 0, 1)+0.5)
@@ -599,5 +601,5 @@ plot_venn_fill <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.
        las = 0, cex.axis = font.size[6])
   mtext(strip, side=4, line=0, cex.lab = font.size[5])
 
-  par(old.par)
+  if (grid.newpage) par(old.par)
 }

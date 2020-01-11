@@ -4,11 +4,25 @@
 \alias{plot_nightingale_effect}
 \title{Nightingale plot with treatment effects}
 \usage{
-plot_nightingale_effect(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  seq_by = 100, range.strip = c(-6, 6), n.brk = 30,
-  n.brk.axis = NULL, title = NULL, strip = NULL, effect = c("HR",
-  "RMST"), time = NULL, show.overall = FALSE, lab.y = NULL,
-  palette = "hcl", col.power = 0.5)
+plot_nightingale_effect(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  seq_by = 100,
+  range.strip = c(-6, 6),
+  n.brk = 30,
+  n.brk.axis = NULL,
+  title = NULL,
+  strip = NULL,
+  effect = c("HR", "RMST"),
+  time = NULL,
+  show.overall = FALSE,
+  lab.y = NULL,
+  palette = "hcl",
+  col.power = 0.5
+)
 }
 \arguments{
 \item{dat}{a data set}

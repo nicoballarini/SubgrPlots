@@ -4,12 +4,26 @@
 \alias{plot_level}
 \title{Level plot for subgroup effect size}
 \usage{
-plot_level(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  ss.rect = FALSE, range.strip = c(-6, 6), n.brk = 30,
-  n.brk.axis = NULL, font.size = c(15, 12, 0.8, 15, 0.6),
-  title = NULL, strip = NULL, effect = c("HR", "RMST"),
-  time = NULL, show.overall = FALSE, palette = "divergent",
-  col.power = 0.5)
+plot_level(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  ss.rect = FALSE,
+  range.strip = c(-6, 6),
+  n.brk = 30,
+  n.brk.axis = NULL,
+  font.size = c(15, 12, 0.8, 15, 0.6),
+  title = NULL,
+  strip = NULL,
+  effect = c("HR", "RMST"),
+  time = NULL,
+  show.overall = FALSE,
+  palette = "divergent",
+  col.power = 0.5,
+  grid.newpage = TRUE
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -47,6 +61,8 @@ covariates; the fourth is for the text in the middle cells; the fifth is for the
 \item{palette}{either "divergent" or "hcl"}
 
 \item{col.power}{to be used when palette = "hcl". see colorspace package for reference}
+
+\item{grid.newpage}{logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.}
 }
 \description{
 This function produces a level plot showing the treatment effect size of pairwise subgroups and marginal subgroups defined by the

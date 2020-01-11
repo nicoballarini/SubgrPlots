@@ -1,9 +1,9 @@
 ---
 title: |
-  | **Supplementary Material**
-  | **Part 2: R code for reproducing the figures in the manuscript**
-  | for
-  | A Critical Review of Graphics for Subgroup Analyses in Clinical Trials and Some Improvements
+ | **Supplementary Material**
+ | **Part 2: R code for reproducing the figures in the manuscript**
+ | for
+ | A Critical Review of Graphics for Subgroup Analyses in Clinical Trials and Some Improvements
 author: "Nicolás M. Ballarini, Yi-Da Chiu, Franz Koenig, Martin Posch and Thomas Jaki"
 date: " "
 output: 
@@ -39,7 +39,7 @@ knitr::opts_chunk$set(
 
 In this vignette we showcase all plots in the manuscript with their corresponding code to illustrate the usage of the `SubgrPlots` package.
 
-# Instalation {-}
+# Installation {-}
 
 The package can be installed directly from CRAN:
 
@@ -50,7 +50,7 @@ install.packages("SubgrPlots")
 or the development version from github:
 
 ```{r eval=FALSE, include=TRUE}
-# For dev version
+## For dev version  needs devtools package
 # install.packages("devtools")
 devtools::install_github("nicoballarini/SubgrPlots")
 ```
@@ -78,10 +78,10 @@ head(prca)
 ## Forest Plot
 
 ```{r, fig.show='hold', fig.align = "center", out.width="100%", fig.width=10, fig.height=6, cache=TRUE}
-dat <- prca
-dat %>%
+dat = prca
+dat = dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
-         hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
+         hx = factor(ifelse(hx == 0 , "No", "Yes")))
 
 ## Figure 1. Forest Plot ------------------------------------------------------
 main.title = list("", "Forest plot of subgroups",
@@ -111,7 +111,7 @@ displayed.
 
 ```{r, fig.show='hold', fig.align = "center", out.width="75%", fig.width=6, fig.height=5, cache=TRUE}
 library(UpSetR) # We use the UpSetR package for drawing the original upset plot
-dat <- prca
+dat = prca
 # We need the dataset in the upset format.
 # First variable is treatment to be a labelled factor 
 # Then all subgroup defining covariates.
@@ -122,17 +122,16 @@ prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Experimental", "Contr
                         hx = 1*(prca$hx == 1),
                         stage = 1*(prca$stage == 4),
                         survtime = prca$survtime,
-                        cens = prca$cens==1)
+                        cens = prca$cens == 1)
 
 ## Figure 2. UpSet ------------------------------------------------------------
 # Create a custom query to operate on the rows of the data and display colors by treatments
-Myfunc <- function(row, param1, param2) {
-  data <- (row["trt"] %in% c(param1, param2))
+Myfunc = function(row, param1, param2) {
+  data = (row["trt"] %in% c(param1, param2))
 }
-pal <- c("#1f78b4", "#a6cee3")
+pal = c("#1f78b4", "#a6cee3")
 upset(prca.upset,
       order.by = "freq",
-      # empty.intersections = "on",
       sets = c("bm",'pf',"hx",'stage'),
       nintersects = 14,
       text.scale = 1.4,
@@ -153,7 +152,7 @@ Figure S2.2: Upset plot displaying the subgroups conformed by the intersection o
 subgroup-defining covariates
 
 ```{r, fig.show='hold', fig.align = "center", out.width="95%", fig.width=8, fig.height=8, cache=TRUE}
-dat <- prca
+dat = prca
 ## Figure 3. SubgroUpSet -----------------------------------------------------
 # We need the dataset in the upset format.
 # First variable is treatment to be a labelled factor 
@@ -192,21 +191,21 @@ middle and the subgroup sizes in the horizontal bar plot on the right.
 ## Galbraith plot
 
 ```{r, fig.show='hold', fig.align = "center", out.width="75%", fig.width=5/.7, fig.height=5, cache=TRUE}
-dat <- prca
-dat %>%
+dat = prca
+dat = dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
-         hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
+         hx = factor(ifelse(hx == 0 , "No", "Yes")))
 ## Figure 4. Galbraith plot ----------------------------------------------------
-ggplot_radial(dat,
-              covari.sel = c(4, 5, 6, 7),
-              trt.sel = 3,
-              resp.sel = c(1, 2),
-              outcome.type = "survival",
-              range.v = c(-8, 6),
-              font.size = 4,
-              lab.xy = "default",
-              ticks.length = 0.05) -> my_plot
-my_plot +
+p = ggplot_radial(dat,
+                  covari.sel = c(4, 5, 6, 7),
+                  trt.sel = 3,
+                  resp.sel = c(1, 2),
+                  outcome.type = "survival",
+                  range.v = c(-8, 6),
+                  font.size = 4,
+                  lab.xy = "default",
+                  ticks.length = 0.05)
+p +
   ggplot2::theme(text = ggplot2::element_text(size = 14))
 ```
 
@@ -215,39 +214,38 @@ history of cardiovascular events (hx), stage, and performance rating (pf).
 
 ## STEPP
 
-```{r, fig.show='hold', fig.align = "center", out.width="50%", fig.width=5, fig.height=5, cache=TRUE}
-dat <- prca
+```{r, fig.show='hold', fig.align = "center", out.width="70%", fig.width=7, fig.height=5, cache=TRUE}
+dat = prca
 
 ## Figure 5. STEPP Plot -------------------------------------------------------------
 lab.y.title = paste("Treatment effect size (log-hazard ratio)");
 setup.ss = c(30, 40)
 sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2],
                    "; overlap of ", setup.ss[1], ")" )
-plot_stepp(dat,
+p = ggplot_stepp(dat,
            covari.sel = 8,
            trt.sel = 3,
            resp.sel = c(1, 2),
            outcome.type = "survival",
-           setup.ss = c(30, 40),
+           setup.ss = setup.ss,
            alpha = 0.05,
-           font.size = c(1, 1, 1, 1),
            title = NULL,
            lab.y = lab.y.title,
            subtitle = sub.title)
+p  +
+  ggplot2::theme(text = ggplot2::element_text(size = 14))
 ```
 
-Figure S2.5: STEPP plot of overlapping subgroups defined by age. Each subgroup has a
-sample size of around 40 ($N_{11}$ = 40) and is controlled to have about 87% ($N_{12}$/$N_{11}$)
-being overlapped with the neighbouring subgroups.
+Figure S2.5: STEPP plot of overlapping subgroups defined by age. Each subgroup has a sample size of around $N_{11}$ = 40 and is controlled to have about $N_{11}$ = 30 subjects overlapping with the neighbouring subgroups.
 
 ## Contour plot
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=4, cache=TRUE}
-dat <- prca
+dat = prca
 setup.ss =  c(10,60,15,30)
-dat %>%
+dat = dat %>%
   rename(Weight = weight,
-         Age = age) -> dat
+         Age = age)
 
 ## Figure 6. Contour plot with sliding windows --------------------------------
 plot_contour(dat,
@@ -295,11 +293,11 @@ the grid. Points with few subjects in the vicinity of the grid point were left b
 ## Tree plot
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=4.5, cache=TRUE}
-dat <- prca
-dat %>%
+dat = prca
+dat = dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
-         hx = factor(ifelse(hx == 0 , "No", "Yes"))) -> dat
- 
+         hx = factor(ifelse(hx == 0 , "No", "Yes")))
+
 
 # Figure A.1. Tree Plot
 # Tree plot with y-axis separately for each layer ------------------------------
@@ -342,10 +340,10 @@ estimates.
 ## Level Plot 
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=5, cache=TRUE}
-dat <- prca
-levels(dat$age_group)    <- c("Young", "Middle-aged", "Old")
-levels(dat$weight_group) <- c("Low", "Mid", "High")
-names(dat)[c(14,15)]     <- c("Age", "Weight")
+dat =  prca
+levels(dat$age_group)    = c("Young", "Middle-aged", "Old")
+levels(dat$weight_group) = c("Low", "Mid", "High")
+names(dat)[c(14,15)]     = c("Age", "Weight")
 strip.title = "Treatment effect size (log hazard ratio)"
 
 ## Figure A.2 Level plot -------------------------------------------------------
@@ -387,16 +385,16 @@ sample sizes, which are also displayed in the middle of the cells.
 ## Mosaic Plot
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=4.5, cache=TRUE}
-dat <- prca
+dat = prca
 levels(dat$age_group) = c("Young", "Middle-aged","Old")
 levels(dat$weight_group)  = c("Low", "Mid", "High")
 # Change variable names for better presentation
-dat %>%
+dat = dat %>%
   rename(`Bone Metastasis` = bm,
          `Performance rating` = pf,
          `History of cardiovascular events` = hx,
          Weight = weight_group,
-         Age = age_group) -> dat
+         Age = age_group) 
 
 # Figure A.3 Mosaic plot with two covariates ------------------------------------
 plot_mosaic(dat = dat,
@@ -440,11 +438,11 @@ disjoint subgroups defined by history of cardiovascular events, performance rati
 ## Venn diagram
 
 ```{r, fig.show='hold', fig.align = "center", out.width="50%", fig.width=5, fig.height=5, cache=TRUE}
-dat <- prca
-dat %>%
+dat = prca
+dat = dat %>%
   rename(Performance = pf,
          `Bone\nmetastasis` = bm,
-         `History of\ncardiovascular\nevents` = hx) -> dat
+         `History of\ncardiovascular\nevents` = hx)
 
 ## Figure A.4. Venn Diagram with three covariates -------------------------------
 plot_venn(dat,
@@ -463,12 +461,12 @@ Figure S2.10: (a) Venn diagram of 3 subgroups defined by presence of bone metast
 of cardiovascular events, and performance rating = 1. 
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=4, cache=TRUE}
-dat <- prca
-dat %>%
+dat = prca
+dat = dat %>%
   rename(Stage = stage,
          Performance = pf,
          `Bone\nmetastasis` = bm,
-         `History of\ncardiovascular\nevents` = hx) -> dat
+         `History of\ncardiovascular\nevents` = hx)
 ## Venn Diagram with four covariates ------------------------------------------
 plot_venn(dat,
           covari.sel = c(4, 6, 7, 5),
@@ -485,12 +483,12 @@ plot_venn(dat,
           cat.dist = c(0.22, 0.22, 0.11, 0.16))
 
 #-------------------------------------------------------------------------------
-dat <- prca
-dat %>%
+dat =  prca
+dat = dat %>%
   rename(Stage = stage,
          Performance = pf,
          `Bone\nmetastasis` = bm,
-         `History of\ncardiovascular events` = hx) -> dat
+         `History of\ncardiovascular events` = hx)
 ## Venn Diagram with three covariates (proportional area) ---------------------
 plot_venn(dat,
           covari.sel = c(5,7,4),
@@ -516,7 +514,7 @@ effect sizes in terms of the log-hazard ratios.
 ## Bar chart
 
 ```{r, fig.show='hold', fig.align = "center", out.width="50%", fig.width=5, fig.height=5, cache=TRUE}
-dat <- prca
+dat = prca
 levels(dat$age_group)     = c("Young", "Middle-aged", "Old")
 levels(dat$weight_group)  = c("Low", "Mid", "High")
 names(dat)[c(14,15)]      = c("Age", "Weight")
@@ -543,10 +541,10 @@ middle-aged and old, respectively.
 ## L'Abbé plot
 
 ```{r, fig.show='hold', fig.align = "center", out.width="75%", fig.width=5.5/.7, fig.height=5, cache=TRUE}
-dat <- prca
-dat %>%
+dat = prca
+dat = dat %>%
   mutate(bm = factor(ifelse(bm == 0 , "No", "Yes")),
-         hx = factor(ifelse(hx == 0 , "No", "Yes")))-> dat
+         hx = factor(ifelse(hx == 0 , "No", "Yes")))
 
 ## Figure A.6. Labbe Plot -------------------------------------------------------
 lab.xy = list("Control Group Estimate", "Treatment Group Estimate")
@@ -572,12 +570,12 @@ terms of the difference in restricted mean survival time (RMST).
 ## Chord diagram
 
 ```{r, fig.show='hold', fig.align = "center", out.width="50%", fig.width=5, fig.height=5, cache=TRUE}
-dat <- prca
+dat =  prca
 levels(dat$age_group)    = c("Young", "Middle-aged", "Old")
 levels(dat$weight_group) = c("Low", "Mid", "High")
-dat %>%
+dat = dat %>%
   rename(Age = age_group,
-         Weight = weight_group)-> dat
+         Weight = weight_group)
 
 set.seed(55643)
 # Figure A.7. Chord diagram -----------------------------------------------------
@@ -603,6 +601,7 @@ plot_circle(dat,
 Figure S2.14: Chord diagram for the subgroups formed by age and weight. The colours along
 the circle represent the treatment effect in terms of the log-hazard ratio. The ribbons
 that link the subgroups represent their overlap.
+
 
 ## Nightingale Rose
 

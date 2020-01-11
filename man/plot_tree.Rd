@@ -4,9 +4,20 @@
 \alias{plot_tree}
 \title{Tree plot for subgroup effect size}
 \usage{
-plot_tree(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  add.aux.line = FALSE, font.size = c(15, 10, 0.5), title = NULL,
-  lab.y = NULL, text.shift = 0.005, keep.y.axis = FALSE)
+plot_tree(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  add.aux.line = FALSE,
+  font.size = c(15, 10, 0.5),
+  title = NULL,
+  lab.y = NULL,
+  text.shift = 0.005,
+  keep.y.axis = FALSE,
+  grid.newpage = TRUE
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -31,6 +42,8 @@ is for the text in the left, right and bottom labels; the third is for the unit 
 \item{text.shift}{a numeric indicating the separation of the text in the branches}
 
 \item{keep.y.axis}{a logical indicating whether to keep the y axis fixed across the levels}
+
+\item{grid.newpage}{logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.}
 }
 \description{
 This function produces a tree plot showing the treatment effect size of subgroups defined by the categories of covariates. The left

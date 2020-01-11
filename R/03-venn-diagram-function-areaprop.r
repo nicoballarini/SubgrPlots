@@ -5,8 +5,9 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
                                    title = NULL, strip = NULL,
                                    fill = FALSE, fill.background = FALSE,
                                    effect = "HR", show.overall = TRUE,
-                                   palette = "divergent", col.power = 0.5){
-  old.par <- par(no.readonly=T)
+                                   palette = "divergent", col.power = 0.5,
+                                   grid.newpage = TRUE){
+  if (grid.newpage) old.par <- par(no.readonly=T)
   ####################################################### 1. create subgroup data  #################################################################
   if (!requireNamespace("rgeos", quietly = TRUE)) {
     stop("Package \"rgeos\" needed for this function to work. Please install it.",
@@ -263,7 +264,11 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
   }
 
-  if (fill) layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+
+  # Plot! -----------------------
+
+  if (grid.newpage & fill) layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+
   par(mar=c(0, 0, 0, 0) + 0.1)
 
   if (n.subgrp == 2){
@@ -449,5 +454,5 @@ plot_venn_proportional <- function(dat, covari.sel, cat.sel, trt.sel, resp.sel,
     }
     mtext(strip, side=4, line=0, cex.lab = font.size[5])
   }
-  par(old.par)
+  if (grid.newpage) par(old.par)
 }

@@ -4,10 +4,18 @@
 \alias{plot_nightingale}
 \title{Nightingale plot}
 \usage{
-plot_nightingale(dat, covari.sel, trt.sel = NULL, resp.sel,
-  outcome.type = "binary", seq_by = 100, title = NULL,
-  lab.y = NULL, strip = "Response", palette_colors = c("#faa8d2",
-  "#80b1d3"))
+plot_nightingale(
+  dat,
+  covari.sel,
+  trt.sel = NULL,
+  resp.sel,
+  outcome.type = "binary",
+  seq_by = 100,
+  title = NULL,
+  lab.y = NULL,
+  strip = "Response",
+  palette_colors = c("#faa8d2", "#80b1d3")
+)
 }
 \arguments{
 \item{dat}{a data set}

@@ -26,8 +26,6 @@ prca.upset = data.frame(trt = factor(ifelse(prca$rx == 1, "Experimental", "Contr
                         pf = 1*(prca$pf == 1),
                         hx = 1*(prca$hx == 1),
                         stage = 1*(prca$stage == 4),
-                        age = 1*(prca$age > 75),
-                        wt = 1*(prca$weight > 100),
                         survtime = prca$survtime,
                         cens = prca$cens==1)
 
@@ -42,7 +40,7 @@ pdf("paper/figures/11-upSetR-plot.pdf", width = 6, height = 5, onefile=FALSE)
 upset(prca.upset,
       order.by = "freq",
       # empty.intersections = "on",
-      sets = c("bm",'pf',"hx",'stage',"age","wt"),
+      sets = c("bm",'pf',"hx",'stage'),
       nintersects = 14,
       text.scale = 1.4,
       queries = list(list(query = Myfunc,
