@@ -148,7 +148,7 @@ upset(prca.upset,
       query.legend = "top")
 ```
 
-Figure S2.2: Upset plot displaying the subgroups conformed by the intersection of all
+Figure S2.2: Upset plot displaying the subgroups formed by the intersection of all
 subgroup-defining covariates
 
 ```{r, fig.show='hold', fig.align = "center", out.width="95%", fig.width=8, fig.height=8, cache=TRUE}
@@ -216,20 +216,11 @@ history of cardiovascular events (hx), stage, and performance rating (pf).
 
 ```{r, fig.show='hold', fig.align = "center", out.width="70%", fig.width=7, fig.height=5, cache=TRUE}
 dat = prca
-<<<<<<< HEAD
- 
-=======
 
->>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 ## Figure 5. STEPP Plot -------------------------------------------------------------
 lab.y.title = paste("Treatment effect size (log-hazard ratio)");
 setup.ss = c(30, 40)
-sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2],
-<<<<<<< HEAD
-                   "; overlap of ", setup.ss[1], ")")
-=======
-                   "; overlap of ", setup.ss[1], ")" )
->>>>>>> be0410826db51fdd212608444743b0cda5e6e511
+sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2], "; overlap of ", setup.ss[1], ")")
 p = ggplot_stepp(dat,
            covari.sel = 8,
            trt.sel = 3,
@@ -250,11 +241,7 @@ Figure S2.5: STEPP plot of overlapping subgroups defined by age. Each subgroup h
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=4, cache=TRUE}
 dat = prca
-<<<<<<< HEAD
 setup.ss =  c(10, 60, 15, 30)
-=======
-setup.ss =  c(10,60,15,30)
->>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 dat = dat %>%
   rename(Weight = weight,
          Age = age)
@@ -355,11 +342,7 @@ estimates.
 dat =  prca
 levels(dat$age_group)    = c("Young", "Middle-aged", "Old")
 levels(dat$weight_group) = c("Low", "Mid", "High")
-<<<<<<< HEAD
-names(dat)[c(14, 15)]     = c("Age", "Weight")
-=======
-names(dat)[c(14,15)]     = c("Age", "Weight")
->>>>>>> be0410826db51fdd212608444743b0cda5e6e511
+names(dat)[c(14, 15)] = c("Age", "Weight")
 strip.title = "Treatment effect size (log hazard ratio)"
 
 ## Figure A.2 Level plot -------------------------------------------------------
@@ -924,7 +907,7 @@ plot_circle2(dat,
              conf.int = FALSE, palette = "hcl")
 ```
 
-Figure S2.22: Chord diagrams displaying the subgroups conformed by the categorized age and
+Figure S2.22: Chord diagrams displaying the subgroups formed by the categorized age and
 weight covariates. The width of each section is proportional to the sample size in the
 corresponding subgroup. Each circle displays the relative overlap of one subgroup with
 the others.
@@ -952,7 +935,7 @@ plot_circle2(dat,
              conf.int = FALSE, palette = "hcl")
 ```
 
-Figure S2.23: Chord diagrams displaying the subgroups conformed by the categorised age and
+Figure S2.23: Chord diagrams displaying the subgroups formed by the categorised age and
 weight covariates. Sample sizes are not depicted in this version as the widths are the
 same for each section. Each circle displays the relative overlap of one subgroup with the
 others.

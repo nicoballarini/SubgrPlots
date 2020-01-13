@@ -139,12 +139,9 @@ ggplot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup
     cutpoint.covar1[[1]][i] = covari1.table[low.bd.covar1.idx]
     cutpoint.covar1[[2]][i] = covari1.table[min(upp.bd.covar1.idx, ss.full)]
   }
-<<<<<<< HEAD
+
   cutpoints = paste0(cutpoint.covar1[[1]], "-", cutpoint.covar1[[2]])
   n.subgrp.unique = length(unique(cutpoints))
-=======
-
->>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 
   idx.covar1 = list()                                            # the index set of subgroups over the first covariate
   n.subgrp.covar1 = length(cutpoint.covar1[[1]])                 # the number of subgroups over the first covariate
@@ -164,11 +161,7 @@ ggplot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup
 
   ### adjust factor for simultaneous confidence interval
 
-<<<<<<< HEAD
   alpha.adj = 1 - (1 - alpha)^(1/n.subgrp.unique)
-=======
-  alpha.adj = 1 - (1 - alpha)^(1/n.subgrp.covar1)
->>>>>>> be0410826db51fdd212608444743b0cda5e6e511
   gamma = qnorm(1 - alpha.adj/2 ) / qnorm(1 - alpha/2 )
 
   covari.subgrp.mid = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
