@@ -1,9 +1,9 @@
 Package: SubgrPlots
 Type: Package
 Title: Graphical Displays for Subgroup Analysis in Clinical Trials
-Version: 0.1.1.999
+Version: 0.1.2
 Authors@R: c(
-    person("Nicolas", "Ballarini", email = "nicolas.ballarini@meduniwien.ac.at",
+    person("Nicolas", "Ballarini", email = "nicoballarini@gmail.com",
     role = c("aut","cre")),
     person("Yi-Da", "Chiu", email = "yi-da.chiu@alumni.ucl.ac.uk", 
     role = c("aut")),
@@ -51,4 +51,4 @@ Suggests:
     rmarkdown,
     rgeos
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

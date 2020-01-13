@@ -4,8 +4,13 @@
 \alias{plot_network}
 \title{network overlap plot  (only works for binary variables)}
 \usage{
-plot_network(dat, covari.sel, para = c(0.2, 0.2, 1), font.size = c(1.5,
-  1.5, 0.8), title = NULL)
+plot_network(
+  dat,
+  covari.sel,
+  para = c(0.2, 0.2, 1),
+  font.size = c(1.5, 1.5, 0.8),
+  title = NULL
+)
 }
 \arguments{
 \item{dat}{a data set}

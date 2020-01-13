@@ -38,6 +38,7 @@
 #' @param palette          either "divergent" or "hcl"
 #' @param col.power        to be used when palette = "hcl". see colorspace package for reference
 #' @param show.points      a logical indicator specifying whether to show the raw data points
+#' @param new.layout     logical. If TRUE (default), the function calls graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1)) to start from an empty page.
 #'
 #' @examples
 #' library(dplyr)
@@ -73,18 +74,19 @@
 #'
 #' @export
 plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-                            setup.ss, n.grid = c(41, 41),
-                            brk.es = c(0, 1, 2, 3),
-                            n.brk.axis =  7,
-                            para.plot = c(0.35, 2, 20),
-                            font.size = c(1.5, 1.2, 1, 0.85, 0.8),
-                            title = NULL, subtitle = "default",
-                            effect = "HR", point.size = 1.2, filled = FALSE,
-                            strip = NULL, show.overall = FALSE,
-                            palette = "divergent", col.power = 0.5,
-                            show.points = FALSE){
+                         setup.ss, n.grid = c(41, 41),
+                         brk.es = c(0, 1, 2, 3),
+                         n.brk.axis =  7,
+                         para.plot = c(0.35, 2, 20),
+                         font.size = c(1.5, 1.2, 1, 0.85, 0.8),
+                         title = NULL, subtitle = "default",
+                         effect = "HR", point.size = 1.2, filled = FALSE,
+                         strip = NULL, show.overall = FALSE,
+                         palette = "divergent", col.power = 0.5,
+                         show.points = FALSE,
+                         new.layout = TRUE){
 
-  old.par <- par(no.readonly=T)
+  if(new.layout) old.par <- par(no.readonly=T)
 
   ## 0. argument validity check  ###############################################
 
@@ -308,17 +310,17 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     }
   }
   colnames(all.dat) = c("x", "y", "treatment.mean")
-    cat("The number of subgroups over the first covariate is", n.subgrp.covar1, "\n")
-    cat("The subgroup sample sizes over the first covariate are actually", ss.subgrp.covar1, "\n")
-    cat("The number of further divided subgroups over the second covariate is", n.subgrp.covar2, "\n")
+  cat("The number of subgroups over the first covariate is", n.subgrp.covar1, "\n")
+  cat("The subgroup sample sizes over the first covariate are actually", ss.subgrp.covar1, "\n")
+  cat("The number of further divided subgroups over the second covariate is", n.subgrp.covar2, "\n")
 
   ## 2. produce a graph  #######################################################
 
   if (subtitle == "default"){
     subtitle = bquote(N[11] %~~% .(setup.ss[2]) ~", "~
-                         N[12] %~~% .(setup.ss[1]) ~", "~
-                         N[21] %~~% .(setup.ss[4]) ~", "~
-                         N[22] %~~% .(setup.ss[3]))
+                        N[12] %~~% .(setup.ss[1]) ~", "~
+                        N[21] %~~% .(setup.ss[4]) ~", "~
+                        N[22] %~~% .(setup.ss[3]))
   }
   treatment.df = data.frame(x, y, treatment.mean)
   treatment.df.model = loess(treatment.mean ~ x*y, data = treatment.df,
@@ -338,18 +340,18 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   y.range = seq(min.y, max.y, len = n.grid[2])
 
   if(!filled){ # Contour lines --------------
-    graphics::layout(matrix(c(1,2), ncol = 1), heights = c(9,1))
+    if (new.layout) graphics::layout(matrix(c(1,2), ncol = 1), heights = c(9,1))
     graphics::par(mar=c(4, 4, 3, 2) + 0.1)
     graphics::plot(x, y, #type = "n",
-         xlim = range(x.range), ylim = range(y.range),
-         xlab = lab.vars[1], ylab = lab.vars[2],
-         main = title, #sub = subtitle,
-         col  = "gray80",
-         cex.main = font.size[1],
-         cex.lab  = font.size[2],
-         cex.axis = font.size[2],
-         cex.sub  = font.size[3])
-    graphics::mtext(subtitle)
+                   xlim = range(x.range), ylim = range(y.range),
+                   xlab = lab.vars[1], ylab = lab.vars[2],
+                   main = title, #sub = subtitle,
+                   col  = "gray80",
+                   cex.main = font.size[1],
+                   cex.lab  = font.size[2],
+                   cex.axis = font.size[2],
+                   cex.sub  = font.size[3])
+    graphics::mtext(subtitle, cex = font.size[3])
     cutoff.es = rev(c(-Inf, brk.es, Inf))
     if (palette == "divergent"){
       pal.2 = colorRampPalette(c("#91bfdb", "#ffffbf", "#fc8d59"), space = "rgb")
@@ -378,17 +380,17 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     }
     for (i in 1:(length(cutoff.es) - 1)){
       graphics::points(x[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
-             y[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
-             col = col.point[i], pch = 16, cex = point.size)
+                       y[setdiff(which((treatment.mean > cutoff.es[i + 1])),  which((treatment.mean > cutoff.es[i]) ))],
+                       col = col.point[i], pch = 16, cex = point.size)
     }
     breaks = pretty(c(-3,3), length(col.vec))
     graphics::contour(x.range, y.range, treatment.df.model.fit,
-            levels = breaks,
-            vfont = c("sans serif", "plain"),
-            labcex = font.size[5],
-            col = "darkgreen",
-            lty = "solid",
-            add = TRUE)         # "len" in levels controls the number of levels
+                      levels = breaks,
+                      vfont = c("sans serif", "plain"),
+                      labcex = font.size[5],
+                      col = "darkgreen",
+                      lty = "solid",
+                      add = TRUE)         # "len" in levels controls the number of levels
 
     lab0.es = paste("ES >", brk.es[length(brk.es)])
     lab1.es = vector()
@@ -402,12 +404,12 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     graphics::par(mar=c(0,0,0,0))
     graphics::plot(0,0, xaxt = "n", yaxt = "n", type ="n", frame.plot = FALSE)
     graphics::legend("bottom",
-           rev(lab.es),
-           horiz = T,
-           cex = font.size[4],
-           col = rev(col.point),
-           pch = 16,
-           bg = "white")
+                     rev(lab.es),
+                     horiz = T,
+                     cex = font.size[4],
+                     col = rev(col.point),
+                     pch = 16,
+                     bg = "white")
   }
   if(filled){ # Filled contour plot --------------------------------------------
     if (palette == "divergent"){
@@ -436,7 +438,7 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
       cols = col.vec
     }
 
-    graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+    if (new.layout) graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
     if (is.null(title)){
       graphics::par(mar=c(3,3,2,1), mgp = c(2,1,0))
     } else{
@@ -444,21 +446,22 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     }
     axis.sep = 0
     graphics::plot(x.range, y.range, type = "n",
-         xlim = c(min.x-axis.sep, max.x+axis.sep),
-         ylim = c(min.y-axis.sep, max.y+axis.sep),
-         xlab = lab.vars[1], ylab = lab.vars[2],
-         main = title,
-         col  = "gray80",
-         cex.main = font.size[1],
-         cex.lab  = font.size[2],
-         cex.axis = font.size[2],
-         cex.sub  = font.size[3])
-    graphics::mtext(subtitle)
+                   xlim = c(min.x-axis.sep, max.x+axis.sep),
+                   ylim = c(min.y-axis.sep, max.y+axis.sep),
+                   xlab = lab.vars[1], ylab = lab.vars[2],
+                   main = title,
+                   col  = "gray80",
+                   cex.main = font.size[1],
+                   cex.lab  = font.size[2],
+                   cex.axis = font.size[2],
+                   cex.sub  = font.size[3])
+    graphics::mtext(subtitle,
+                    cex = font.size[3])
     breaks = seq(min(brk.es),max(brk.es),      length.out = length(cols)+1)
     breaks.axis = seq(min(brk.es),max(brk.es), length.out = n.brk.axis)
     graphics::.filled.contour(x.range, y.range, treatment.df.model.fit,
-                    levels = breaks,
-                    col = rev(cols))
+                              levels = breaks,
+                              col = rev(cols))
     if(show.points) graphics::points(dat[, covari.sel], cex = 0.5, lwd = 0.1)
     if (is.null(title)){
       par(mar=c(3,2,2,1.5), mgp = c(0,1,0))
@@ -470,18 +473,18 @@ plot_contour <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                 breaks = breaks,
                 axis.pos = 4, add.axis = FALSE)
     graphics::axis(2, at = breaks.axis, labels = round(breaks.axis, 3), las = 0, cex.axis = font.size[5])
-    graphics::mtext(strip, side=4, line=0, cex.lab = font.size[5])
+    graphics::mtext(strip, side=4, line=0, cex = .75*font.size[5])
     if(show.overall){
       cat(sprintf("Overall Treatment effect is: %.4f, with confidence interval: (%.4f;%.4f)\n",
                   overall.treatment.mean, overall.treatment.lower, overall.treatment.upper))
       graphics::points(x = 0.5,
-             (overall.treatment.mean), pch = 20)
+                       (overall.treatment.mean), pch = 20)
       graphics::points(x = 0.5, overall.treatment.lower, pch = "-")
       graphics::points(x = 0.5, overall.treatment.upper, pch = "-")
       graphics::segments(x0 = 0.5, x1 = 0.5,
-               y0 = overall.treatment.lower,
-               y1 = overall.treatment.upper)
+                         y0 = overall.treatment.lower,
+                         y1 = overall.treatment.upper)
     }
-    graphics::par(mfrow=c(1,1))
+    if(new.layout) graphics::par(old.par)
   }
 }

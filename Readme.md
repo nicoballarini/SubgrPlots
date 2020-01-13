@@ -37,6 +37,6 @@ Imports:
     VennDiagram
     
 Optional:
-    rgeos for the proportional area venn diagram (This package requires additional dev libraries which may not be trivial to install)
+  rgeos for the proportional area venn diagram (This package requires additional dev libraries which may not be trivial to install)
     
-    knitr and rmarkdown for building the vignettes
+  knitr and rmarkdown for building the vignettes

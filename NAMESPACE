@@ -2,6 +2,7 @@
 
 export(ggplot_radial)
 export(ggplot_radial2)
+export(ggplot_stepp)
 export(plot_alluvial)
 export(plot_barchart)
 export(plot_circle)

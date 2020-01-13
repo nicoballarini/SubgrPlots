@@ -32,7 +32,10 @@
   
   Now it does not print the overlap matrix.
   
+* plot_stepp
   
+  Fixed problem when having identical subgroups. Added ggplot_stepp to use the proper scaling in the x-axis
+
 # Additional features
 
 * Forest Plot: 

@@ -44,6 +44,8 @@
 #' @param effect           either "HR" or "RMST". only when outcome.type = "survival"
 #' @param show.overall     logical. whether to show or not the overall treatment effect in the strip
 #' @param strip        a string specifying the title of the colour strip.
+#' @param new.layout     logical. If TRUE (default), the function calls graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1)) to start from an empty page.
+#'
 #' @examples
 #' \donttest{
 #' library(dplyr)
@@ -76,8 +78,9 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
                                   title = NULL, subtitle = NULL,
                                   unit.x = 1, unit.y = 1,
                                   effect = "HR", show.overall = TRUE,
-                                  strip = "Effect Size") {
-  old.par <- par(no.readonly=T)
+                                  strip = "Effect Size",
+                                  new.layout = TRUE) {
+  if(new.layout) old.par <- par(no.readonly=T)
 
   ## 1. create subgroup data  ##################################################
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
@@ -140,7 +143,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
   ### Create a plot -------------------------------------------------------
   if (!(outcome.type == "survival" & effect == "HR")) col.vec = rev(col.vec)
   cols = col.vec
-  layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
+  if (new.layout) graphics::layout(matrix(c(1, 2), nrow=1, ncol=2), widths=c(4,1))
   if (is.null(title)){
     graphics::par(mar=c(3,3,2,1), mgp = c(2,1,0))
   } else{
@@ -149,7 +152,8 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
   plot(grid.xy[,1], grid.xy[,2], type = "n",
        xlim = range(grid.pts.x),
        ylim = range(grid.pts.y),
-       xlab = lab.vars[1], ylab = lab.vars[2],
+       xlab = lab.vars[1],
+       ylab = lab.vars[2],
        main = title,
        col  = "gray80",
        cex.main = font.size[1],
@@ -173,7 +177,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
               axis.pos = 4, add.axis = FALSE)
   axis(2, at = breaks.axis, labels = round(breaks.axis, 3),
        las = 0, cex.axis = font.size[5])
-  mtext(strip, side=4, line=0, cex.lab = font.size[5])
+  mtext(strip, side=4, line=0, cex = .75*font.size[5])
 
   # Calculate overall Treatment effect -----------------------------------------
   if (outcome.type == "continuous"){
@@ -216,7 +220,7 @@ plot_contour_localreg <- function(dat, covari.sel, trt.sel, resp.sel, outcome.ty
              y0 = overall.treatment.lower,
              y1 = overall.treatment.upper)
   }
-  par(old.par)
+  if(new.layout) par(old.par)
 
 }
 

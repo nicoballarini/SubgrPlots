@@ -19,6 +19,7 @@
 #' @param lab.y        a string specifying the y-axis label
 #' @param text.shift a numeric indicating the separation of the text in the branches
 #' @param keep.y.axis a logical indicating whether to keep the y axis fixed across the levels
+#' @param grid.newpage     logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.
 #'
 #' @examples
 #' library(dplyr)
@@ -60,7 +61,8 @@
 plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       add.aux.line = FALSE,  font.size = c(15, 10, 0.5),
                       title = NULL, lab.y = NULL, text.shift = 0.005,
-                      keep.y.axis = FALSE){
+                      keep.y.axis = FALSE,
+                      grid.newpage = TRUE){
   ################################################ 0. argument validity check  #################################################################
 
   if (missing(dat)) stop("Data have not been inputed!")
@@ -299,7 +301,8 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ################################################ 2. produce a graph  #################################################################
 
-  grid.newpage()
+  if (grid.newpage) grid::grid.newpage()
+
   margin_width  = 0.18*font.size[3]
   panel_area = 1 - margin_width - 0.03
 

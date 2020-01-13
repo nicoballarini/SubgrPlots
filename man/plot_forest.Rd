@@ -4,13 +4,26 @@
 \alias{plot_forest}
 \title{Forest plot for subgroup effect size}
 \usage{
-plot_forest(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  size.shape = c(0.25, 0.12), font.size = c(1.3, 1, 0.85, 0.9),
-  title = NULL, lab.x = NULL, time = mean(dat[, resp.sel[1]]),
-  KM = FALSE, show.km.axis = TRUE, widths = c(1, 1, 1),
-  max.time = NULL, n.brk = 10, trt.labels = c("Treatment",
-  "Control"), panel.titles = c("Eff.size", "95\% CI", "S.Size(T|C)"),
-  eff.scale = c("logHR", "HR"))
+plot_forest(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  size.shape = c(0.25, 0.12),
+  font.size = c(1.3, 1, 0.85, 0.9),
+  title = NULL,
+  lab.x = NULL,
+  time = mean(dat[, resp.sel[1]]),
+  KM = FALSE,
+  show.km.axis = TRUE,
+  widths = c(1, 1, 1),
+  max.time = NULL,
+  n.brk = 10,
+  trt.labels = c("Treatment", "Control"),
+  panel.titles = c("Eff.size", "95\% CI", "S.Size(T|C)"),
+  eff.scale = c("logHR", "HR")
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -70,7 +83,7 @@ dat \%>\%
 
 ## 5. Forest Plot -----------------------------------------------------------
 main.title = list("", "Forest plot of subgroups",
-                  "Kaplan-Meier curves\\n by treatment group")
+                  "Kaplan-Meier curves\n by treatment group")
 label.x = list("", "Log hazard ratio",
                "Time (days)")
 

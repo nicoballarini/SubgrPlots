@@ -4,10 +4,20 @@
 \alias{plot_radial2}
 \title{Modified Radial (Galbraith) plot for subgroup effect size}
 \usage{
-plot_radial2(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  range.v = NULL, adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85,
-  1), title = NULL, lab.xy = NULL, plot.full = FALSE,
-  legend.position = c("inside", "outside"))
+plot_radial2(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  range.v = NULL,
+  adj.ann.subgrp = 4,
+  font.size = c(1, 1, 0.85, 0.85, 1),
+  title = NULL,
+  lab.xy = NULL,
+  plot.full = FALSE,
+  legend.position = c("inside", "outside")
+)
 }
 \arguments{
 \item{dat}{a data set}
