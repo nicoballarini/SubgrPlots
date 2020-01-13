@@ -216,12 +216,20 @@ history of cardiovascular events (hx), stage, and performance rating (pf).
 
 ```{r, fig.show='hold', fig.align = "center", out.width="70%", fig.width=7, fig.height=5, cache=TRUE}
 dat = prca
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 ## Figure 5. STEPP Plot -------------------------------------------------------------
 lab.y.title = paste("Treatment effect size (log-hazard ratio)");
 setup.ss = c(30, 40)
 sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2],
+<<<<<<< HEAD
                    "; overlap of ", setup.ss[1], ")")
+=======
+                   "; overlap of ", setup.ss[1], ")" )
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 p = ggplot_stepp(dat,
            covari.sel = 8,
            trt.sel = 3,
@@ -242,7 +250,11 @@ Figure S2.5: STEPP plot of overlapping subgroups defined by age. Each subgroup h
 
 ```{r, fig.show='hold', out.width="50%", fig.width=5, fig.height=4, cache=TRUE}
 dat = prca
+<<<<<<< HEAD
 setup.ss =  c(10, 60, 15, 30)
+=======
+setup.ss =  c(10,60,15,30)
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 dat = dat %>%
   rename(Weight = weight,
          Age = age)
@@ -343,7 +355,11 @@ estimates.
 dat =  prca
 levels(dat$age_group)    = c("Young", "Middle-aged", "Old")
 levels(dat$weight_group) = c("Low", "Mid", "High")
+<<<<<<< HEAD
 names(dat)[c(14, 15)]     = c("Age", "Weight")
+=======
+names(dat)[c(14,15)]     = c("Age", "Weight")
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 strip.title = "Treatment effect size (log hazard ratio)"
 
 ## Figure A.2 Level plot -------------------------------------------------------

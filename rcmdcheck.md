@@ -1,26 +1,46 @@
 ==> devtools::check(document = FALSE)
 
+<<<<<<< HEAD
 ── Building ──────────────────────────────────────── SubgrPlots ──
+=======
+── Building ────────────────── SubgrPlots ──
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 Setting env vars:
 ● CFLAGS    : -Wall -pedantic -fdiagnostics-color=always
 ● CXXFLAGS  : -Wall -pedantic -fdiagnostics-color=always
 ● CXX11FLAGS: -Wall -pedantic -fdiagnostics-color=always
+<<<<<<< HEAD
 ──────────────────────────────────────────────────────────────────
 ✔  checking for file ‘/Users/nicolasballarini/SubgrPlots/DESCRIPTION’ ...
 ─  preparing ‘SubgrPlots’: (1.4s)
 ✔  checking DESCRIPTION meta-information ...
 ─  checking for LF line-endings in source and make files and shell scripts (628ms)
+=======
+────────────────────────────────────────────
+✔  checking for file ‘/Volumes/NICO/paper/SubgrPlots/DESCRIPTION’ (362ms)
+─  preparing ‘SubgrPlots’: (7.5s)
+✔  checking DESCRIPTION meta-information ...
+─  checking for LF line-endings in source and make files and shell scripts (623ms)
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 ─  checking for empty or unneeded directories
 ─  looking to see if a ‘data/datalist’ file should be added
 ─  building ‘SubgrPlots_0.1.2.tar.gz’
    
+<<<<<<< HEAD
 ── Checking ──────────────────────────────────────── SubgrPlots ──
+=======
+── Checking ────────────────── SubgrPlots ──
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 Setting env vars:
 ● _R_CHECK_CRAN_INCOMING_REMOTE_: FALSE
 ● _R_CHECK_CRAN_INCOMING_       : FALSE
 ● _R_CHECK_FORCE_SUGGESTS_      : FALSE
 ── R CMD check ─────────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 * using log directory ‘/Users/nicolasballarini/SubgrPlots.Rcheck’
+=======
+* using log directory ‘/Volumes/NICO/paper/SubgrPlots.Rcheck’
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 * using R version 3.5.3 (2019-03-11)
 * using platform: x86_64-apple-darwin15.6.0 (64-bit)
 * using session charset: UTF-8
@@ -77,7 +97,11 @@ Setting env vars:
 Status: OK
 
 ── R CMD check results ─────────────────────────────────── SubgrPlots 0.1.2 ────
+<<<<<<< HEAD
 Duration: 2m 16.6s
+=======
+Duration: 2m 21.9s
+>>>>>>> be0410826db51fdd212608444743b0cda5e6e511
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
