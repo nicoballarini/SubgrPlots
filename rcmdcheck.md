@@ -1,20 +1,22 @@
 ==> devtools::check(document = FALSE)
 
-── Building ──────────────────────────────────────── SubgrPlots ──
+── Building ────────────────────────────── SubgrPlots ──
 Setting env vars:
 ● CFLAGS    : -Wall -pedantic -fdiagnostics-color=always
 ● CXXFLAGS  : -Wall -pedantic -fdiagnostics-color=always
 ● CXX11FLAGS: -Wall -pedantic -fdiagnostics-color=always
-──────────────────────────────────────────────────────────────────
-✔  checking for file ‘/Users/nicolasballarini/SubgrPlots/DESCRIPTION’ (476ms)
-─  preparing ‘SubgrPlots’: (3s)
+────────────────────────────────────────────────────────
+✔  checking for file ‘/Users/nicolasballarini/SubgrPlots/DESCRIPTION’ (364ms)
+─  preparing ‘SubgrPlots’: (3.1s)
 ✔  checking DESCRIPTION meta-information ...
-─  checking for LF line-endings in source and make files and shell scripts (1.1s)
+─  installing the package to build vignettes (636ms)
+✔  creating vignettes (2m 14.5s)
+─  checking for LF line-endings in source and make files and shell scripts (1s)
 ─  checking for empty or unneeded directories
 ─  looking to see if a ‘data/datalist’ file should be added
-─  building ‘SubgrPlots_0.1.2.tar.gz’
+─  building ‘SubgrPlots_0.1.3.tar.gz’
    
-── Checking ──────────────────────────────────────── SubgrPlots ──
+── Checking ────────────────────────────── SubgrPlots ──
 Setting env vars:
 ● _R_CHECK_CRAN_INCOMING_REMOTE_: FALSE
 ● _R_CHECK_CRAN_INCOMING_       : FALSE
@@ -27,7 +29,7 @@ Setting env vars:
 * using options ‘--no-manual --as-cran’
 * checking for file ‘SubgrPlots/DESCRIPTION’ ... OK
 * checking extension type ... Package
-* this is package ‘SubgrPlots’ version ‘0.1.2’
+* this is package ‘SubgrPlots’ version ‘0.1.3’
 * package encoding: UTF-8
 * checking package namespace information ... OK
 * checking package dependencies ... OK
@@ -41,6 +43,7 @@ Setting env vars:
 * checking whether package ‘SubgrPlots’ can be installed ... OK
 * checking installed package size ... OK
 * checking package directory ... OK
+* checking ‘build’ directory ... OK
 * checking DESCRIPTION meta-information ... OK
 * checking top-level files ... OK
 * checking for left-over files ... OK
@@ -70,14 +73,20 @@ Setting env vars:
 * checking contents of ‘data’ directory ... OK
 * checking data for non-ASCII characters ... OK
 * checking data for ASCII and uncompressed saves ... OK
+* checking sizes of PDF files under ‘inst/doc’ ... OK
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
 * checking examples ... OK
 ** found \donttest examples: check also with --run-donttest
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in ‘inst/doc’ ... OK
+* checking re-building of vignette outputs ... OK
 * DONE
 
 Status: OK
 
-── R CMD check results ─────────────────────────────────── SubgrPlots 0.1.2 ────
-Duration: 2m 30.2s
+── R CMD check results ─────────────────────────────────── SubgrPlots 0.1.3 ────
+Duration: 4m 37.3s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 

@@ -81,7 +81,9 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \item{ncol}{Number of columns in the matrix layout}
 }
 \description{
-This function produces a circular plot for subgroup analysis
+This function produces a circular plot for subgroup analysis using
+the circlize package. Overlaps across all variables are displayed in a
+matrix layout.
 }
 \examples{
 # Load the data to be used

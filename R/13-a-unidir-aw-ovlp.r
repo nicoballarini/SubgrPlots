@@ -6,6 +6,7 @@
 #' other. The arrowed lines have different colours, reflecting the level of overlap proportions. Note that if a subgroup is a baseline
 #' subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be
 #' changed by setting different values on the argument "para".
+#' Contrary to \code{\link{plot_overlap2}}, this function produces a single diagram.
 #'
 #' @param dat          a data set
 #' @param covari.sel   a vector of indices of covariates

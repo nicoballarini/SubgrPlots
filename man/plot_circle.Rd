@@ -78,7 +78,9 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \item{col.power}{to be used when palette = "hcl". see colorspace package for reference}
 }
 \description{
-This function produces a circular plot for subgroup analysis
+This function produces a circular plot for subgroup analysis using
+the circlize package. Overlaps across all variable levels are displayed in a
+single diagram.
 }
 \examples{
 library(dplyr)

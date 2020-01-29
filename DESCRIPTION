@@ -1,7 +1,7 @@
 Package: SubgrPlots
 Type: Package
 Title: Graphical Displays for Subgroup Analysis in Clinical Trials
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(
     person("Nicolas", "Ballarini", email = "nicoballarini@gmail.com",
     role = c("aut","cre")),
@@ -32,7 +32,6 @@ Imports:
     dplyr,
     ggplot2 (>= 2.1.1),
     ggrepel,
-    geoR,
     grid,
     gridBase,
     gridExtra,

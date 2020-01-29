@@ -12,14 +12,14 @@
 #                                                                                                                                                       #
 ########################################################################################################################################################-
 
-#' a graphical display for showing relative proportions of pairwise subgroup overlap with two unidirectional arrowed curved lines around a circle
+#' a graphical display for showing relative proportions of pairwise subgroup overlap in a matrix layout
 #'
 #' this function produces a plot for displaying relative proportions of pairwise subgroup overlap, where the relative proportion is
 #' defined by |intersect(A, B)|/|A|, for any sets A and B and A is the baseline set. The letters represent subgroups defined by the
-#' categories of the selected covariates. Subgroup letters located around a circle have two directional arrowed curved lines to the
-#' other. The arrowed lines have different colours, reflecting the level of overlap proportions. Note that if a subgroup is a baseline
+#' categories of the selected covariates. Subgroup are located around a circle have a directional arrowed curved line to the
+#' other subgroups. The arrowed lines have different colours, reflecting the level of overlap proportions. Note that if a subgroup is a baseline
 #' subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be
-#' changed by setting different values on the argument "para".
+#' changed by setting different values on the argument "para". Contrary to \code{\link{plot_overlap}}, this function produces a matrix layout.
 #'
 #' @param dat          a data set
 #' @param covari.sel   a vector of indices of covariates

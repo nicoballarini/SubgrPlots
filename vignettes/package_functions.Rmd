@@ -148,8 +148,7 @@ upset(prca.upset,
       query.legend = "top")
 ```
 
-Figure S2.2: Upset plot displaying the subgroups formed by the intersection of all
-subgroup-defining covariates
+Figure S2.2: Upset plot displaying the subgroups formed by the intersection of all subgroup-defining covariates.
 
 ```{r, fig.show='hold', fig.align = "center", out.width="95%", fig.width=8, fig.height=8, cache=TRUE}
 dat = prca
@@ -285,7 +284,7 @@ of the subset of a marginal subgroup on age but further defined by a range of we
 $N_{22}$ is the overlap size of the immediate subgroups (which are the subset of a marginal
 subgroup on age) on weight. (b) Contour lines are drawn by fitting a local regression at
 each point of the grid, using subjects weights according to their distance to the point of
-the grid. Points with few subjects in the vicinity of the grid point were left blank
+the grid. Points with few subjects in the vicinity of the grid point were left blank.
 
 # Graphics in the appendix
 
@@ -378,7 +377,7 @@ plot_level(dat,
 Figure S2.8: Level plots of treatment effect in terms of the log-hazard ratio across mutually
 disjoint subgroups defined by age and weight categorised in three levels. The cells on the
 bottom and the left margins correspond to the marginal subgroups defined by the levels
-of age and weight. In (b), the area of each square inside the cells is proportional to the
+of age and weight. In (b) the area of each square inside the cells is proportional to the
 sample sizes, which are also displayed in the middle of the cells.
 
 ## Mosaic Plot
@@ -626,7 +625,7 @@ plot_nightingale_effect(dat,
                        show.overall = TRUE, palette = "hcl")
 ```
 
-Figure S2.15: Nightingale coxcombs plot for subgroups defined by age and weight. The colours represent the treatment effect in terms of the log-hazard ratio. The radius of the sectors are proportional to the square root of the sample sizes in the subgroups
+Figure S2.15: Nightingale coxcombs plot for subgroups defined by age and weight. The colours represent the treatment effect in terms of the log-hazard ratio. The radius of the sectors are proportional to the square root of the sample sizes in the subgroups.
 
 # Graphics in the supplementary material
 

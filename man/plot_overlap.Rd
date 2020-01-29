@@ -32,6 +32,7 @@ categories of the selected covariates. Subgroup letters located around a circle 
 other. The arrowed lines have different colours, reflecting the level of overlap proportions. Note that if a subgroup is a baseline
 subgroup, then arrows on the curves would be located close to the corresponding letter. Also, the conditions of arrowed curves can be
 changed by setting different values on the argument "para".
+Contrary to \code{\link{plot_overlap2}}, this function produces a single diagram.
 }
 \examples{
 # Load the data to be used

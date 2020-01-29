@@ -1,4 +1,8 @@
-# Bugs/changes since CRAN submission
+# Bugs/changes since v0.1.2
+
+* Removed dependency with geoR
+
+# Bugs/changes since v0.1.0
 
 * Gailbraith plot:
 

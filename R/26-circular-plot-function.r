@@ -1,6 +1,8 @@
 #' Circular plot using circlize package
 #'
-#' This function produces a circular plot for subgroup analysis
+#' This function produces a circular plot for subgroup analysis using
+#' the circlize package. Overlaps across all variable levels are displayed in a
+#' single diagram.
 #'
 #' @param dat              a data set
 #' @param covari.sel       a vector of indices of the two covariates
@@ -548,7 +550,9 @@ plot_circle <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
 #' Circular plot using circlize package with matrix layout.
 #'
-#' This function produces a circular plot for subgroup analysis
+#' This function produces a circular plot for subgroup analysis using
+#' the circlize package. Overlaps across all variables are displayed in a
+#' matrix layout.
 #'
 #' @param dat              a data set
 #' @param covari.sel       a vector of indices of the two covariates
